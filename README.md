@@ -68,7 +68,7 @@ If you find any of this useful, please give a star on GitHub as it will probably
 
 # Acknowledgements
 
-Most of the information comes from Microsoft's [Advanced security auditing FAQ (https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/advanced-security-auditing-faq), [sigma](https://github.com/SigmaHQ/sigma) rules, the [ACSC guide](https://www.cyber.gov.au/acsc/view-all-content/publications/windows-event-logging-and-forwarding) and my own research/testing. I would like to thank the [sigma community](https://github.com/SigmaHQ/sigma/graphs/contributors) in particular for making threat detection open source and free for the benefit of all of the defenders out there.
+Most of the information comes from Microsoft's [Advanced security auditing FAQ](https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/advanced-security-auditing-faq), [sigma](https://github.com/SigmaHQ/sigma) rules, the [ACSC guide](https://www.cyber.gov.au/acsc/view-all-content/publications/windows-event-logging-and-forwarding) and my own research/testing. I would like to thank the [sigma community](https://github.com/SigmaHQ/sigma/graphs/contributors) in particular for making threat detection open source and free for the benefit of all of the defenders out there.
 
 # Problems with the default Windows log settings
 
@@ -161,7 +161,7 @@ File: `Microsoft-Windows-PowerShell%4Operational.evtx`
 
 ### Module logging (30 sigma rules)
 
-Turning on module logging will enable event ID 4103. 
+Turning on module logging will enable event ID `4103`. 
 Module logging has the advantage that it can run on older OSes and versions of PowerShell: PowerShell 3.0 (Win 7+).
 Another benefit is that it logs both the PowerShell command executed as well as the results.
 The disadvantage is that it will create an extremely high number of events.
@@ -186,7 +186,7 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \M
 
 Default settings: `On Win 10+, if a PowerShell script is flagged as suspicious by AMSI, it will be logged with a level of Warning.`
 
-Turning on Script Block logging will enable event ID 4104 as well as 4105 and 4106 if you enable `Log script block invocation start / stop events`, however, it is not recommended to enable the script block invocation start and stop events. 
+Turning on Script Block logging will enable event ID `4104` as well as `4105` and `4106` if you enable `Log script block invocation start / stop events`, however, it is not recommended to enable the script block invocation start and stop events. 
 It is supported by default in PowerShell 5.0+ (Win 10+), however you can enable this on older OSes (Win 7+) if you install .NET 4.5 and WMF 4.0+.
 Unfortunately, the maximum size of a single Windows event log is 32 KB so any PowerShell scripts greater than this will be fragmented in 32 KB sized blocks.
 If you have the original PowerShell Operational `.evtx` file, you can use the [block-parser](https://github.com/matthewdunwoody/block-parser) tool to un-fragment these logs into a single easily readable text file.
