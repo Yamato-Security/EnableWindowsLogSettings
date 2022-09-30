@@ -95,7 +95,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4776 | NTLM Authentication | 5 | The original event messages says it is for DCs only but this event gets logged for client OS local authentication as well. | 
+| 4776 | コンピューターがアカウントの資格情報の確認を試行しました。 | 5 | The original event messages says it is for DCs only but this event gets logged for client OS local authentication as well. | 
 
 ### Kerberos Authentication Service
 
@@ -115,9 +115,9 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4768 | Kerberos TGT Request | 3 | |
-| 4771 | Kerberos Pre-Auth Failed | 1 | |
-| 4772 | Kerberos Authentication Ticket Request Failed | 0 | |
+| 4768 | Kerberos 認証チケット (TGT) が要求されました。 | 3 | |
+| 4771 | Kerberos 事前認証に失敗しました。 | 1 | |
+| 4772 | Kerberos 認証チケットの要求に失敗しました。 | 0 | |
 
 ### Kerberos Service Ticket Operations
 
@@ -134,9 +134,9 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4769 | Kerberos Service Ticket Request | 1 | |
-| 4770 | Kerberos Service Ticket Renewel | 0 | |
-| 4773 | Kerberos Service Ticket Request Failed | 0 | |
+| 4769 | Kerberos サービス チケットが要求されました。 | 1 | |
+| 4770 | Kerberos サービス チケットが更新されました。 | 0 | |
+| 4773 | Kerberos サービス チケットの要求に失敗しました。 | 0 | |
 
 ## Account Management
 
@@ -153,9 +153,9 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4741 | Computer Account Created | 0 | |
-| 4742 | Computer Account Changed | 1 | |
-| 4743 | Computer Account Deleted | 0 | |
+| 4741 | コンピューター アカウントが作成されました。 | 0 | |
+| 4742 | コンピューター アカウントが変更されました。 | 1 | |
+| 4743 | コンピューター アカウントが削除されました。 | 0 | |
 
 ### Other Account Management Events
 
@@ -167,8 +167,8 @@ Recommended settings: `Success and Failure`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4782 | Account Pasword Hash Was Accessed | 0 | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. |
-| 4793 | Password Policy Checking API Was Called | 0 | Generated during password resets or attackers checking the password policy. |
+| 4782 | アカウントがアクセスしたパスワード ハッシュ。 | 0 | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. |
+| 4793 | パスワード ポリシーを確認する API が呼び出されました。 | 0 | Generated during password resets or attackers checking the password policy. |
 
 ### Security Group Management
 
@@ -192,22 +192,22 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4731 | Local Group Created | 0 | |
-| 4732 | Member Added To Local Group | 1 | |
-| 4733 | Member Removed From Local Group | 0 | |
-| 4734 | Local Group Deleted | 0 | |
-| 4764 | Group Type Changed | 0 | |
-| 4799 | Local Group Membership Enumerated | 1 | |
-| 4727 | Global Group Created | 0 | |
-| 4737 | Global Group Changed | 0 | |
-| 4728 | Member Added To Global Group | 0 | |
-| 4729 | Member Removed From Global Group | 0 | |
-| 4730 | Global Group Deleted | 0 | |
-| 4754 | Universal Group Created | 0 | |
-| 4755 | Universal Group Changed | 0 | |
-| 4756 | Member Added To Universal Group | 0 | |
-| 4757 | Member Removed From Universal Group | 0 | |
-| 4758 | Universal Group Deleted | 0 | |
+| 4731 | セキュリティが有効なローカル グループが作成されました。 | 0 | |
+| 4732 | セキュリティが有効なローカル グループにメンバーが追加されました。 | 1 | |
+| 4733 | セキュリティが有効なローカル グループのメンバーが削除されました。 | 0 | |
+| 4734 | セキュリティが有効なローカル グループが削除されました。 | 0 | |
+| 4764 | グループの種類が変更されました。 | 0 | |
+| 4799 | セキュリティが有効なローカル グループ メンバーシップが列挙されました。 | 1 | |
+| 4727 | セキュリティが有効なグローバル グループが作成されました。 | 0 | |
+| 4737 | セキュリティが有効なグローバル グループが変更されました。 | 0 | |
+| 4728 | セキュリティが有効なグローバル グループにメンバーが追加されました。 | 0 | |
+| 4729 | セキュリティが有効なグローバル グループのメンバーが削除されました。 | 0 | |
+| 4730 | セキュリティが有効なグローバル グループが削除されました。 | 0 | |
+| 4754 | セキュリティが有効なユニバーサル グループが作成されました。 | 0 | |
+| 4755 | セキュリティが有効なユニバーサル グループが変更されました。 | 0 | |
+| 4756 | セキュリティが有効なユニバーサル グループにメンバーが追加されました。 | 0 | |
+| 4757 | セキュリティが有効なユニバーサル グループのメンバーが削除されました。 | 0 | |
+| 4758 | セキュリティが有効なユニバーサル グループが削除されました。 | 0 | |
 
 ### User Account Management
 
@@ -230,23 +230,23 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4720 | User Account Created | 3 | |
-| 4722 | User Account Enabled | 0 | |
-| 4723 | Account Password Change | 0 | |
-| 4724 | Account Password Reset | 0 | |
-| 4725 | User Account Disabled | 0 | |
-| 4726 | User Account Deleted | 0 | |
-| 4738 | User Account Changed | 4 | |
-| 4740 | User Account Lockout | 0 | |
-| 4765 | SID History Added To Account | 0 | |
-| 4766 | Attempt To Add SID History To Account Failed | 0 | |
-| 4767 | Attempt To Add SID History To Account Failed | 0 | |
-| 4780 | ACL Set On Administrators Group Member | 0 | |
-| 4781 | Account Name Changed | 1 | |
-| 4794 | DSRM Administrator Password Set | 1 | |
-| 4798 | User's Local Group Membership Enumerated | 0 | |
-| 5376 | Credential Manager Credentials Backup | 0 | |
-| 5377 | Credential Manager Credentials Restored | 0 | |
+| 4720 | ユーザー アカウントが作成されました。 | 3 | |
+| 4722 | ユーザー アカウントが有効化されました。 | 0 | |
+| 4723 | アカウントのパスワードの変更が試行されました。 | 0 | |
+| 4724 | アカウントのパスワードのリセットが試行されました。 | 0 | |
+| 4725 | ユーザー アカウントが無効化されました。 | 0 | |
+| 4726 | ユーザー アカウントが削除されました。 | 0 | |
+| 4738 | ユーザー アカウントが変更されました。 | 4 | |
+| 4740 | ユーザー アカウントがロックアウトされました。 | 0 | |
+| 4765 | SID の履歴がアカウントに追加されました。 | 0 | |
+| 4766 | SID の履歴をアカウントに追加できませんでした。 | 0 | |
+| 4767 | ユーザー アカウントのロックが解除されました。 | 0 | |
+| 4780 | 管理者グループのメンバーのアカウントに ACL が設定されました。 | 0 | |
+| 4781 | アカウント名が変更されました。 | 1 | |
+| 4794 | ディレクトリ サービス復元モードの管理者パスワードの設定が試行されました。 | 1 | |
+| 4798 | ユーザーのローカル グループ メンバーシップが列挙されました。 | 0 | |
+| 5376 | 資格情報マネージャーの資格情報がバックアップされました。 | 0 | |
+| 5377 | 資格情報マネージャーの資格情報がバックアップから復元されました。 | 0 | |
 
 ## Detailed Tracking
 
@@ -265,13 +265,13 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 6416 | New External Device | 1 | |
-| 6419 | Request To Disable Device | 0 | |
-| 6420 | Device Disabled | 0 | |
-| 6421 | Request To Enable Device | 0 | |
-| 6422 | Device Enabled | 0 | |
-| 6423 | Device Installation Blocked | 0 | |
-| 6424 | Device Installation Allowed After Being Blocked | 0 | |
+| 6416 | 新しい外部デバイスがシステムに認識されました。 | 1 | |
+| 6419 | デバイスを無効にするよう要求されました。 | 0 | |
+| 6420 | デバイスが無効になりました。 | 0 | |
+| 6421 | デバイスを有効にするよう要求されました。 | 0 | |
+| 6422 | デバイスが有効になりました。 | 0 | |
+| 6423 | このデバイスのインストールはシステム ポリシーで許可されていません。 | 0 | |
+| 6424 | このデバイスのインストールは、ポリシーによって禁止された後、許可されました。 | 0 | |
 
 ### Process Creation
 
@@ -287,8 +287,8 @@ Recommended settings: `Success and Failure` if sysmon is not configured.
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4688 | Process Creation | 902 | |
-| 4696 | Primary Token Assigned To Process | 0 | |
+| 4688 | 新しいプロセスが作成されました。 | 902 | |
+| 4696 | プライマリ トークンがプロセスに割り当てられました。 | 0 | |
 
 ### Process Termination
 
@@ -302,7 +302,7 @@ Recommended settings: `No Auditing` unless you want to track the lifespan of pro
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4689 | Process Exited | 1 | |
+| 4689 | プロセスが終了しました。 | 1 | |
 
 ### RPC (Remote Procedure Call) Events
 
@@ -314,7 +314,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5712 | RPC Attempt | 0 | Logged when inbound RPC connection is made. |
+| 5712 | リモート プロシージャ コール (RPC) が試行されました。 | 0 | Logged when inbound RPC connection is made. |
 
 ### Token Right Adjusted Events
 
@@ -326,7 +326,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4703 | User's Token Changed | 0 | |
+| 4703 | ユーザー権限が調整されました。 | 0 | |
 
 ## DS (Directory Service) Access
 
@@ -349,8 +349,8 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4661 | Handle To Object Requested | 2 | |
-| 4662 | Operation Performed On Object | 6 | |
+| 4661 | オブジェクトに対するハンドルが要求されました。 | 2 | |
+| 4662 | オブジェクトに対して操作が実行されました。 | 6 | |
 
 ### Directory Service Changes
 
@@ -368,11 +368,11 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5136 | Directory Service Object Modified | 6 | |
-| 5137 | Directory Service Object Created | 0 | |
-| 5138 | Directory Service Object Undeleted | 0 | |
-| 5139 | Directory Service Object Moved | 0 | |
-| 5141 | Directory Service Object Deleted | 0 | |
+| 5136 | ディレクトリ サービス オブジェクトが変更されました。 | 6 | |
+| 5137 | ディレクトリ サービス オブジェクトが作成されました。 | 0 | |
+| 5138 | ディレクトリ サービス オブジェクトが復元されました。 | 0 | |
+| 5139 | ディレクトリ サービス オブジェクトを移動しました。 | 0 | |
+| 5141 | ディレクトリ サービス オブジェクトが削除されました。 | 0 | |
 
 ## Logon/Logoff
 
@@ -392,7 +392,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4625 | Logon Failed Due To Lockout | 4 | |
+| 4625 | アカウントがログオンに失敗しました。 | 4 | |
 
 ### Group Membership
 
@@ -404,7 +404,7 @@ Recommended settings: ACSC recommends `Success and Failure` but this is probably
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4627 | Group Membership Information | 0 | Shows what group a user belongs to when they log in. |
+| 4627 | グループ メンバーシップ情報。 | 0 | Shows what group a user belongs to when they log in. |
 
 ### Logoff
 
@@ -416,8 +416,8 @@ Recommended settings: `Success`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4634 | Logoff | 0 | |
-| 4647 | User Initiated Logoff | 0 | |
+| 4634 | アカウントがログオフしました。 | 0 | |
+| 4647 | ユーザー開始のログオフ | 0 | |
 
 ### Logon
 
@@ -440,9 +440,9 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4624 | Logon | 11 | |
-| 4625 | Logon Failed | 4 | |
-| 4648 | Explicit Logon | 2 | |
+| 4624 | アカウントが正常にログオンしました。 | 11 | |
+| 4625 | アカウントがログオンに失敗しました。 | 4 | |
+| 4648 | 明示的な資格情報を使用してログオンが試行されました。 | 2 | |
 
 ### Other Logon/Logoff Events
 
@@ -454,16 +454,16 @@ Recommended settings: `Success and Failure`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4649 | Possible Kerberos Replay Attack | 0 | |
-| 4778 | Session Reconnected To Window Station | 0 | Logged at source for RDP or Fast User Switching. |
-| 4779 | Session Disconnected From Window Station | 0 | Logged at source for RDP or Fast User Switching. |
-| 4800 | Computer Locked | 0 | |
-| 4801 | Computer Unlocked | 0 | |
-| 4802 | Screensaver Started | 0 | |
-| 4803 | Screensaver Stopped | 0 | |
-| 5378 | CredSSP Credentials Delegation Blocked | 0 | Usually when WinRM double-hop session was not properly set. |
-| 5632 | 802.1x Authentication To Wireless Network | 0 | |
-| 5633 | 802.1x Authentication To Wired Network | 0 | |
+| 4649 | 再生攻撃が検出されました。 | 0 | |
+| 4778 | セッションは Window Station に再接続しました。 | 0 | Logged at source for RDP or Fast User Switching. |
+| 4779 | セッションは Window Station から切断されました。 | 0 | Logged at source for RDP or Fast User Switching. |
+| 4800 | ワークステーションがロックされました。 | 0 | |
+| 4801 | ワークステーションのロックが解除されました。 | 0 | |
+| 4802 | スクリーン セーバーが起動しました。 | 0 | |
+| 4803 | スクリーン セーバーが解除されました。 | 0 | |
+| 5378 | 要求された資格情報の委任がポリシーによって許可されませんでした。 | 0 | Usually when WinRM double-hop session was not properly set. |
+| 5632 | ワイヤレス ネットワーク認証が要求されました。 | 0 | |
+| 5633 | ワイヤード (有線) ネットワーク認証が要求されました。 | 0 | |
 
 ### Special Logon
 
@@ -477,8 +477,8 @@ Recommended settings: `Success and Failure`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4672 | Admin Logon | 0 | |
-| 4964 | Logon From Admin Group | 0 | |
+| 4672 | 新しいログオンに特権が割り当てられました。 | 0 | |
+| 4964 | 特殊グループが新しいログオンに割り当てられました。 | 0 | |
 
 ## Object Access
 
@@ -498,7 +498,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4898 | Certificate Services Loaded A Template | 2 | |
+| 4898 | 証明書サービスがテンプレートを読み込みました。 | 2 | |
 
 **Note: Many event IDs are enabled. Only the one with sigma rules is shown above.**
 
@@ -522,7 +522,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5145 | Network Share File Access | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
+| 5145 | クライアントに必要なアクセスを付与できるかどうかについて、ネットワーク共有オブジェクトがチェックされました。 | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
 
 ### File Share
 
@@ -537,11 +537,11 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5140 | Network Share Connection | 1 | Can be combined with File System auditing to track what files were accessed. |
-| 5142 | Network Share Created | 0 | |
-| 5143 | Network Share Modified | 0 | |
-| 5144 | Network Share Deleted | 0 | |
-| 5168 | SPN Check For SMB/SMB2 Failed | 0 | |
+| 5140 | ネットワーク共有オブジェクトにアクセスしました。 | 1 | Can be combined with File システム auditing to track what files were accessed. |
+| 5142 | ネットワーク共有オブジェクトが追加されました。 | 0 | |
+| 5143 | ネットワーク共有オブジェクトが変更されました。 | 0 | |
+| 5144 | ネットワーク共有オブジェクトが削除されました。 | 0 | |
+| 5168 | SMB/SMB2 の SPN チェックに失敗しました。 | 0 | |
 
 ### File System
 
@@ -561,14 +561,15 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 0 | Could fail if the process does not have the right permissions. |
-| 4658 | Object Handle Closed | 0 | |
-| 4660 | Object Deleted | 0 | |
-| 4663 | Access To An Object | 2 | Differs from 4656 in that there are only success events. |
-| 4664 | Attempt To Create Hard Link | 0 | |
-| 4670 | Object Permission Changed | 0 | |
-| 4985 | State Of A Transaction Changed | 0 | Used for Transaction Manager and not relevent for security. |
-| 5051 | A File Was Virtualized | 0 | Rarely occurs during LUAFV virtualization. Not relevent for security. |
+| 4656 | オブジェクトに対するハンドルが要求されました。 | 0 | Could fail if the process does not have the right permissions. |
+| 4658 | オブジェクトに対するハンドルが閉じました。 | 0 | |
+| 4660 | オブジェクトが削除されました。 | 0 | |
+| 4663 | オブジェクトへのアクセスが試行されました。 | 2 | Differs from 4656 in that there are only success events. |
+| 4664 | ハード リンクの作成が試行されました。 | 0 | |
+| 4670 | オブジェクトのアクセス許可が変更されました。 | 0 | |
+| 4985 | トランザクションの状態が変更されました。 | 0 | Used for Transaction Manager and not relevent for security. |
+| 5051 | ファイルが仮想化されました。 | 0 | Rarely occurs during LUAFV virtualization. Not relevent for security. |
+
 
 **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured seperately.** 
 
@@ -590,15 +591,15 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5031 | WFP Blocked Incoming Connection | 0 |  |
-| 5150 | WFP Blocked A Packet | 0 | |
-| 5151 | More Restrictive WFP Filter Blocked A Packet | 0 | |
-| 5154 | Process Listening For Connections | 0 | |
-| 5155 | Process Blocked To Listen For Connections  | 0 | |
-| 5156 | Network Connection | 4 | |
-| 5157 | Network Connection Blocked | 0 | |
-| 5158 | Process Binded To Port | 0 | |
-| 5159 | Process Blocked To Bind To Port | 0 | |
+| 5031 | Windows ファイアウォールが、ネットワーク上の着信接続のアプリケーションによる受け入れをブロックしました。 | 0 |  |
+| 5150 | Windows フィルタリング プラットフォームによってパケットがブロックされました。 | 0 | |
+| 5151 | Windows フィルタリング プラットフォームのより制約のあるフィルターによってパケットがブロックされました。 | 0 | |
+| 5154 | Windows フィルターリング プラットフォームで、アプリケーションまたはサービスによるポートでの着信接続のリッスンが許可されました。 | 0 | |
+| 5155 | Windows フィルターリング プラットフォームで、アプリケーションまたはサービスによるポートでの着信接続のリッスンがブロックされました。  | 0 | |
+| 5156 |  Windows フィルターリング プラットフォームで、接続が許可されました。 | 4 | |
+| 5157 | Windows フィルターリング プラットフォームで、接続がブロックされました。 | 0 | |
+| 5158 | Windows フィルターリング プラットフォームで、ローカル ポートへのバインドが許可されました。 | 0 | |
+| 5159 | Windows フィルターリング プラットフォームで、ローカル ポートへのバインドがブロックされました。 | 0 | |
 
 ### Filtering Platform Packet Drop
 
@@ -610,8 +611,8 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5152 | WFP Blocked A Packet | 0 |  |
-| 5153 | More Restrictive WFP Filter Blocked A Packet | 0 |  |
+| 5152 | Windows フィルターリング プラットフォームによってパケットがブロックされました。 | 0 |  |
+| 5153 | Windows フィルターリング プラットフォームのより制約のあるフィルターによってパケットがブロックされました。 | 0 |  |
 
 ### Kernel Object
 
@@ -629,10 +630,10 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 4 |  |
-| 4658 | Object Handle Closed | 0 |  |
-| 4660 | Object Deleted | 0 |  |
-| 4663 | Object Access  | 2 |  |
+| 4656 | オブジェクトに対するハンドルが要求されました。 | 4 |  |
+| 4658 | オブジェクトに対するハンドルが閉じました。 | 0 |  |
+| 4660 | オブジェクトが削除されました。 | 0 |  |
+| 4663 | オブジェクトへのアクセスが試行されました。  | 2 |  |
 
 **Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured seperately.** 
 
@@ -652,17 +653,17 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4691 | Indirect Access To Object | 0 |  |
-| 4698 | Task Created | 2 | |
-| 4699 | Task Deleted | 1 | |
-| 4700 | Task Enabled | 0 | |
-| 4701 | Task Disabled | 1 | |
-| 4702 | Task Updated | 0 | |
-| 5148 | WFP Detected DoS Attack And Is Blocking Source Packets | 0 |  |
-| 5149 | DoS Attack Has Subsided And Normal Processing Resumed | 0 |  |
-| 5888 | COM+ Catalog Object Modified | 0 |  |
-| 5889 | COM+ Catalog Object Deleted | 0 |  |
-| 5890 | COM+ Catalog Object Added | 0 |  |
+| 4691 | オブジェクトへの間接アクセスが要求されました。 | 0 |  |
+| 4698 | スケジュールされたタスクが作成されました。 | 2 | |
+| 4699 | スケジュールされたタスクが削除されました。 | 1 | |
+| 4700 | スケジュールされたタスクが有効になりました。 | 0 | |
+| 4701 | スケジュールされたタスクが無効になりました。 | 1 | |
+| 4702 | スケジュールされたタスクがアップデートされました。 | 0 | |
+| 5148 | Windows フィルタリング プラットフォームが DoS 攻撃を検知し、防御モードに移行しました。この攻撃に関連するパケットは破棄されます。 | 0 |  |
+| 5149 | DoS 攻撃が沈静化したため、通常の処理を再開します。 | 0 |  |
+| 5888 | COM+ カタログのオブジェクトが変更されました。 | 0 |  |
+| 5889 | COM+ カタログからオブジェクトが削除されました。 | 0 |  |
+| 5890 | COM+ カタログにオブジェクトが追加されました。 | 0 |  |
 
 ### Registry
 
@@ -693,12 +694,12 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 2 |  |
-| 4657 | Registry Value Modified | 182 |  |
-| 4658 | Object Handle Closed | 0 |  |
-| 4660 | Object Deleted  | 0 |  |
-| 4663 | Object Access | 0 |  |
-| 4670 | Object Permissions Changed | 0 |  |
+| 4656 | オブジェクトに対するハンドルが要求されました。 | 2 |  |
+| 4657 | レジストリ値が変更されました。 | 182 |  |
+| 4658 | オブジェクトに対するハンドルが閉じました。 | 0 |  |
+| 4660 | オブジェクトが削除されました。  | 0 |  |
+| 4663 | オブジェクトへのアクセスが試行されました。 | 0 |  |
+| 4670 | オブジェクトのアクセス許可が変更されました。 | 0 |  |
 
 **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured seperately.** 
 
@@ -715,9 +716,9 @@ Recommended settings: `Success and Failure` if you want to monitor external devi
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 0 |  |
-| 4658 | Object Handle Closed | 0 |  |
-| 4663 | Object Access | 0 |  |
+| 4656 | オブジェクトに対するハンドルが要求されました。 | 0 |  |
+| 4658 | オブジェクトに対するハンドルが閉じました。 | 0 |  |
+| 4663 | オブジェクトへのアクセスが試行されました。 | 0 |  |
 
 **Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured seperately.** 
 
@@ -737,7 +738,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4661 | Object Handle Requested | 2 |  |
+| 4661 | オブジェクトに対するハンドルが要求されました。 | 2 |  |
 
 ## Policy Change
 
@@ -763,16 +764,16 @@ Notable Sigma rule:
  
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4715 | The audit policy (SACL) on an object was changed. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4719 | System audit policy was changed. | 1 | Logged regardless of Audit Policy Change settings. |
-| 4817 | Auditing settings on object were changed. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4902 | The Per-user audit policy table was created. | 0 | |
-| 4904 | An attempt was made to register a security event source. | 0 | |
-| 4905 | An attempt was made to unregister a security event source. | 0 | |
-| 4906 | The CrashOnAuditFail value has changed. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4907 | Auditing settings on object were changed. | 0 | |
-| 4908 | Special Groups Logon table modified. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4912 | Per User Audit Policy was changed. | 0 | Logged regardless of Audit Policy Change settings. |
+| 4715 | オブジェクトの監査ポリシー (SACL) が変更されました。 | 0 | Logged regardless of Audit ポリシーの変更 settings. |
+| 4719 | システム監査ポリシーが変更されました。 | 1 | Logged regardless of Audit ポリシーの変更 settings. |
+| 4817 | オブジェクトの監査設定が変更されました。 | 0 | Logged regardless of Audit ポリシーの変更 settings. |
+| 4902 | ユーザーごとの監査ポリシー テーブルが作成されました。 | 0 | |
+| 4904 | セキュリティ イベント ソースの登録が試行されました。 | 0 | |
+| 4905 | セキュリティ イベント ソースの登録解除が試行されました。 | 0 | |
+| 4906 | CrashOnAuditFail の値が変更されました。| 0 | Logged regardless of Audit ポリシーの変更 settings. |
+| 4907 | オブジェクトの監査設定が変更されました。 | 0 | |
+| 4908 | 特殊グループのログオン テーブルが変更されました。 | 0 | Logged regardless of Audit ポリシーの変更 settings. |
+| 4912 | ユーザーごとの監査ポリシーが変更されました。 | 0 | Logged regardless of Audit ポリシーの変更 settings. |
 
 ### Authentication Policy Change
 
@@ -800,18 +801,18 @@ Notable Sigma rule:
  
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4670 | Permissions on an object were changed. | 0 | |
-| 4706 | A new trust was created to a domain. | 1 | |
-| 4707 | A trust to a domain was removed. | 0 | |
-| 4713 | Kerberos policy was changed. | 0 | |
-| 4716 | Trusted domain information was modified. | 0 | |
-| 4717 | System security access was granted to an account. | 0 | |
-| 4718 | System security access was removed from an account. | 0 | |
-| 4739 | Domain Policy was changed. | 0 | |
-| 4864 | A namespace collision was detected. | 0 | |
-| 4865 | A trusted forest information entry was added. | 0 | |
-| 4866 | A trusted forest information entry was removed. | 0 | |
-| 4867 | A trusted forest information entry was modified. | 0 | |
+| 4670 | オブジェクトのアクセス許可が変更されました。 | 0 | |
+| 4706 | ドメインに対して新しい信頼が作成されました。 | 1 | |
+| 4707 | ドメインに対する信頼が削除されました。 | 0 | |
+| 4713 | Kerberos ポリシーが変更されました。 | 0 | |
+| 4716 | 信頼される側のドメインの情報が変更されました。 | 0 | |
+| 4717 | アカウントに対してシステム セキュリティ アクセスが許可されました。 | 0 | |
+| 4718 | アカウントからシステム セキュリティ アクセスが削除されました。 | 0 | |
+| 4739 | ドメイン ポリシーが変更されました。 | 0 | |
+| 4864 | 名前空間の競合が検出されました。 | 0 | |
+| 4865 | 信頼されたフォレスト情報のエントリが追加されました。 | 0 | |
+| 4866 | 信頼されたフォレスト情報のエントリが削除されました。 | 0 | |
+| 4867 | 信頼されたフォレスト情報のエントリが変更されました。 | 0 | |
 
 ### Authorization Policy Change
 
@@ -828,12 +829,12 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4703 | A user right was adjusted. | 0 | As of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. |
-| 4704 | A user right was assigned. | 0 | |
-| 4705 | A user right was removed. | 0 | |
-| 4670 | Permissions on an object were changed. | 0 | |
-| 4911 | Resource attributes of the object were changed. | 0 | |
-| 4913 | Central Access Policy on the object was changed. | 0 | |
+| 4703 | ユーザー権限が調整されました。 | 0 | As of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. |
+| 4704 | ユーザー権利が割り当てられました。 | 0 | |
+| 4705 | ユーザー権利が削除されました。 | 0 | |
+| 4670 | オブジェクトのアクセス許可が変更されました。 | 0 | |
+| 4911 | オブジェクトのリソース属性が変更されました。 | 0 | |
+| 4913 | オブジェクトの集約型アクセス ポリシーが変更されました。 | 0 | |
 
 ### Filtering Platform Policy Change
 
@@ -872,20 +873,20 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4944 | Active policy when FW started. | 0 | |
-| 4945 | Rule listed when FW started. | 0 | |
-| 4946 | Rule added to FW exception list. | 0 | |
-| 4947 | Rule modified to FW exception list. | 0 | |
-| 4948 | Rule deleted from FW exception list. | 0 | |
-| 4949 | FW settings restored to default. | 0 | |
-| 4950 | FW setting changed. | 0 | |
-| 4951 | FW rule ignored because major version number was not recognized. | 0 | |
-| 4952 | Parts of FW rule ignored because minor version number was not recognized. | 0 | |
-| 4953 | FW rule could not be parsed. | 0 | |
-| 4954 | FW Group Policy settings changed. New settings applied. | 0 | |
-| 4956 | FW active profile changed. | 0 | |
-| 4957 | FW did not apply rule. | 0 | |
-| 4958 | FW did not apply rule because rule referred to items not configured on this computer. | 0 | |
+| 4944 | 次のポリシーは、Windows ファイアウォールの起動時にアクティブでした。| 0 | |
+| 4945 | Windows ファイアウォールの起動時に規則が表示されました。 | 0 | |
+| 4946 | Windows ファイアウォールの例外の一覧が変更されました。規則が追加されました。 | 0 | |
+| 4947 | Windows ファイアウォールの例外の一覧が変更されました。規則が変更されました。 | 0 | |
+| 4948 | Windows ファイアウォールの例外の一覧が変更されました。規則が削除されました。 | 0 | |
+| 4949 | Windows ファイアウォールの設定が既定値に戻されました。 | 0 | |
+| 4950 | Windows ファイアウォールの設定が変更されました。 | 0 | |
+| 4951 | 規則のメジャー バージョンが認識されなかったため、Windows ファイアウォールでその規則が無視されました。 | 0 | |
+| 4952 | 規則のマイナー バージョン番号が認識されなかったため、Windows ファイアウォールでその規則の一部が無視されました。規則のその他の部分は適用されます。 | 0 | |
+| 4953 | Windows ファイアウォールで、解析できなかった規則が無視されました。 | 0 | |
+| 4954 | Windows ファイアウォールのグループ ポリシーの設定が変更され、新しい設定が適用されました。 | 0 | |
+| 4956 | Windows ファイアウォールでアクティブなプロファイルが変更されました。 | 0 | |
+| 4957 | Windows ファイアウォールで次の規則が適用されませんでした。 | 0 | |
+| 4958 | このコンピューターで構成されていないアイテムを次の規則が参照しているために、Windows ファイアウォールで規則が適用されませんでした。 | 0 | |
 
 There are no sigma detection rules for this sub-category at the moment.
 
@@ -936,9 +937,9 @@ Recommended settings: `No Auditing`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4673 | A privileged service was called. | 0 | |
-| 4674 | An operation was attempted on a privileged object. | 0 | |
-| 4985 | The state of a transaction has changed. | 0 | |
+| 4673 | 特権のあるサービスが呼び出されました。 | 0 | |
+| 4674 | 特権のあるオブジェクトで操作が試行されました。 | 0 | |
+| 4985 | トランザクションの状態が変更されました。 | 0 | |
 
 **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
@@ -974,9 +975,9 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4673 | A privileged service was called. | 2 | |
-| 4674 | An operation was attempted on a privileged object. | 1 | |
-| 4985 | The state of a transaction has changed. | 0 | |
+| 4673 | 特権のあるサービスが呼び出されました。 | 2 | |
+| 4674 | 特権のあるオブジェクトで操作が試行されました。 | 1 | |
+| 4985 | トランザクションの状態が変更されました。 | 0 | |
 
 **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
@@ -1013,9 +1014,9 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4608 | Windows is starting up. | 0 | |
-| 4616 | The system time was changed. | 1 | |
-| 4621 | Administrator recovered system from CrashOnAuditFail. | 0 | |
+| 4608 | Windows を起動しています。 | 0 | |
+| 4616 | システム時刻が変更されました。 | 1 | |
+| 4621 | 管理者が CrashOnAuditFail からシステムを復旧しました。 | 0 | |
 
 ### Security System Extension
 
@@ -1041,11 +1042,11 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4610 | An authentication package has been loaded by the Local Security Authority. | 0 | Should be monitored with an allowlist. |
-| 4611 | A trusted logon process has been registered with the Local Security Authority. | 1 | Should display "SYSTEM" in the "Subject" field. |
-| 4614 | A notification package has been loaded by the Security Account Manager. | 0 | |
-| 4622 | A security package has been loaded by the Local Security Authority. | 0 | |
-| 4697 | A service was installed in the system. | 20 | This is the most important event in this sub-category. |
+| 4610 | ローカル セキュリティ機関によって、認証パッケージが読み込まれました。 | 0 | Should be monitored with an allowlist. |
+| 4611 | 信頼されたログオン プロセスがローカル セキュリティ機関に登録されています。 | 1 | Should display "System" in the "Subject" field. |
+| 4614 | 通知パッケージがセキュリティ アカウント マネージャーにより読み込まれています。 | 0 | |
+| 4622 | セキュリティ パッケージがローカル セキュリティ機関によって読み込まれました。 | 0 | |
+| 4697 | サービスがシステムにインストールされました。 | 20 | This is the most important event in this sub-category. |
 
 ### System Integrity
 
@@ -1068,18 +1069,18 @@ Currently, there are no sigma rules for this sub-category.
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4612 | Internal resources allocated for the queuing of audit messages have been exhausted, leading to the loss of some audits. | 0 | This is important to monitor. |
-| 4615 | Invalid use of LPC port. | 0 |  |
-| 4618 | A monitored security event pattern has occurred. | 0 | This event can only be invoked manually. |
-| 4816 | RPC detected an integrity violation while decrypting an incoming message. | 0 |  |
-| 5038 | Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error. | 0 |  |
-| 5056 | A cryptographic self-test was performed. | 0 |  |
-| 5057 | A cryptographic primitive operation failed. | 0 |  |
-| 5060 | Verification operation failed. | 0 |  |
-| 5061 | Cryptographic operation. | 0 |  |
-| 5062 | A kernel-mode cryptographic self-test was performed. | 0 |  |
-| 6281 | Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error. | 0 |  |
-| 6410 | Code integrity determined that a file does not meet the security requirements to load into a process. | 0 |  |
+| 4612 | 監査メッセージをキューに登録するために割り当てられた内部リソースをすべて使用したため、一部の監査が失われました。 | 0 | This is important to monitor. |
+| 4615 | LPC ポートの使用が無効です。| 0 |  |
+| 4618 | 監視されるセキュリティ イベント パターンが発生しています。 | 0 | This event can only be invoked manually. |
+| 4816 | 着信メッセージの解読の際に RPC が整合性違反を検出しました。 | 0 |  |
+| 5038 | コードの整合性によって、ファイルのイメージ ハッシュが有効でないと判断されました。このファイルは、無許可の変更によって破損しているか、無効なハッシュがディスク デバイス エラーの可能性を示している場合があります。 | 0 |  |
+| 5056 | 暗号化セルフ テストが実行されました。 | 0 |  |
+| 5057 | 暗号化のプリミティブ操作に失敗しました。 | 0 |  |
+| 5060 | 検証操作に失敗しました。 | 0 |  |
+| 5061 | 暗号化操作。 | 0 |  |
+| 5062 | カーネルモードの暗号化セルフ テストが実行されました。 | 0 |  |
+| 6281 | コードの整合性によって、イメージ ファイルのページ ハッシュが有効でないと判断されました。 このファイルはページ ハッシュを使用せず正しくない方法で署名されたか、無許可の変更によって破損した可能性があります。無効なハッシュはディスク デバイス エラーの可能性を示している場合もあります。 | 0 |  |
+| 6410 | コードの整合性によって、ファイルがプロセスに読み込むためのセキュリティ要件を満たしていないと判断されました。 | 0 |  |
 
 ## Global Object Access Auditing
 
