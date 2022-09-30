@@ -81,7 +81,7 @@
 
 ### 資格情報の確認の監査
 
-ボリューム: NTLM の使用状況に依存. おそらくドメインコントローラーでは高、クライアントとサーバでは低.
+ボリューム: NTLM の使用状況に依存。 おそらくドメインコントローラーでは高、クライアントとサーバでは低
 
 規定値: `クライアントOS: 未構成` | `サーバーOS: 成功`
 
@@ -159,7 +159,7 @@ Notable Sigma rule:
 
 ### その他のアカウント管理イベントの監査
 
-ボリューム: 通常は低.
+ボリューム: 通常は低
 
 規定値: `未構成`
 
@@ -506,7 +506,7 @@ Notable Sigma rules:
 
 ### 詳細なファイル共有の監査
 
-ボリューム: ファイルサーバーやドメインコントローラーではとても高、 ただし、誰がどのファイルにアクセスしているかを追跡したり、さまざまなラテラルムーブメントを検出させる場合には必要
+ボリューム: ファイルサーバーやドメインコントローラーではとても高。 ただし、誰がどのファイルにアクセスしているかを追跡したり、さまざまなラテラルムーブメントを検出させる場合には必要
 
 規定値: `未構成`
 
@@ -583,7 +583,7 @@ Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and ne
 
 規定値: `未構成`
 
-推奨値: `成功と失敗` 十分なディスクスペースがあり、Sysmonでネットワーク接続を監視していない場合。 ただし、この設定により大量のイベントが発生します。
+推奨値: `成功と失敗` 十分なディスクスペースがあり、Sysmonでネットワーク接続を監視していない場合。 ただし、この設定により大量のイベントが発生する
 
 Notable Sigma rules:
 * `(5156) Enumeration via the Global Catalog`: To detect Bloodhound and similar tools.
@@ -609,7 +609,7 @@ Notable Sigma rules:
 
 規定値: `未構成`
 
-推奨値: `成功と失敗` 十分なディスクスペースがあり、Sysmonでネットワーク接続を監視していない場合。 ただし、この設定により大量のイベントが発生します
+推奨値: `成功と失敗` 十分なディスクスペースがあり、Sysmonでネットワーク接続を監視していない場合。 ただし、この設定により大量のイベントが発生する
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -624,7 +624,7 @@ Only kernel objects with a matching SACL generate security audit events. You can
 
 規定値: `未構成`
 
-推奨値: ACSCでは`成功と失敗`が推奨。しかし、 この設定により、大量の `4663: オブジェクトへのアクセスが試行されました。` イベントが発生します。
+推奨値: ACSCでは`成功と失敗`が推奨。ただし、この設定により、大量の `4663: オブジェクトへのアクセスが試行されました。` イベントが発生する
 
 Notable Sigma rules:
 * `(4656) Generic Password Dumper Activity on LSASS`
@@ -900,7 +900,7 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 
 規定値: `未構成`
 
-推奨値: ACSCでは`成功と失敗`推奨、 ただしこの設定により、大量のノイズとなる`5447 (Windows フィルターリング プラットフォームのフィルターが変更されました。)` イベントが生成される
+推奨値: ACSCでは`成功と失敗`推奨。ただしこの設定により、大量のノイズとなる`5447 (Windows フィルターリング プラットフォームのフィルターが変更されました。)` イベントが生成される
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
@@ -968,7 +968,7 @@ The use of two privileges, “Back up files and directories” and “Restore fi
 
 規定値: `未構成`
 
-推奨値: `成功と失敗. ただし、ノイズが多すぎる可能性があります.`
+推奨値: `成功と失敗. ただし、ノイズが多すぎる可能性あり`
 
 Notable Sigma rules:
 * `(4673) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
