@@ -8,64 +8,64 @@
 
 現在、日本語版はありません。和訳したい方を募集しています！
 
-# Table of Contents
+# 目次
 
-- [Table of Contents](#table-of-contents)
+- [目次](#目次)
 - [Notes about configuring Security log auditing](#notes-about-configuring-security-log-auditing)
 - [Security Event Log Categories and Event IDs](#security-event-log-categories-and-event-ids)
-  - [Account Logon](#account-logon)
-    - [Credential Validation](#credential-validation)
-    - [Kerberos Authentication Service](#kerberos-authentication-service)
-    - [Kerberos Service Ticket Operations](#kerberos-service-ticket-operations)
-  - [Account Management](#account-management)
-    - [Computer Account Management](#computer-account-management)
-    - [Other Account Management Events](#other-account-management-events)
-    - [Security Group Management](#security-group-management)
-    - [User Account Management](#user-account-management)
-  - [Detailed Tracking](#detailed-tracking)
-    - [Plug and Play Events](#plug-and-play-events)
-    - [Process Creation](#process-creation)
-    - [Process Termination](#process-termination)
-    - [RPC (Remote Procedure Call) Events](#rpc-remote-procedure-call-events)
-    - [Token Right Adjusted Events](#token-right-adjusted-events)
-  - [DS (Directory Service) Access](#ds-directory-service-access)
-    - [Directory Service Access](#directory-service-access)
-    - [Directory Service Changes](#directory-service-changes)
-  - [Logon/Logoff](#logonlogoff)
-    - [Account Lockout](#account-lockout)
-    - [Group Membership](#group-membership)
-    - [Logoff](#logoff)
-    - [Logon](#logon)
-    - [Other Logon/Logoff Events](#other-logonlogoff-events)
-    - [Special Logon](#special-logon)
-  - [Object Access](#object-access)
-    - [Certification Services](#certification-services)
-    - [Detailed File Share](#detailed-file-share)
-    - [File Share](#file-share)
-    - [File System](#file-system)
-    - [Filtering Platform Connection](#filtering-platform-connection)
-    - [Filtering Platform Packet Drop](#filtering-platform-packet-drop)
-    - [Kernel Object](#kernel-object)
-    - [Other Object Access Events](#other-object-access-events)
-    - [Registry](#registry)
-    - [Removable Storage](#removable-storage)
-    - [SAM](#sam)
-  - [Policy Change](#policy-change)
-    - [Audit Policy Change](#audit-policy-change)
-    - [Authentication Policy Change](#authentication-policy-change)
-    - [Authorization Policy Change](#authorization-policy-change)
-    - [Filtering Platform Policy Change](#filtering-platform-policy-change)
-    - [MPSSVC Rule-Level Policy Change](#mpssvc-rule-level-policy-change)
-    - [Other Policy Change Events](#other-policy-change-events)
-  - [Privilege Use](#privilege-use)
-    - [Non Sensitive Use Events](#non-sensitive-use-events)
-    - [Sensitive Privilege Use](#sensitive-privilege-use)
-  - [System](#system)
-    - [Other System Events](#other-system-events)
-    - [Security State Change](#security-state-change)
-    - [Security System Extension](#security-system-extension)
-    - [System Integrity](#system-integrity)
-  - [Global Object Access Auditing](#global-object-access-auditing)
+  - [アカウント ログオン](#アカウント-ログオン)
+    - [資格情報の確認の監査](#資格情報の確認の監査)
+    - [Kerberos 認証サービスの監査](#kerberos-認証サービスの監査)
+    - [Kerberos サービス チケット操作の監査](#kerberos-サービス-チケット操作の監査)
+  - [アカウントの管理](#アカウントの管理)
+    - [コンピューター アカウントの管理の監査](#コンピューター-アカウントの管理の監査)
+    - [その他のアカウント管理イベントの監査](#その他のアカウント管理イベントの監査)
+    - [セキュリティ グループの管理の監査](#セキュリティ-グループの管理の監査)
+    - [ユーザー アカウントの管理の監査](#ユーザー-アカウントの管理の監査)
+  - [詳細追跡](#詳細追跡)
+    - [PNP アクティビティの監査](#pnp-アクティビティの監査)
+    - [プロセス作成の監査](#プロセス作成の監査)
+    - [プロセス終了の監査](#プロセス終了の監査)
+    - [RPC (Remote Procedure Call) イベントの監査](#rpc-remote-procedure-call-イベントの監査)
+    - [トークン権限の調整を監査する](#トークン権限の調整を監査する)
+  - [DS (ディレクトリ サービス) アクセス](#ds-ディレクトリ-サービス-アクセス)
+    - [ディレクトリ サービス アクセスの監査](#ディレクトリ-サービス-アクセスの監査)
+    - [ディレクトリ サービスの変更の監査](#ディレクトリ-サービスの変更の監査)
+  - [ログオン/ログオフ](#ログオンログオフ)
+    - [アカウント ロックアウトの監査](#アカウント-ロックアウトの監査)
+    - [グループ メンバーシップの監査](#グループ-メンバーシップの監査)
+    - [ログオフの監査](#ログオフの監査)
+    - [ログオンの監査](#ログオンの監査)
+    - [その他のログオン/ログオフ イベントの監査](#その他のログオンログオフ-イベントの監査)
+    - [特殊なログオンの監査](#特殊なログオンの監査)
+  - [オブジェクト アクセス](#オブジェクト-アクセス)
+    - [証明書サービスの監査](#証明書サービスの監査)
+    - [詳細なファイル共有の監査](#詳細なファイル共有の監査)
+    - [ファイル共有の監査](#ファイル共有の監査)
+    - [ファイル システムの監査](#ファイル-システムの監査)
+    - [フィルタリング プラットフォームの接続の監査](#フィルタリング-プラットフォームの接続の監査)
+    - [フィルタリング プラットフォーム パケットの破棄の監査](#フィルタリング-プラットフォーム-パケットの破棄の監査)
+    - [カーネルオブジェクトの監査](#カーネルオブジェクトの監査)
+    - [その他のオブジェクト アクセス イベントの監査](#その他のオブジェクト-アクセス-イベントの監査)
+    - [レジストリの監査](#レジストリの監査)
+    - [リムーバブル記憶域の監査](#リムーバブル記憶域の監査)
+    - [SAMの監査](#samの監査)
+  - [ポリシーの変更](#ポリシーの変更)
+    - [監査ポリシーの変更の監査](#監査ポリシーの変更の監査)
+    - [認証ポリシーの変更の監査](#認証ポリシーの変更の監査)
+    - [認可ポリシーの変更の監査](#認可ポリシーの変更の監査)
+    - [フィルタリング プラットフォーム ポリシーの変更の監査](#フィルタリング-プラットフォーム-ポリシーの変更の監査)
+    - [MPSSVC ルールレベル ポリシーの変更の監査](#mpssvc-ルールレベル-ポリシーの変更の監査)
+    - [その他のポリシー変更イベントの監査](#その他のポリシー変更イベントの監査)
+  - [特権の使用](#特権の使用)
+    - [重要でない特権の使用の監査](#重要でない特権の使用の監査)
+    - [重要な特権の使用の監査](#重要な特権の使用の監査)
+  - [システム](#システム)
+    - [その他のシステム イベントの監査](#その他のシステム-イベントの監査)
+    - [セキュリティ状態の変更の監査](#セキュリティ状態の変更の監査)
+    - [セキュリティ システムの拡張の監査](#セキュリティ-システムの拡張の監査)
+    - [システムの整合性の監査](#システムの整合性の監査)
+  - [グローバル オブジェクト アクセスの監査](#グローバル-オブジェクト-アクセスの監査)
 
 # Notes about configuring Security log auditing
 
@@ -77,9 +77,9 @@
 
 # Security Event Log Categories and Event IDs
 
-## Account Logon
+## アカウント ログオン
 
-### Credential Validation
+### 資格情報の確認の監査
 
 Volume: Depends on NTLM usage. Could be high on DCs and low on clients and servers.
 
@@ -97,7 +97,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: |
 | 4776 | コンピューターがアカウントの資格情報の確認を試行しました。 | 5 | The original event messages says it is for DCs only but this event gets logged for client OS local authentication as well. | 
 
-### Kerberos Authentication Service
+### Kerberos 認証サービスの監査
 
 **Note: Enable only for Domain Controllers**
 
@@ -119,7 +119,7 @@ Notable Sigma rules:
 | 4771 | Kerberos 事前認証に失敗しました。 | 1 | |
 | 4772 | Kerberos 認証チケットの要求に失敗しました。 | 0 | |
 
-### Kerberos Service Ticket Operations
+### Kerberos サービス チケット操作の監査
 
 **Note: Enable only for Domain Controllers**
 
@@ -138,9 +138,9 @@ Notable Sigma rule:
 | 4770 | Kerberos サービス チケットが更新されました。 | 0 | |
 | 4773 | Kerberos サービス チケットの要求に失敗しました。 | 0 | |
 
-## Account Management
+## アカウントの管理
 
-### Computer Account Management
+### コンピューター アカウントの管理の監査
 
 Volume: Low on DCs.
 
@@ -157,7 +157,7 @@ Notable Sigma rule:
 | 4742 | コンピューター アカウントが変更されました。 | 1 | |
 | 4743 | コンピューター アカウントが削除されました。 | 0 | |
 
-### Other Account Management Events
+### その他のアカウント管理イベントの監査
 
 Volume: Typcially low.
 
@@ -170,7 +170,7 @@ Recommended settings: `Success and Failure`
 | 4782 | アカウントがアクセスしたパスワード ハッシュ。 | 0 | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. |
 | 4793 | パスワード ポリシーを確認する API が呼び出されました。 | 0 | Generated during password resets or attackers checking the password policy. |
 
-### Security Group Management
+### セキュリティ グループの管理の監査
 
 A "security-enabled" group is a group that you can assign access permissions (ACLs). The other type is a Distribution Group, which is "security-disabled" and cannot be assigned access permissions. Since security-enabled groups are most common, we will refer to them simply as "groups". For example, `Local Group Created`, instead of `A security-enabled local group was created.`.
 
@@ -209,7 +209,7 @@ Notable Sigma rules:
 | 4757 | セキュリティが有効なユニバーサル グループのメンバーが削除されました。 | 0 | |
 | 4758 | セキュリティが有効なユニバーサル グループが削除されました。 | 0 | |
 
-### User Account Management
+### ユーザー アカウントの管理の監査
 
 Volume: Low.
 
@@ -248,9 +248,9 @@ Notable Sigma rules:
 | 5376 | 資格情報マネージャーの資格情報がバックアップされました。 | 0 | |
 | 5377 | 資格情報マネージャーの資格情報がバックアップから復元されました。 | 0 | |
 
-## Detailed Tracking
+## 詳細追跡
 
-### Plug and Play Events
+### PNP アクティビティの監査
 
 This is important if you want to track physical attacks (Rubber Ducky, etc..) or someone exfiltrating data via USB devices.
 
@@ -273,7 +273,7 @@ Notable Sigma rule:
 | 6423 | このデバイスのインストールはシステム ポリシーで許可されていません。 | 0 | |
 | 6424 | このデバイスのインストールは、ポリシーによって禁止された後、許可されました。 | 0 | |
 
-### Process Creation
+### プロセス作成の監査
 
 Note: A seperate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration\Windows Settings\Administrative Templates\System\Audit Process Creation\Include command line in process creation events` in Group Policy.
 
@@ -290,7 +290,7 @@ Recommended settings: `Success and Failure` if sysmon is not configured.
 | 4688 | 新しいプロセスが作成されました。 | 902 | |
 | 4696 | プライマリ トークンがプロセスに割り当てられました。 | 0 | |
 
-### Process Termination
+### プロセス終了の監査
 
 You may want to keep this off to save file space.
 
@@ -304,7 +304,7 @@ Recommended settings: `No Auditing` unless you want to track the lifespan of pro
 | :---: | :---: | :---: | :---: |
 | 4689 | プロセスが終了しました。 | 1 | |
 
-### RPC (Remote Procedure Call) Events
+### RPC (Remote Procedure Call) イベントの監査
 
 Volume: High on RPC servers.
 
@@ -316,7 +316,7 @@ Recommended settings: `Unknown. Needs testing.`
 | :---: | :---: | :---: | :---: |
 | 5712 | リモート プロシージャ コール (RPC) が試行されました。 | 0 | Logged when inbound RPC connection is made. |
 
-### Token Right Adjusted Events
+### トークン権限の調整を監査する
 
 Volume: High.
 
@@ -328,11 +328,11 @@ Recommended settings: `Unknown. Needs testing.`
 | :---: | :---: | :---: | :---: |
 | 4703 | ユーザー権限が調整されました。 | 0 | |
 
-## DS (Directory Service) Access
+## DS (ディレクトリ サービス) アクセス
 
 **Note: Enable only for Domain Controllers**
 
-### Directory Service Access
+### ディレクトリ サービス アクセスの監査
 
 Volume: High on servers running AD DS role services.
 
@@ -352,7 +352,7 @@ Notable Sigma rules:
 | 4661 | オブジェクトに対するハンドルが要求されました。 | 2 | |
 | 4662 | オブジェクトに対して操作が実行されました。 | 6 | |
 
-### Directory Service Changes
+### ディレクトリ サービスの変更の監査
 
 Volume: High on DCs.
 
@@ -374,9 +374,9 @@ Notable Sigma rules:
 | 5139 | ディレクトリ サービス オブジェクトを移動しました。 | 0 | |
 | 5141 | ディレクトリ サービス オブジェクトが削除されました。 | 0 | |
 
-## Logon/Logoff
+## ログオン/ログオフ
 
-### Account Lockout
+### アカウント ロックアウトの監査
 
 Volume: Low.
 
@@ -394,7 +394,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: |
 | 4625 | アカウントがログオンに失敗しました。 | 4 | |
 
-### Group Membership
+### グループ メンバーシップの監査
 
 Volume: Adds an extra log about a user's group membership to every logon.
 
@@ -406,7 +406,7 @@ Recommended settings: ACSC recommends `Success and Failure` but this is probably
 | :---: | :---: | :---: | :---: |
 | 4627 | グループ メンバーシップ情報。 | 0 | Shows what group a user belongs to when they log in. |
 
-### Logoff
+### ログオフの監査
 
 Volume: High.
 
@@ -419,7 +419,7 @@ Recommended settings: `Success`
 | 4634 | アカウントがログオフしました。 | 0 | |
 | 4647 | ユーザー開始のログオフ | 0 | |
 
-### Logon
+### ログオンの監査
 
 Volume: Low on clients, medium on DCs or network servers.
 
@@ -444,7 +444,7 @@ Notable Sigma rules:
 | 4625 | アカウントがログオンに失敗しました。 | 4 | |
 | 4648 | 明示的な資格情報を使用してログオンが試行されました。 | 2 | |
 
-### Other Logon/Logoff Events
+### その他のログオン/ログオフ イベントの監査
 
 Volume: Low.
 
@@ -465,7 +465,7 @@ Recommended settings: `Success and Failure`
 | 5632 | ワイヤレス ネットワーク認証が要求されました。 | 0 | |
 | 5633 | ワイヤード (有線) ネットワーク認証が要求されました。 | 0 | |
 
-### Special Logon
+### 特殊なログオンの監査
 
 "Special groups" and "Special Privileges" can be thought of as Administrator groups or privileges.
 
@@ -480,9 +480,9 @@ Recommended settings: `Success and Failure`
 | 4672 | 新しいログオンに特権が割り当てられました。 | 0 | |
 | 4964 | 特殊グループが新しいログオンに割り当てられました。 | 0 | |
 
-## Object Access
+## オブジェクト アクセス
 
-### Certification Services
+### 証明書サービスの監査
 
 **Note: Enable only for servers providing AD CS role services.**
 
@@ -502,7 +502,7 @@ Notable Sigma rules:
 
 **Note: Many event IDs are enabled. Only the one with sigma rules is shown above.**
 
-### Detailed File Share
+### 詳細なファイル共有の監査
 
 Volume: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
 
@@ -524,7 +524,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: |
 | 5145 | クライアントに必要なアクセスを付与できるかどうかについて、ネットワーク共有オブジェクトがチェックされました。 | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
 
-### File Share
+### ファイル共有の監査
 
 Volume: High for file servers and DCs.
 
@@ -543,7 +543,7 @@ Notable Sigma rule:
 | 5144 | ネットワーク共有オブジェクトが削除されました。 | 0 | |
 | 5168 | SMB/SMB2 の SPN チェックに失敗しました。 | 0 | |
 
-### File System
+### ファイル システムの監査
 
 You need to seperately configure audit permissions on files and/or folders in order for access to be logged. 
 For example, by right-clicking, opening Properties, Security tab, Advanced, Auditing tab and then adding a Principal and what permissions to monitor.
@@ -573,7 +573,7 @@ Notable Sigma rules:
 
 **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured seperately.** 
 
-### Filtering Platform Connection
+### フィルタリング プラットフォームの接続の監査
 
 Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and network connections.
 
@@ -601,7 +601,7 @@ Notable Sigma rules:
 | 5158 | Windows フィルターリング プラットフォームで、ローカル ポートへのバインドが許可されました。 | 0 | |
 | 5159 | Windows フィルターリング プラットフォームで、ローカル ポートへのバインドがブロックされました。 | 0 | |
 
-### Filtering Platform Packet Drop
+### フィルタリング プラットフォーム パケットの破棄の監査
 
 Volume: High.
 
@@ -614,7 +614,7 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 | 5152 | Windows フィルターリング プラットフォームによってパケットがブロックされました。 | 0 |  |
 | 5153 | Windows フィルターリング プラットフォームのより制約のあるフィルターによってパケットがブロックされました。 | 0 |  |
 
-### Kernel Object
+### カーネルオブジェクトの監査
 
 Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options\Audit: Audit the access of global system objects`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
 
@@ -637,7 +637,7 @@ Notable Sigma rules:
 
 **Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured seperately.** 
 
-### Other Object Access Events
+### その他のオブジェクト アクセス イベントの監査
 
 It is important to enable as malware will often abuse tasks for persistence and lateral movement.
 
@@ -665,7 +665,7 @@ Notable Sigma rules:
 | 5889 | COM+ カタログからオブジェクトが削除されました。 | 0 |  |
 | 5890 | COM+ カタログにオブジェクトが追加されました。 | 0 |  |
 
-### Registry
+### レジストリの監査
 
 Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degredation.
 
@@ -703,7 +703,7 @@ Notable Sigma rules:
 
 **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured seperately.** 
 
-### Removable Storage
+### リムーバブル記憶域の監査
 
 This logs all file access to removable storage regardless of SACL settings.
 You may want to enable to track employees exfiltrating data via USB storage.
@@ -722,7 +722,7 @@ Recommended settings: `Success and Failure` if you want to monitor external devi
 
 **Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured seperately.** 
 
-### SAM
+### SAMの監査
 
 This will log attempts to access Security Account Manager (SAM) objects, such as user and computer accounts, groups, security descriptors, etc...
 
@@ -740,9 +740,9 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: |
 | 4661 | オブジェクトに対するハンドルが要求されました。 | 2 |  |
 
-## Policy Change
+## ポリシーの変更
 
-### Audit Policy Change
+### 監査ポリシーの変更の監査
 
 Changes to audit policy that are audited include:
 * Changing permissions and audit settings on the audit policy object (by using “auditpol /set /sd” command).
@@ -775,7 +775,7 @@ Notable Sigma rule:
 | 4908 | 特殊グループのログオン テーブルが変更されました。 | 0 | Logged regardless of Audit ポリシーの変更 settings. |
 | 4912 | ユーザーごとの監査ポリシーが変更されました。 | 0 | Logged regardless of Audit ポリシーの変更 settings. |
 
-### Authentication Policy Change
+### 認証ポリシーの変更の監査
 
 Changes made to authentication policy include:
 * Creation, modification, and removal of forest and domain trusts.
@@ -814,7 +814,7 @@ Notable Sigma rule:
 | 4866 | 信頼されたフォレスト情報のエントリが削除されました。 | 0 | |
 | 4867 | 信頼されたフォレスト情報のエントリが変更されました。 | 0 | |
 
-### Authorization Policy Change
+### 認可ポリシーの変更の監査
 
 Audits assignment and removal of user rights in user right policies, changes in security token object permission, resource attributes changes and Central Access Policy changes for file system objects.
 
@@ -836,7 +836,7 @@ Recommended settings: `Unknown. Needs testing.`
 | 4911 | オブジェクトのリソース属性が変更されました。 | 0 | |
 | 4913 | オブジェクトの集約型アクセス ポリシーが変更されました。 | 0 | |
 
-### Filtering Platform Policy Change
+### フィルタリング プラットフォーム ポリシーの変更の監査
 
 Audit events generated by changes to the Windows Filtering Platform (WFP), such as the following:
 * IPsec services status.
@@ -852,7 +852,7 @@ Recommended settings: `Unknown, Needs testing.`
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
-### MPSSVC Rule-Level Policy Change
+### MPSSVC ルールレベル ポリシーの変更の監査
 
 Audit MPSSVC Rule-Level Policy Change determines whether the operating system generates audit events when changes are made to policy rules for the Microsoft Protection Service (MPSSVC.exe).
 The Microsoft Protection Service, which is used by Windows Firewall, is an integral part of the computer’s threat protection against malware. The tracked activities include:
@@ -890,7 +890,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 There are no sigma detection rules for this sub-category at the moment.
 
-### Other Policy Change Events
+### その他のポリシー変更イベントの監査
 
 Audit Other Policy Change Events contains events about EFS Data Recovery Agent policy changes, changes in Windows Filtering Platform filter, status on Security policy settings updates for local Group Policy settings, Central Access Policy changes, and detailed troubleshooting events for Cryptographic Next Generation (CNG) operations.
 
@@ -902,9 +902,9 @@ Recommended settings: ACSC recommends `Success and Failure`, however, this resul
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
-## Privilege Use
+## 特権の使用
 
-### Non Sensitive Use Events
+### 重要でない特権の使用の監査
 
 Audit Non-Sensitive Privilege Use contains events that show usage of non-sensitive privileges:
 * Access Credential Manager as a trusted caller
@@ -943,7 +943,7 @@ Recommended settings: `No Auditing`
 
 **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
-### Sensitive Privilege Use
+### 重要な特権の使用の監査
 
 Audit Sensitive Privilege Use contains events that show the usage of sensitive privileges:
 * Act as part of the operating system
@@ -981,9 +981,9 @@ Notable Sigma rules:
 
 **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
-## System
+## システム
 
-### Other System Events
+### その他のシステム イベントの監査
 
 Audit Other System Events contains Windows Firewall Service and Windows Firewall driver start and stop events, failure events for these services and Windows Firewall Service policy processing failures:
 * Startup and shutdown of the Windows Firewall service and driver.
@@ -999,7 +999,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
-### Security State Change
+### セキュリティ状態の変更の監査
 
 Audit Security State Change contains Windows startup, recovery, and shutdown events, and information about changes in system time.
 
@@ -1018,7 +1018,7 @@ Notable Sigma rule:
 | 4616 | システム時刻が変更されました。 | 1 | |
 | 4621 | 管理者が CrashOnAuditFail からシステムを復旧しました。 | 0 | |
 
-### Security System Extension
+### セキュリティ システムの拡張の監査
 
 This policy setting allows you to audit events related to security system extensions or services such as the following:
 * A security system extension, such as an authentication, notification, or security package is loaded and is registered with the Local Security Authority (LSA). It is used to authenticate logon attempts, submit logon requests, and any account or password changes. Examples of security system extensions are Kerberos and NTLM.
@@ -1048,7 +1048,7 @@ Notable Sigma rule:
 | 4622 | セキュリティ パッケージがローカル セキュリティ機関によって読み込まれました。 | 0 | |
 | 4697 | サービスがシステムにインストールされました。 | 20 | This is the most important event in this sub-category. |
 
-### System Integrity
+### システムの整合性の監査
 
 Audit System Integrity determines whether the operating system audits events that violate the integrity of the security subsystem:
 * Audited events are lost due to a failure of the auditing system.
@@ -1082,6 +1082,6 @@ Currently, there are no sigma rules for this sub-category.
 | 6281 | コードの整合性によって、イメージ ファイルのページ ハッシュが有効でないと判断されました。 このファイルはページ ハッシュを使用せず正しくない方法で署名されたか、無許可の変更によって破損した可能性があります。無効なハッシュはディスク デバイス エラーの可能性を示している場合もあります。 | 0 |  |
 | 6410 | コードの整合性によって、ファイルがプロセスに読み込むためのセキュリティ要件を満たしていないと判断されました。 | 0 |  |
 
-## Global Object Access Auditing
+## グローバル オブジェクト アクセスの監査
 
 You can configure all `File system` and `Registry` access to be recorded here but it is not recommended due to the very high amount of logs you will generate.
