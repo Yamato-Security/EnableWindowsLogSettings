@@ -11,8 +11,8 @@
 # 目次
 
 - [目次](#目次)
-- [Notes about configuring Security log auditing](#notes-about-configuring-security-log-auditing)
-- [Security Event Log Categories and Event IDs](#security-event-log-categories-and-event-ids)
+- [セキュリティ ログ監査の設定に関する注意事項](#セキュリティ-ログ監査の設定に関する注意事項)
+- [セキュリティイベントログのカテゴリーとEvent ID](#セキュリティイベントログのカテゴリーとevent-id)
   - [アカウント ログオン](#アカウント-ログオン)
     - [資格情報の確認の監査](#資格情報の確認の監査)
     - [Kerberos 認証サービスの監査](#kerberos-認証サービスの監査)
@@ -67,7 +67,7 @@
     - [システムの整合性の監査](#システムの整合性の監査)
   - [グローバル オブジェクト アクセスの監査](#グローバル-オブジェクト-アクセスの監査)
 
-# Notes about configuring Security log auditing
+# セキュリティ ログ監査の設定に関する注意事項
 
 * You can configure the Security log audit policies with Group Policy at an organizational level, with the Local Security Policy Editor (`gpedit.msc`) for standalone machines, or use scripts to configure them with the built-in `auditpol` command.
 * You should always enable Security log auditing at the sub-category level (`コンピューターの設定\Windowsの設定\Securityの設定\監査ポリシー詳細な構成\システム監査ポリシー` in Group Policy) instead of the broad category level as the latter will usually enable too many events and will override any granular settings you made at the sub-category level.
@@ -75,7 +75,7 @@
 * You cannot turn on or off specific event IDs, only sub-categories at the most granular level. This is unfortunate as sometimes there will be a couple of noisy event IDs that you can not disable unless you disable the entire sub-category.
 * The number of sigma rules were taken at 2022/09/24. Be aware that even if there are few or no sigma rules for a certain event, it does not mean that the event is not important.
 
-# Security Event Log Categories and Event IDs
+# セキュリティイベントログのカテゴリーとEvent ID
 
 ## アカウント ログオン
 
@@ -506,7 +506,7 @@ Notable Sigma rules:
 
 ### 詳細なファイル共有の監査
 
-ボリューム: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
+ボリューム: ファイルサーバーやドメインコントローラーではとても高、 ただし、誰がどのファイルにアクセスしているかを追跡したり、さまざまなラテラルムーブメントを検出させる場合には必要
 
 規定値: `未構成`
 
@@ -900,7 +900,7 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 
 規定値: `未構成`
 
-推奨値: ACSC recommends `成功と失敗`, however, this results in a lot of noise of `5447 (Windows フィルターリング プラットフォームのフィルターが変更されました。)` events being generated.
+推奨値: ACSCでは`成功と失敗`推奨、 ただしこの設定により、大量のノイズとなる`5447 (Windows フィルターリング プラットフォームのフィルターが変更されました。)` イベントが生成される
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
