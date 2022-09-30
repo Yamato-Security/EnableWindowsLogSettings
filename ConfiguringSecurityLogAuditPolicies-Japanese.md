@@ -70,7 +70,7 @@
 # Notes about configuring Security log auditing
 
 * You can configure the Security log audit policies with Group Policy at an organizational level, with the Local Security Policy Editor (`gpedit.msc`) for standalone machines, or use scripts to configure them with the built-in `auditpol` command.
-* You should always enable Security log auditing at the sub-category level (`Computer Configuration\Windows Settings\Security Settings\Advanced security audit policy settings\System Audit Policies` in Group Policy) instead of the broad category level as the latter will usually enable too many events and will override any granular settings you made at the sub-category level.
+* You should always enable Security log auditing at the sub-category level (`コンピューターの設定\Windowsの設定\Securityの設定\監査ポリシー詳細な構成\システム監査ポリシー` in Group Policy) instead of the broad category level as the latter will usually enable too many events and will override any granular settings you made at the sub-category level.
 * There are sub-categories and event IDs that are in this documentation but not actually used or are not needed for investigations. Only the important ones that you should enable are listed.
 * You cannot turn on or off specific event IDs, only sub-categories at the most granular level. This is unfortunate as sometimes there will be a couple of noisy event IDs that you can not disable unless you disable the entire sub-category.
 * The number of sigma rules were taken at 2022/09/24. Be aware that even if there are few or no sigma rules for a certain event, it does not mean that the event is not important.
@@ -81,11 +81,11 @@
 
 ### 資格情報の確認の監査
 
-Volume: Depends on NTLM usage. Could be high on DCs and low on clients and servers.
+ボリューム: NTLM の使用状況に依存. おそらくドメインコントローラーでは高、クライアントとサーバでは低.
 
-Default settings: `Client OS: No Auditing` | `Server OS: Success`
+規定値: `クライアントOS: 未構成` | `サーバーOS: 成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rules:
 * `Metasploit SMB Authentication`: Detect when someone is running Metasploit on your network.
@@ -101,11 +101,11 @@ Notable Sigma rules:
 
 **Note: Enable only for Domain Controllers**
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `Client OS: No Auditing` | `Server OS: Success`
+規定値: `クライアントOS: 未構成` | `サーバーOS: 成功`
 
-Recommended settings: `Client OS: No Auditing` | `Server OS: Success and Failure`
+推奨値: `クライアントOS: 未構成` | `サーバーOS: 成功と失敗`
 
 Notable Sigma rules:
 * `(4768) PetitPotam Suspicious Kerberos TGT Request`
@@ -123,11 +123,11 @@ Notable Sigma rules:
 
 **Note: Enable only for Domain Controllers**
 
-Volume: High
+ボリューム: 高
 
-Default settings: `Client OS: No Auditing` | `Server OS: Success`
+規定値: `クライアントOS: 未構成` | `サーバーOS: 成功`
 
-Recommended settings: `Client OS: No Auditing` | `Server OS: Success and Failure`
+推奨値: `クライアントOS: 未構成` | `サーバーOS: 成功と失敗`
 
 Notable Sigma rule:
 * `(4769) Suspicious Kerberos RC4 Ticket Encryption`: Detects service ticket requests using RC4 encryption. This could be for Kerberoasting (password cracking) or just older systems using legacy encryption.
@@ -142,11 +142,11 @@ Notable Sigma rule:
 
 ### コンピューター アカウントの管理の監査
 
-Volume: Low on DCs.
+ボリューム: ドメインコントローラーでは低
 
-Default settings: `Client OS: No Auditing` | `Server OS: Success Only`
+規定値: `クライアントOS: 未構成` | `サーバーOS: 成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `Possible DC Shadow`: Detects DCShadow via create new SPN.
@@ -159,11 +159,11 @@ Notable Sigma rule:
 
 ### その他のアカウント管理イベントの監査
 
-Volume: Typcially low.
+ボリューム: 通常は低.
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -180,11 +180,11 @@ A global group is a group that can be used in its own domain, in member servers 
 
 A universal group is a security or distribution group that contains users, groups, and computers from any domain in its forest as members. You can give universal security groups rights and permissions on resources in any domain in the forest.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rules:
 * `User Added to Local Administrators`
@@ -211,11 +211,11 @@ Notable Sigma rules:
 
 ### ユーザー アカウントの管理の監査
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rules:
 * `Hidden Local User Creation`: Detects hidden user accounts most likely used as a backdoor account.
@@ -254,11 +254,11 @@ Notable Sigma rules:
 
 This is important if you want to track physical attacks (Rubber Ducky, etc..) or someone exfiltrating data via USB devices.
 
-Volume: Depends but typically low.
+ボリューム: 通常は低
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `(6416) External Disk Drive Or USB Storage Device`
@@ -275,15 +275,15 @@ Notable Sigma rule:
 
 ### プロセス作成の監査
 
-Note: A seperate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration\Windows Settings\Administrative Templates\System\Audit Process Creation\Include command line in process creation events` in Group Policy.
+Note: A seperate setting needs to be enabled to log command line information which is extremely important. `コンピューターの設定\Windowsの設定\管理用テンプレート\システム\プロセス作成の監査\プロセス作成イベントにコマンドラインを含める` in Group Policy.
 
 If you do not have Sysmon installed and configured to monitor Process Creation, then you should enable this as about half os Sigma's detection rules rely on process creation with command line options enabled.
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure` if sysmon is not configured.
+推奨値: `成功と失敗` Sysmonを設定していない場合
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -294,11 +294,11 @@ Recommended settings: `Success and Failure` if sysmon is not configured.
 
 You may want to keep this off to save file space.
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `No Auditing` unless you want to track the lifespan of processes.
+推奨値: `未構成` プロセスを追跡したい場合は除く
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -306,11 +306,11 @@ Recommended settings: `No Auditing` unless you want to track the lifespan of pro
 
 ### RPC (Remote Procedure Call) イベントの監査
 
-Volume: High on RPC servers.
+ボリューム: RPCサーバでは高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Unknown. Needs testing.`
+推奨値: `不明。要テスト`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -318,11 +318,11 @@ Recommended settings: `Unknown. Needs testing.`
 
 ### トークン権限の調整を監査する
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Unknown. Needs testing.`
+推奨値: `不明。要テスト`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -334,11 +334,11 @@ Recommended settings: `Unknown. Needs testing.`
 
 ### ディレクトリ サービス アクセスの監査
 
-Volume: High on servers running AD DS role services.
+ボリューム: AD DSロールサービス実行中のサーバーでは高
 
-Default settings: `Client OS: No Auditing` | `Server OS: Success`
+規定値: `クライアントOS: 未構成` | `サーバーOS: 成功`
 
-Recommended settings: `Client OS: No Auditing` | `ADDS Server: Success and Failure`
+推奨値: `クライアントOS: 未構成` | `ADDSサーバー: 成功と失敗`
 
 Notable Sigma rules:
 * `AD Object WriteDAC Access`
@@ -354,11 +354,11 @@ Notable Sigma rules:
 
 ### ディレクトリ サービスの変更の監査
 
-Volume: High on DCs.
+ボリューム: ドメインコントローラーでは高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Client OS: No Auditing` | `ADDS Server: Success and Failure`
+推奨値: `クライアントOS: 未構成` | `ADDSサーバー: 成功と失敗`
 
 Notable Sigma rules:
 * `Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
@@ -378,11 +378,11 @@ Notable Sigma rules:
 
 ### アカウント ロックアウトの監査
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rules:
 * `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: Detects scans for the BlueKeep vulnerability.
@@ -396,11 +396,12 @@ Notable Sigma rules:
 
 ### グループ メンバーシップの監査
 
-Volume: Adds an extra log about a user's group membership to every logon.
+ボリューム: 
+ユーザーのグループ メンバーシップに関するログをログオンごとに追加
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: ACSC recommends `Success and Failure` but this is probably not needed if you can easily lookup what groups a user belongs to.
+推奨値: ACSCは`成功と失敗`を推奨。ただし、ユーザーが属するグループを簡単に検索できる場合、この設定はおそらく不要
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -408,11 +409,11 @@ Recommended settings: ACSC recommends `Success and Failure` but this is probably
 
 ### ログオフの監査
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success`
+推奨値: `成功`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -421,11 +422,11 @@ Recommended settings: `Success`
 
 ### ログオンの監査
 
-Volume: Low on clients, medium on DCs or network servers.
+ボリューム: クライアントでは低、ドメインコントローラーやネットワークサーバでは中
 
-Default settings: `Client OS: Success` | `Server OS: Success and Failure`
+規定値: `クライアントOS: 成功` | `サーバーOS: 成功と失敗`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rules:
 * `Admin User Remote Logon`
@@ -446,11 +447,11 @@ Notable Sigma rules:
 
 ### その他のログオン/ログオフ イベントの監査
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -469,11 +470,12 @@ Recommended settings: `Success and Failure`
 
 "Special groups" and "Special Privileges" can be thought of as Administrator groups or privileges.
 
-Volume: Low on client. Medium on DC or network servers.
+ボリューム: クライアントでは低。ドメインコントローラーやネットワークサーバでは中
 
-Default settings: `Success`
 
-Recommended settings: `Success and Failure`
+規定値: `成功`
+
+推奨値: `成功と失敗`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -486,11 +488,11 @@ Recommended settings: `Success and Failure`
 
 **Note: Enable only for servers providing AD CS role services.**
 
-Volume: Low to medium.
+ボリューム: 低から中
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure` for AD CS role servers.
+推奨値: `成功と失敗`(AD CS ロールサーバー).
 
 Notable Sigma rules:
 * `ADCS Certificate Template Configuration Vulnerability with Risky EKU`
@@ -504,11 +506,11 @@ Notable Sigma rules:
 
 ### 詳細なファイル共有の監査
 
-Volume: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
+ボリューム: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `No Auditing` due to the high noise level. Enable if you can though.
+推奨値: `未構成` ノイズが多くなるが、可能であれば有効
 
 Notable Sigma rules:
 * `Remote Task Creation via ATSVC Named Pipe`
@@ -526,11 +528,11 @@ Notable Sigma rules:
 
 ### ファイル共有の監査
 
-Volume: High for file servers and DCs.
+ボリューム: ファイルサーバーやドメインコントローラーでは高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `(5140) Access to ADMIN$ Share`
@@ -549,11 +551,11 @@ You need to seperately configure audit permissions on files and/or folders in or
 For example, by right-clicking, opening Properties, Security tab, Advanced, Auditing tab and then adding a Principal and what permissions to monitor.
 It is recommended only to monitor access to sensitive files as there will be too much noise if too many files are enabled for logging.
 
-Volume: Depends on SACL rules.
+ボリューム: SACLルールに依存
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: Enable SACLs for sensitive files.
+推奨値: 機密ファイルの SACL を有効にする
 
 Notable Sigma rules:
 * `(4663) ISO Image Mount`
@@ -577,11 +579,11 @@ Notable Sigma rules:
 
 Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and network connections.
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure` if you have enough space and are not monitoring network connections with sysmon. This should cause a high amount of events though.
+推奨値: `成功と失敗` 十分なディスクスペースがあり、Sysmonでネットワーク接続を監視していない場合。 ただし、この設定により大量のイベントが発生します。
 
 Notable Sigma rules:
 * `(5156) Enumeration via the Global Catalog`: To detect Bloodhound and similar tools.
@@ -603,11 +605,11 @@ Notable Sigma rules:
 
 ### フィルタリング プラットフォーム パケットの破棄の監査
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure` if you have enough space and are not monitoring network connections with sysmon. This should cause a high amount of events though.
+推奨値: `成功と失敗` 十分なディスクスペースがあり、Sysmonでネットワーク接続を監視していない場合。 ただし、この設定により大量のイベントが発生します
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -616,13 +618,13 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 
 ### カーネルオブジェクトの監査
 
-Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options\Audit: Audit the access of global system objects`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
+Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `コンピューターの構成\Windowsの設定\セキュリティの設定\ローカルポリシー\セキュリティ オプション\監査: グローバル システム オブジェクトへのアクセスを監査する`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
 
-Volume: High if auditing access of global system objects is enabled.
+ボリューム: グローバル システム オブジェクトへのアクセスを監査するが有効な場合、高 
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: ACSC recommends `Success and Failure`, however, I have encountered a high amount of `4663: Object Access` events when enabling this.
+推奨値: ACSCでは`成功と失敗`が推奨。しかし、 この設定により、大量の `4663: オブジェクトへのアクセスが試行されました。` イベントが発生します。
 
 Notable Sigma rules:
 * `(4656) Generic Password Dumper Activity on LSASS`
@@ -641,11 +643,11 @@ Notable Sigma rules:
 
 It is important to enable as malware will often abuse tasks for persistence and lateral movement.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rules:
 * `(4698) Rare Schtasks Creations`: Detects rare scheduled tasks creations that only appear a few times per time frame and could reveal password dumpers, backdoor installs or other types of malicious code.
@@ -669,11 +671,11 @@ Notable Sigma rules:
 
 Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degredation.
 
-Volume: Depends on SACLs.
+ボリューム: SACLの設定に依存する
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: Set SACLs for only the registry keys that you want to monitor.
+推奨値: 監視するレジストリ キーのみに SACL を設定する
 
 Notable Sigma rules:
 * `(4656) SAM Registry Hive Handle Request`: Attackers will try to access the SAM registry hive to obtain password hashes.
@@ -708,11 +710,11 @@ Notable Sigma rules:
 This logs all file access to removable storage regardless of SACL settings.
 You may want to enable to track employees exfiltrating data via USB storage.
 
-Volume: Depends on how much removable storage is used.
+ボリューム: リムーバブル ストレージの使用量に依存
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure` if you want to monitor external device usage.
+推奨値: `成功と失敗` 外部デバイスの使用状況を監視したい場合
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -726,11 +728,11 @@ Recommended settings: `Success and Failure` if you want to monitor external devi
 
 This will log attempts to access Security Account Manager (SAM) objects, such as user and computer accounts, groups, security descriptors, etc...
 
-Volume: High volume of events on Domain Controllers.
+ボリューム: ドメインコントローラーでは高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure` if you can but may cause too high volume of noise so should be tested beforehand.
+推奨値: `成功と失敗` ノイズが多すぎる場合、事前にテストが必要
 
 Notable Sigma rules:
 * `(4661) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
@@ -753,11 +755,11 @@ Changes to audit policy that are audited include:
 * Changing audit settings on an object (for example, modifying the system access control list (SACL) for a file or registry key).
 * Changing anything in the Special Groups list.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `(4719) Disabling Windows Event Auditing`: Detects anti-forensics via local GPO policy.
@@ -790,11 +792,11 @@ Changes made to authentication policy include:
 
 This setting is useful for tracking changes in domain-level and forest-level trust and privileges that are granted to user accounts or groups.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `(4706) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
@@ -821,11 +823,11 @@ Audits assignment and removal of user rights in user right policies, changes in 
 You can get information related to changes in user rights policies, or changes of resource attributes or Central Access Policy applied to file system objects.
 However, if you are using an application or system service that makes changes to system privileges through the AdjustPrivilegesToken API, it is not recommended to enable due to the high volume of events.
 
-Volume: Medium to High.
+ボリューム: 中から高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Unknown. Needs testing.`
+推奨値: `不明。要テスト`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -844,11 +846,11 @@ Audit events generated by changes to the Windows Filtering Platform (WFP), such 
 * Changes to Windows Filtering Platform Base Filtering Engine policy settings.
 * Changes to WFP providers and engine.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Unknown, Needs testing.`
+推奨値: `不明。要テスト`
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
@@ -865,11 +867,11 @@ The Microsoft Protection Service, which is used by Windows Firewall, is an integ
 
 Changes to firewall rules are important for understanding the security state of the computer and how well it is protected against network attacks.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Unknown. Needs testing.`
+推奨値: `不明。要テスト`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -894,11 +896,11 @@ There are no sigma detection rules for this sub-category at the moment.
 
 Audit Other Policy Change Events contains events about EFS Data Recovery Agent policy changes, changes in Windows Filtering Platform filter, status on Security policy settings updates for local Group Policy settings, Central Access Policy changes, and detailed troubleshooting events for Cryptographic Next Generation (CNG) operations.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: ACSC recommends `Success and Failure`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.
+推奨値: ACSC recommends `成功と失敗`, however, this results in a lot of noise of `5447 (Windows フィルターリング プラットフォームのフィルターが変更されました。)` events being generated.
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
@@ -929,11 +931,11 @@ Audit Non-Sensitive Privilege Use contains events that show usage of non-sensiti
 * Shut down the system
 * Synchronize directory service data
 
-Volume: Very high.
+ボリューム: とても高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `No Auditing`
+推奨値: `未構成`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -960,13 +962,13 @@ Audit Sensitive Privilege Use contains events that show the usage of sensitive p
 * Replace a process-level token
 * Take ownership of files or other objects
 
-The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options\Audit: Audit the access of global system objects` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
+The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `コンピューターの設定\Windowsの設定\Securityの設定\ローカルポリシー\セキュリティ オプション\監査: グローバル システム オブジェクトへのアクセスを監査する` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
 
-Volume: High.
+ボリューム: 高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure. However, this may be too noisy.`
+推奨値: `成功と失敗. ただし、ノイズが多すぎる可能性があります.`
 
 Notable Sigma rules:
 * `(4673) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
@@ -991,11 +993,11 @@ Audit Other System Events contains Windows Firewall Service and Windows Firewall
 * Cryptography key file and migration operations.
 * BranchCache events.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success and Failure`
+規定値: `成功と失敗`
 
-Recommended settings: `Unknown. Needs testing.`
+推奨値: `不明。要テスト`
 
 There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
@@ -1003,11 +1005,11 @@ There are too many events that are enabled with this sub-category to list up and
 
 Audit Security State Change contains Windows startup, recovery, and shutdown events, and information about changes in system time.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Success`
+規定値: `成功`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `(4616) Unauthorized System Time Modification`: Detect scenarios where a potentially unauthorized application or user is modifying the system time.
@@ -1024,11 +1026,11 @@ This policy setting allows you to audit events related to security system extens
 * A security system extension, such as an authentication, notification, or security package is loaded and is registered with the Local Security Authority (LSA). It is used to authenticate logon attempts, submit logon requests, and any account or password changes. Examples of security system extensions are Kerberos and NTLM.
 * A service is installed and registered with the Service Control Manager. The audit log contains information about the service name, binary, type, start type, and service account.
 
-Volume: Low, but more on DCs.
+ボリューム: 低、ドメインコントローラーでは高
 
-Default settings: `No Auditing`
+規定値: `未構成`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Notable Sigma rule:
 * `(4611) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
@@ -1059,11 +1061,11 @@ Audit System Integrity determines whether the operating system audits events tha
 
 According to Microsoft, violations of security subsystem integrity are critical and could indicate a potential security attack.
 
-Volume: Low.
+ボリューム: 低
 
-Default settings: `Sucess, Failure`
+規定値: `成功と失敗`
 
-Recommended settings: `Success and Failure`
+推奨値: `成功と失敗`
 
 Currently, there are no sigma rules for this sub-category.
 
