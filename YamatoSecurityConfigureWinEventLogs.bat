@@ -84,6 +84,8 @@ auditpol /set /category:{0CCE9235-69AE-11D9-BED3-505054503030} /success:enable /
 auditpol /set /subcategory:{0cce9248-69ae-11d9-bed3-505054503030} /success:enable /failure:enable
 :::: Process Creation
 auditpol /set /subcategory:{0CCE922B-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+:::: Enable command line auditing (Detailed Tracking)
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit /v ProcessCreationIncludeCmdLine_Enabled /f /t REG_DWORD /d 1
 :::: Process Termination (default: disabled)
 :: auditpol /set /subcategory:{0CCE922C-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: RPC Events
