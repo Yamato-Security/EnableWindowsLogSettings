@@ -1,30 +1,40 @@
 <div align="center">
  <h1>
-    Yamato Security's ultimate guide to configuring and monitoring Windows event logs for Sigma users
+    大和セキュリティによる、SigmaユーザのためのWindowsイベントログ設定と監視ガイド
  </h1>
  [<a href="README.md">English</a>] | [<b>日本語</b>]
 </div>
 <p>
 
-注意: 現在、日本語版はできていません。和訳の手伝いしたい方を募集しています！
+**注意: 現在、日本語版はできていません。和訳の手伝いしたい方を募集しています！**
 
-This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that sigma rules have something to detect.
+これは、Windowsのイベントログの設定と監視に関するガイドで、Sigmaルールが何かを検出するために、適切なログを有効にすることに重点を置いています。
 
-## Table of Contents
+# TLDR
 
-- [Author](#author)
+* Windowsのデフォルトの監査設定では[sigma](https://github.com/SigmaHQ/sigma)ルールの10~20%程度しか利用できません。
+* Windowsのログが有効になっていても、デフォルトではログの最大サイズがたった1〜20MBなので、すぐに証拠が上書きされてしまう可能性が高いです。
+* Sigmaルールの約75%まで利用可能にし、必要なだけログを保持するように[YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat)の導入で適切な監査設定を行いましょう。
+    - **注意: 必要に応じてスクリプトをカスタマイズし、本番環境で導入する前に必ずテストしてください！**
+* 100%のSigmaルールを利用したい方は、[sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)を導入する必要があります。（お勧め！）
+
+## 目次
+
+- [TLDR](#tldr)
+  - [目次](#目次)
+- [作者](#作者)
 - [Acknowledgements](#acknowledgements)
 - [デフォルトの Windows ログ設定の問題](#デフォルトの-windows-ログ設定の問題)
-- [警告: 自己責任で使用してください](#警告-自己責任で使用してください)
+- [注意: 自己責任で使用してください](#注意-自己責任で使用してください)
 - [重要な Windowsイベントログ](#重要な-windowsイベントログ)
   - [Sigmaのトップログソース](#sigmaのトップログソース)
     - [上位のSigmaログソース](#上位のsigmaログソース)
     - [上位のSecurityイベンドID](#上位のsecurityイベンドid)
 - [最大ファイル サイズの増加](#最大ファイル-サイズの増加)
   - [オプション 1: イベント ビューア(手動)](#オプション-1-イベント-ビューア手動)
-  - [オプション 2: Windows ビルトインツール](#オプション-2-windows-ビルトインツール)
+  - [オプション 2: Windowsビルトインツール](#オプション-2-windowsビルトインツール)
   - [オプション 3: PowerShell](#オプション-3-powershell)
-  - [オプション 4: グループ ポリシー](#オプション-4-グループ-ポリシー)
+  - [オプション 4: グループポリシー](#オプション-4-グループポリシー)
 - [ログ設定を改善するスクリプト](#ログ設定を改善するスクリプト)
 - [ログ設定の改善](#ログ設定の改善)
   - [Sysmonログ (Sigmaルール1382件)](#sysmonログ-sigmaルール1382件)
@@ -42,7 +52,7 @@ This is yet another guide on configuring and monitoring Windows event logs with 
       - [Enabling Transcription logging](#enabling-transcription-logging)
         - [オプション 1: グループポリシーによる有効化](#オプション-1-グループポリシーによる有効化-2)
         - [オプション 2: レジストリによる有効化](#オプション-2-レジストリによる有効化-2)
-    - [References](#references)
+    - [参考記事](#参考記事)
   - [Systemログ (Sigmaルール 55件)](#systemログ-sigmaルール-55件)
   - [Applicationログ (Sigmaルール 16件)](#applicationログ-sigmaルール-16件)
   - [Windows Defender Operationalログ (Sigmaルール 10件)](#windows-defender-operationalログ-sigmaルール-10件)
@@ -62,27 +72,28 @@ This is yet another guide on configuring and monitoring Windows event logs with 
   - [TerminalServices-LocalSessionManager Operationalログ (Sigmaルール 1件)](#terminalservices-localsessionmanager-operationalログ-sigmaルール-1件)
   - [TaskScheduler Operationalログ (Sigmaルール 1件)](#taskscheduler-operationalログ-sigmaルール-1件)
 
-# Author
+# 作者
  
-Zach Mathis ([@yamatosecurity](https://twitter.com/yamatosecurity)). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor.
+田中ザック ([@yamatosecurity](https://twitter.com/yamatosecurity))。より多くの研究とテストを行い、(検知ルールとドキュメンテーションの)改善の余地があるため、定期的に更新していく予定です。PRは歓迎され、喜んでコントリビューターとして追加させていただきます。
 
-If you find any of this useful, please give a star on GitHub as it will probably help motivate me to continue updating this.
+もし、このガイドが役に立つのであれば、GitHubで星を付けてください。更新し続けるモチベーションが上がります。
 
 # Acknowledgements
 
-Most of the information comes from Microsoft's [Advanced security auditing FAQ](https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/advanced-security-auditing-faq), [sigma](https://github.com/SigmaHQ/sigma) rules, the [ACSC guide](https://www.cyber.gov.au/acsc/view-all-content/publications/windows-event-logging-and-forwarding) and my own research/testing. I would like to thank the [sigma community](https://github.com/SigmaHQ/sigma/graphs/contributors) in particular for making threat detection open source and free for the benefit of all of the defenders out there.
+多くの情報はマイクロソフトの[詳細なセキュリティ監査に関するFAQ](https://learn.microsoft.com/ja-jp/windows/security/threat-protection/auditing/advanced-security-auditing-faq), [sigma](https://github.com/SigmaHQ/sigma)ルール, [ACSCのガイド](https://www.cyber.gov.au/acsc/view-all-content/publications/windows-event-logging-and-forwarding)、そして私自身の調査/テストから得たものです。特に[Sigmaコミュニティ](https://github.com/SigmaHQ/sigma/graphs/contributors)には、世の中のすべての防衛者のために脅威検知能力をオープンソースかつフリーにしてくれたことに感謝しています。
 
 # デフォルトの Windows ログ設定の問題
 
-既定では、Windows は悪意のあるアクティビティの検出と、フォレンジック調査の実行に必要な多くのイベントをログに記録しません。また、イベント ファイルのデフォルトの最大サイズは、従来のイベント ログ (`Security`、`System`、`Application`) ではわずか 20 MB、PowrShell では 15 MB、その他のほとんどすべてのログではわずか 1 MB であるため、証拠が上書きされる可能性が高くなります。システム管理者が Windows マシンを簡単に構成できるように、このリポジトリにはシンプルな PowerShell および バッチスクリプトが用意されており、インシデントが発生したときに必要なログを取得できます。大規模なネットワークの場合は、このドキュメントを参照として使用し、グループポリシーやInTuneを使用してエンドポイントを構成することをお勧めします。
+既定では、Windows は悪意のあるアクティビティの検出と、フォレンジック調査の実行に必要な多くのイベントをログに記録しません。また、イベント ファイルのデフォルトの最大サイズは、従来のイベントログ(`Security`、`System`、`Application`)ではわずか20MB、PowrShellでは15MB、その他のほとんどすべてのログではわずか1MBであるため、証拠が上書きされる可能性が高くなります。システム管理者が Windows マシンを簡単に構成できるように、このリポジトリにはシンプルな PowerShell および バッチスクリプトが用意されており、インシデントが発生したときに必要なログを取得できます。大規模なネットワークの場合は、このドキュメントを参照として使用し、グループポリシーやInTuneを使用してエンドポイントを構成することをお勧めします。
 
-# 警告: 自己責任で使用してください
+# 注意: 自己責任で使用してください
 
 あまりにも多くのログを有効にすることによる悪影響や、このリポジトリ内の何かの正確性について、一切の責任を負いません。
 本番環境にロールアウトする前に、テストマシンでシステムに加えた変更を、理解しテストすることは、ユーザの責任です。
-環境を模倣したテスト マシンで、少なくとも 1 週間はできるだけ多くのログ記録を有効にしてから、ノイズが多すぎるイベントがないか、必要なイベントが生成されているかどうかを確認することをお勧めします。
+環境を模倣したテスト マシンで、少なくとも1週間はできるだけ多くのログ記録を有効にしてから、ノイズが多すぎるイベントがないか、必要なイベントが生成されているかどうかを確認することをお勧めします。
 
-Hayabusaのイベント ID metrics コマンドを使用して、evtxファイル内のイベント ID の総数と割合を表示できます。
+HayabusaのイベントID集計機能を使用して、evtxファイル内のイベントIDの総数と割合を表示できます。
+
 例：`hayabusa.exe -M -f path/to/Security.evtx`
 
 # 重要な Windowsイベントログ
@@ -96,7 +107,7 @@ Sysmon をインストールできない場合は、Windows のbuilt-in機能で
 残念ながらSecurity イベントID4688は、Sysmonプロセス作成ログほど詳細な情報は提供されません。
 * 2 番目に重要なイベント ログは、適切に調整されたセキュリティログです。
 * 3 番目に重要なのはおそらく(攻撃者は PowerShell を悪用することが多いため)、PowerShell モジュールのログ記録と ScriptBlock のログ記録です。
-* 4 番目は、おそらく他のすべての Sysmon イベントです。
+* 4 番目は、おそらく他のすべてのSysmonイベントです。
 * これらの他に、「アプリケーションとサービス ログ」フォルダーの下には、非常に重要な他の多くのログがあります。
 セキュリティ緩和、Windows Defender、セキュリティが強化された Windows ファイアウォール、WMI アクティビティなど。
 
@@ -104,7 +115,7 @@ Sysmon をインストールできない場合は、Windows のbuilt-in機能で
 
 ![WindowsEventsWithSigmaRules](WindowsEventsWithSigmaRules.png)
 
-デフォルトの Windows 監査設定で使用できるSigma ルールは、約 20% 未満です。
+デフォルトのWindows監査設定で使用できるSigmaルールは、約10〜20%です。
 
 ### 上位のSigmaログソース
 
@@ -120,18 +131,18 @@ Sysmon をインストールできない場合は、Windows のbuilt-in機能で
 
 これを大規模に行うのは現実的ではありませんが、ログの有効、無効を変更し、最大ファイル サイズを確認および構成する最も簡単な方法は、イベント ビューアでログを右クリックして`プロパティ`を開くことです。
 
-## オプション 2: Windows ビルトインツール
+## オプション 2: Windowsビルトインツール
 
 標準搭載のwevtutilコマンドを使用できます。
 
-例: `wevtutil sl Security /ms:1073741824` セキュリティログの最大ファイルサイズを1GBに増やします。
+例: `wevtutil sl Security /ms:1073741824` (セキュリティログの最大ファイルサイズを1GBに増やす)
 
 ## オプション 3: PowerShell
 
-## オプション 4: グループ ポリシー
+## オプション 4: グループポリシー
 
 `Security`、`System`、`Application`などの従来のイベント ログの最大ファイル サイズを増やすのは簡単ですが、
-残念ながら、他のイベント ログの最大ファイル サイズを変更するには、Administratvie テンプレートをインストールするか、レジストリを直接変更する必要があります。
+残念ながら、他のイベント ログの最大ファイル サイズを変更するには、管理者テンプレートをインストールするか、レジストリを直接変更する必要があります。
 起動時に`.bat`スクリプトを使用してファイル サイズを増やす方が簡単な場合があります。
 
 # ログ設定を改善するスクリプト
@@ -151,8 +162,8 @@ sysmonをインストールして設定することは、Windows エンドポイ
 これはそれ自体が大きなトピックであるため、現時点ではこのドキュメントの範囲外です。次のリソースを確認してください。
 TrustedSecのSysmonコミュニティガイド: [https://github.com/trustedsec/SysmonCommunityGuide](https://github.com/trustedsec/SysmonCommunityGuide)
 Sysmon Modular: [https://github.com/olafhartong/sysmon-modular](https://github.com/olafhartong/sysmon-modular)
-Florian Roth's updated fork of the Swift On Security's sysmon config file: [https://github.com/Neo23x0/sysmon-config](https://github.com/Neo23x0/sysmon-config)
-Ion-storms' updated fork of the Swift On Security's sysmon config file: [https://github.com/ion-storm/sysmon-config](https://github.com/ion-storm/sysmon-config)
+Florian Roth氏によるSwift On SecurityのSysmon設定ファイルを更新しているフォーク: [https://github.com/Neo23x0/sysmon-config](https://github.com/Neo23x0/sysmon-config)
+Ion-storm氏によるSwift On SecurityのSysmon設定ファイルを更新しているフォーク: [https://github.com/ion-storm/sysmon-config](https://github.com/ion-storm/sysmon-config)
 
 
 ## Securityログ (Sigmaルール 1045件(process creationルール903件 + その他ルール142件))
@@ -169,20 +180,21 @@ Securityログの設定が最も複雑なため、別のドキュメントを作
 
 ### モジュールログ (Sigmaルール 30件)
 
-Turning on module logging will enable event ID `4103`. 
-Module logging has the advantage that it can run on older OSes and versions of PowerShell: PowerShell 3.0 (Win 7+).
-Another benefit is that it logs both the PowerShell command executed as well as the results.
-The disadvantage is that it will create an extremely high number of events.
-For example, if an attacker runs Mimikatz, it will create 7 MB of logs with over 2000 events! 
+モジュールログを有効にすると、イベントID`4103`が記録されます。
+モジュールログには、古いOSやバージョンのPowerShellでも動作する利点がある: PowerShell 3.0 (Win 7+)。
+また、実行したPowerShellコマンドとその結果の両方をログに残すことができるのも利点です。
+デメリットは、イベント数が極端に多くなってしまうことです。
+例えば、攻撃者がMimikatzを実行した場合、2000以上のイベントを含む7MBのログが作成されます！
 
 #### モジュールログの有効化
 
 デフォルトの設定: `監査なし`
 
 ##### オプション 1: グループポリシーによる有効化
-In the Group Policy editor, open `Computer Configuration\Administrative Templates\Windows Components\Windows PowerShell` and enable `Turn on Module Logging`.
-In the `Options` pane, click the `Show...` button to configure what modules to log.
-Enter `*` in the `Value` textbox to record all modules.
+
+グループポリシーエディター(`gpedit.msc`)で、`コンピューターの構成 > 管理用テンプレート > Windowsコンポーネント > Windows PowerShell`を開き、`モジュールログを有効にする`を有効にします。
+`オプション`ペインで、`表示...`ボタンをクリックすると、ログを記録するモジュールを設定できます。
+すべてのモジュールを記録するには、`値`テキストボックスに`*`を入力します。
 
 ##### オプション 2: レジストリによる有効化
 ```
@@ -205,9 +217,11 @@ However, the output of the commands are not recorded with Script Block logging.
 #### スクリプトブロックログの有効化
 
 #### オプション 1: グループポリシーによる有効化
-In the Group Policy editor, open `Computer Configuration\Administrative Templates\Windows Components\Windows PowerShell` and enable `Turn on PowerShell Script Block Logging`.
+
+グループポリシーエディターで、`コンピューターの構成 > 管理用テンプレート > Windowsコンポーネント > Windows PowerShell`を開き、`PowerShellスクリプトブロックのログ記録を有効にする`を有効にします。
 
 #### オプション 2: レジストリによる有効化
+
 `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging → EnableScriptBlockLogging = 1`
 
 ### Transcription logging
@@ -223,17 +237,19 @@ Another benefit of transcription logs is they include the timestamp and metadata
 #### Enabling Transcription logging
 
 ##### オプション 1: グループポリシーによる有効化
-In the Group Policy editor, open `Computer Configuration\Administrative Templates\Windows Components\Windows PowerShell` and enable `Turn on PowerShell Transcription`.
-Then, specify the output directory.
+
+グループポリシーエディターで、`コンピューターの構成 > 管理用テンプレート > Windowsコンポーネント > Windows PowerShell`を開き、`PowerShellトランスクリプションを有効にする`を有効にします。
+その後、出力ディレクトリを指定します。
 
 ##### オプション 2: レジストリによる有効化
+
 ```
 HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription → EnableTranscripting = 1
 HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription → EnableInvocationHeader = 1
-HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription → OutputDirectory = “” (Enter path. Empty = default)
+HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription → OutputDirectory = “” (パスを入力する。空白の場合はデフォルトのパス。)
 ```
 
-### References
+### 参考記事
 
 * [Mandiant Blog: Greater Visibility Through PowerShell Logging](https://www.mandiant.com/resources/blog/greater-visibilityt)
 
@@ -359,7 +375,7 @@ Evidence of diagcab packages being used for exploitation may be found here.
 
 Files: `Microsoft-Windows-DriverFrameworks-UserMode%4Operational.evtx`
 
-デフォルトの設定: `No Auditing. 1 MB`
+デフォルトの設定: `監査なし。1 MB`
 
 Detects plugged in USB devices.
 

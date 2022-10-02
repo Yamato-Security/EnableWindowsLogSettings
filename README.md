@@ -8,8 +8,18 @@
 
 This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that sigma rules have something to detect.
 
-## Table of Contents
+# TLDR
 
+* You can only use around 10~20% of [sigma](https://github.com/SigmaHQ/sigma) rules with the default Windows audit settings.
+* Even if Windows log is enabled, by default, the maximum size for logs is between 1~20 MB so there is a good chance that evidence gets quickly overwritten.
+* Enable the proper audit settings with [YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat) to use up to around 75% and retain logs for as long as you need them.
+    - **Warning: make sure you customize the script to your needs and test before using in production!**
+* Install [sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) to get full coverage. (Highly recommended!)
+
+# Table of Contents
+
+- [TLDR](#tldr)
+- [Table of Contents](#table-of-contents)
 - [Author](#author)
 - [Acknowledgements](#acknowledgements)
 - [Problems with the default Windows log settings](#problems-with-the-default-windows-log-settings)
@@ -101,7 +111,7 @@ Example: `hayabusa.exe -M -f path/to/Security.evtx`
 
 ![WindowsEventsWithSigmaRules](WindowsEventsWithSigmaRules.png)
 
-Approximately less than 20% of sigma rules can be used with the default Windows audit settings!
+Approximately only 10~20% of sigma rules can be used with the default Windows audit settings!
 
 ### Top sigma log sources
 
@@ -127,7 +137,7 @@ Example: `wevtutil sl Security /ms:1073741824` to increase the maximum file size
 
 ## Option 4: Group Policy
 
-It is straightforward to increase the maximum file size for the classic event logs such as `Security`, `System`, and `Application`, however, unfortunately you need to install Administratvie Templates and/or directly modify the registry in order to change the maximum file size for the other logs. It may just be easier to increase the file size with a `.bat` script on startup.
+It is straightforward to increase the maximum file size for the classic event logs such as `Security`, `System`, and `Application`, however, unfortunately you need to install Administrative Templates and/or directly modify the registry in order to change the maximum file size for the other logs. It may just be easier to increase the file size with a `.bat` script on startup.
 
 # Configuration script
 
@@ -172,7 +182,7 @@ For example, if an attacker runs Mimikatz, it will create 7 MB of logs with over
 Default settings: `No Auditing`
 
 ##### Option 1: Enabling through group policy
-In the Group Policy editor, open `Computer Configuration\Administrative Templates\Windows Components\Windows PowerShell` and enable `Turn on Module Logging`.
+In the Group Policy editor (`gpedit.msc`), open `Computer Configuration > Administrative Templates > Windows Components > Windows PowerShell` and enable `Turn on Module Logging`.
 In the `Options` pane, click the `Show...` button to configure what modules to log.
 Enter `*` in the `Value` textbox to record all modules.
 
@@ -197,9 +207,11 @@ However, the output of the commands are not recorded with Script Block logging.
 #### Enabling Script Block logging
 
 #### Option 1: Enabling through group policy
-In the Group Policy editor, open `Computer Configuration\Administrative Templates\Windows Components\Windows PowerShell` and enable `Turn on PowerShell Script Block Logging`.
+
+In the Group Policy editor, open `Computer Configuration > Administrative Templates > Windows Components > Windows PowerShell` and enable `Turn on PowerShell Script Block Logging`.
 
 #### Option 2: Enabling through the registry
+
 `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging → EnableScriptBlockLogging = 1`
 
 ### Transcription logging
@@ -215,7 +227,8 @@ Another benefit of transcription logs is they include the timestamp and metadata
 #### Enabling Transcription logging
 
 ##### Option 1: Enabling through group policy
-In the Group Policy editor, open `Computer Configuration\Administrative Templates\Windows Components\Windows PowerShell` and enable `Turn on PowerShell Transcription`.
+
+In the Group Policy editor, open `Computer Configuration > Administrative Templates > Windows Components > Windows PowerShell` and enable `Turn on PowerShell Transcription`.
 Then, specify the output directory.
 
 ##### Option 2: Enabling through the registry
@@ -283,7 +296,7 @@ This log is recommended to enable if you want to disable NTLM authentication.
 Disabling NTLM will most likely break some communication, so you can monitor this log on the DCs and other servers to see who is still using NTLM and disable NTLM gradually starting with those users before disabling it globally.
 It is possible to detect NTLM being used for incoming connections in logon events such as 4624 but you need to enable this log if you want to monitor who is making outgoing NTLM connections.
 
-To enable auditing, in Group Policy open `Computer Configuration\Policies\Windows Settings\Security Settings\Local Policies\Security Options` and configure the proper various `Network security: Restrict NTLM:` settings.
+To enable auditing, in Group Policy open `Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies > Security Options` and configure the proper various `Network security: Restrict NTLM:` settings.
 
 Reference: [Farewell NTLM](https://www.scip.ch/en/?labs.20210909)
 

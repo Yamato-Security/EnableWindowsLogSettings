@@ -67,7 +67,7 @@
 # Notes about configuring Security log auditing
 
 * You can configure the Security log audit policies with Group Policy at an organizational level, with the Local Security Policy Editor (`gpedit.msc`) for standalone machines, or use scripts to configure them with the built-in `auditpol` command.
-* You should always enable Security log auditing at the sub-category level (`Computer Configuration\Windows Settings\Security Settings\Advanced security audit policy settings\System Audit Policies` in Group Policy) instead of the broad category level as the latter will usually enable too many events and will override any granular settings you made at the sub-category level.
+* You should always enable Security log auditing at the sub-category level (`Computer Configuration > Windows Settings > Security Settings > Advanced security audit policy settings > System Audit Policies` in Group Policy) instead of the broad category level as the latter will usually enable too many events and will override any granular settings you made at the sub-category level.
 * There are sub-categories and event IDs that are in this documentation but not actually used or are not needed for investigations. Only the important ones that you should enable are listed.
 * You cannot turn on or off specific event IDs, only sub-categories at the most granular level. This is unfortunate as sometimes there will be a couple of noisy event IDs that you can not disable unless you disable the entire sub-category.
 * The number of sigma rules were taken at 2022/09/24. Be aware that even if there are few or no sigma rules for a certain event, it does not mean that the event is not important.
@@ -272,7 +272,7 @@ Notable Sigma rule:
 
 ### Process Creation
 
-Note: A seperate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration\Windows Settings\Administrative Templates\System\Audit Process Creation\Include command line in process creation events` in Group Policy.
+Note: A seperate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration > Windows Settings > Administrative Templates > System > Audit Process Creation > Include command line in process creation events` in Group Policy.
 
 If you do not have Sysmon installed and configured to monitor Process Creation, then you should enable this as about half os Sigma's detection rules rely on process creation with command line options enabled.
 
@@ -612,7 +612,7 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 
 ### Kernel Object
 
-Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options\Audit: Audit the access of global system objects`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
+Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
 
 Volume: High if auditing access of global system objects is enabled.
 
@@ -775,7 +775,7 @@ Notable Sigma rule:
 
 Changes made to authentication policy include:
 * Creation, modification, and removal of forest and domain trusts.
-* Changes to Kerberos policy under Computer Configuration\Windows Settings\Security Settings\Account Policies\Kerberos Policy.
+* Changes to Kerberos policy under `Computer Configuration > Windows Settings > Security Settings > Account Policies > Kerberos Policy`.
 * When any of the following user logon rights is granted to a user or group:
 * Access this computer from the network
 * Allow logon locally
@@ -956,7 +956,7 @@ Audit Sensitive Privilege Use contains events that show the usage of sensitive p
 * Replace a process-level token
 * Take ownership of files or other objects
 
-The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options\Audit: Audit the access of global system objects` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
+The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
 
 Volume: High.
 
