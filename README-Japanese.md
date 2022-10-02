@@ -1,6 +1,6 @@
 <div align="center">
  <h1>
-    大和セキュリティによる、SigmaユーザのためのWindowsイベントログ設定と監視ガイド
+    大和セキュリティによる、DFIRと脅威ハンティングのためのWindowsイベントログ設定の究極ガイド
  </h1>
  [<a href="README.md">English</a>] | [<b>日本語</b>]
 </div>
@@ -48,8 +48,8 @@
       - [スクリプトブロックログの有効化](#スクリプトブロックログの有効化)
       - [オプション 1: グループポリシーによる有効化](#オプション-1-グループポリシーによる有効化-1)
       - [オプション 2: レジストリによる有効化](#オプション-2-レジストリによる有効化-1)
-    - [Transcription logging](#transcription-logging)
-      - [Enabling Transcription logging](#enabling-transcription-logging)
+    - [トランスクリプションログ](#トランスクリプションログ)
+      - [トランスクリプションログの有効化](#トランスクリプションログの有効化)
         - [オプション 1: グループポリシーによる有効化](#オプション-1-グループポリシーによる有効化-2)
         - [オプション 2: レジストリによる有効化](#オプション-2-レジストリによる有効化-2)
     - [参考記事](#参考記事)
@@ -74,7 +74,9 @@
 
 # 作者
  
-田中ザック ([@yamatosecurity](https://twitter.com/yamatosecurity))。より多くの研究とテストを行い、(検知ルールとドキュメンテーションの)改善の余地があるため、定期的に更新していく予定です。PRは歓迎され、喜んでコントリビューターとして追加させていただきます。
+田中ザック ([@yamatosecurity](https://twitter.com/yamatosecurity))。
+より多くの研究とテストを行い、(検知ルールとドキュメンテーションの)改善の余地があるため、定期的に更新していく予定です。
+PRは歓迎され、喜んでコントリビューターとして追加させていただきます。
 
 もし、このガイドが役に立つのであれば、GitHubで星を付けてください。更新し続けるモチベーションが上がります。
 
@@ -84,7 +86,10 @@
 
 # デフォルトの Windows ログ設定の問題
 
-既定では、Windows は悪意のあるアクティビティの検出と、フォレンジック調査の実行に必要な多くのイベントをログに記録しません。また、イベント ファイルのデフォルトの最大サイズは、従来のイベントログ(`Security`、`System`、`Application`)ではわずか20MB、PowrShellでは15MB、その他のほとんどすべてのログではわずか1MBであるため、証拠が上書きされる可能性が高くなります。システム管理者が Windows マシンを簡単に構成できるように、このリポジトリにはシンプルな PowerShell および バッチスクリプトが用意されており、インシデントが発生したときに必要なログを取得できます。大規模なネットワークの場合は、このドキュメントを参照として使用し、グループポリシーやInTuneを使用してエンドポイントを構成することをお勧めします。
+既定では、Windows は悪意のあるアクティビティの検出と、フォレンジック調査の実行に必要な多くのイベントをログに記録しません。
+また、イベント ファイルのデフォルトの最大サイズは、従来のイベントログ(`Security`、`System`、`Application`)ではわずか20MB、PowrShellでは15MB、その他のほとんどすべてのログではわずか1MBであるため、証拠が上書きされる可能性が高くなります。
+システム管理者が Windows マシンを簡単に構成できるように、このリポジトリにはシンプルな PowerShell および バッチスクリプトが用意されており、インシデントが発生したときに必要なログを取得できます。
+大規模なネットワークの場合は、このドキュメントを参照として使用し、グループポリシーやInTuneを使用してエンドポイントを構成することをお勧めします。
 
 # 注意: 自己責任で使用してください
 
@@ -105,9 +110,9 @@ Sysmon イベントID 1で、実行可能ファイルのハッシュやメタデ
 Sysmon をインストールできない場合は、Windows のbuilt-in機能で有効にすることができます。
 ただし、多くの検出ルールがこれに依存しているため、コマンド ライン ログも有効にすることが重要です。
 残念ながらSecurity イベントID4688は、Sysmonプロセス作成ログほど詳細な情報は提供されません。
-* 2 番目に重要なイベント ログは、適切に調整されたセキュリティログです。
-* 3 番目に重要なのはおそらく(攻撃者は PowerShell を悪用することが多いため)、PowerShell モジュールのログ記録と ScriptBlock のログ記録です。
-* 4 番目は、おそらく他のすべてのSysmonイベントです。
+* 2番目に重要なイベント ログは、適切に調整されたセキュリティログです。
+* 3番目に重要なのはおそらく(攻撃者はPowerShellを悪用することが多いため)、PowerShellモジュールのログ記録とスクリプトブロックログ記録です。
+* 4番目は、おそらく他のすべてのSysmonイベントです。
 * これらの他に、「アプリケーションとサービス ログ」フォルダーの下には、非常に重要な他の多くのログがあります。
 セキュリティ緩和、Windows Defender、セキュリティが強化された Windows ファイアウォール、WMI アクティビティなど。
 
@@ -139,6 +144,13 @@ Sysmon をインストールできない場合は、Windows のbuilt-in機能で
 
 ## オプション 3: PowerShell
 
+例:
+```powershell
+$sysmon = Get-WinEvent -ListLog Microsoft-Windows-Sysmon/Operational
+$sysmon.MaximumSizeInBytes = 2048000000 #2GB
+$sysmon.SaveChanges()
+```
+
 ## オプション 4: グループポリシー
 
 `Security`、`System`、`Application`などの従来のイベント ログの最大ファイル サイズを増やすのは簡単ですが、
@@ -160,11 +172,11 @@ Sysmon をインストールできない場合は、Windows のbuilt-in機能で
 sysmonをインストールして設定することは、Windows エンドポイントでの可視性を高めるための最善の方法ですが、計画、テスト、およびメンテナンスが必要になります。
 
 これはそれ自体が大きなトピックであるため、現時点ではこのドキュメントの範囲外です。次のリソースを確認してください。
-TrustedSecのSysmonコミュニティガイド: [https://github.com/trustedsec/SysmonCommunityGuide](https://github.com/trustedsec/SysmonCommunityGuide)
-Sysmon Modular: [https://github.com/olafhartong/sysmon-modular](https://github.com/olafhartong/sysmon-modular)
-Florian Roth氏によるSwift On SecurityのSysmon設定ファイルを更新しているフォーク: [https://github.com/Neo23x0/sysmon-config](https://github.com/Neo23x0/sysmon-config)
-Ion-storm氏によるSwift On SecurityのSysmon設定ファイルを更新しているフォーク: [https://github.com/ion-storm/sysmon-config](https://github.com/ion-storm/sysmon-config)
-
+* [TrustedSecのSysmonコミュニティガイド](https://github.com/trustedsec/SysmonCommunityGuide)
+* [Sysmon Modular](https://github.com/olafhartong/sysmon-modular)
+* [Florian Roth氏によるSwift On SecurityのSysmon設定ファイルを更新しているフォーク](https://github.com/Neo23x0/sysmon-config)
+* [Ion-storm氏によるSwift On SecurityのSysmon設定ファイルを更新しているフォーク](https://github.com/ion-storm/sysmon-config)
+* [Cyb3rWard0g氏のsysmon設定ファイル](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
 
 ## Securityログ (Sigmaルール 1045件(process creationルール903件 + その他ルール142件))
 
@@ -172,7 +184,7 @@ Ion-storm氏によるSwift On SecurityのSysmon設定ファイルを更新して
 
 デフォルトの設定: `一部有効`
 
-Securityログの設定が最も複雑なため、別のドキュメントを作成しました: [ConfiguringSecurityLogAuditPolicies-Japanese.md](ConfiguringSecurityLogAuditPolicies-Japanese.md)
+Securityログの設定が最も複雑なため、別のドキュメントが用意されています: [ConfiguringSecurityLogAuditPolicies-Japanese.md](ConfiguringSecurityLogAuditPolicies-Japanese.md)
 
 ## Powershellログ (Sigmaルール 175件)
 
@@ -197,6 +209,7 @@ Securityログの設定が最も複雑なため、別のドキュメントを作
 すべてのモジュールを記録するには、`値`テキストボックスに`*`を入力します。
 
 ##### オプション 2: レジストリによる有効化
+
 ```
 HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging → EnableModuleLogging = 1
 HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \ModuleNames → * = *
@@ -204,7 +217,7 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \M
 
 ### スクリプトブロックログ (Sigmaルール 134件)
 
-デフォルトの設定: `On Win 10+, if a PowerShell script is flagged as suspicious by AMSI, it will be logged with a level of Warning.`
+デフォルトの設定: `Win 10/2016以降では、PowerShellスクリプトがAMSIによって疑わしいと判定された場合、警告レベルでログに記録されるが、その他のログは記録されない`
 
 Turning on Script Block logging will enable event ID `4104` as well as `4105` and `4106` if you enable `Log script block invocation start / stop events`, however, it is not recommended to enable the script block invocation start and stop events. 
 It is supported by default in PowerShell 5.0+ (Win 10+), however you can enable this on older OSes (Win 7+) if you install .NET 4.5 and WMF 4.0+.
@@ -224,7 +237,7 @@ However, the output of the commands are not recorded with Script Block logging.
 
 `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging → EnableScriptBlockLogging = 1`
 
-### Transcription logging
+### トランスクリプションログ
 
 デフォルトの設定: `監査なし`
 
@@ -234,7 +247,7 @@ Therefore, it is recommended to also enable transcription logs if possible.
 Ideally, transcript logs should be saved to a write-only network file share, however, this may be difficult to implement in practice.
 Another benefit of transcription logs is they include the timestamp and metadata for each command and are very stroage efficient with less than 6 KB for Mimikatz execution. By default, they are saved to the user's documents folder. The downside is that the transcription logs only record what appears in the PowerShell terminal.
 
-#### Enabling Transcription logging
+#### トランスクリプションログの有効化
 
 ##### オプション 1: グループポリシーによる有効化
 
@@ -259,8 +272,8 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription �
 
 デフォルトの設定: `有効。20 MB`
 
-Malware will often install services for persistence, local privilege esclation, etc... which can be found in this log.
-It is also possible to detect various vulnerabilities being exploited here.
+マルウェアはしばしば、永続化、ローカル特権昇格などのためにサービスをインストールします。その痕跡がこのログに残ります。
+また、このログから様々な脆弱性が悪用されていることを検出することが可能です。
 
 ## Applicationログ (Sigmaルール 16件)
 
@@ -268,8 +281,8 @@ It is also possible to detect various vulnerabilities being exploited here.
 
 デフォルトの設定: `有効。20 MB`
 
-This log is mostly noise but you may be able to find some important evidence here.
-One thing to be careful about is that different vendors will use the same event IDs for different events so you should also filter on not just Event IDs but Provider Names as well.
+このログはほとんどノイズですが、ここに重要な証拠を見つけることができるかもしれません。
+注意点としては、異なるベンダーが異なるイベントに同じイベントIDを使用するため、イベントIDだけでなくプロバイダ名でもフィルタリングする必要があることです。
 
 ## Windows Defender Operationalログ (Sigmaルール 10件)
  
@@ -277,7 +290,7 @@ One thing to be careful about is that different vendors will use the same event 
 
 デフォルトの設定: `有効。1 MB`
 
-You can detect not only Windows Defender alerts (which are important to monitor), but also exclusions being added, tamper protection being disabled, history deleted, etc...
+（重要な監視項目の）Windows Defenderのアラートだけでなく、除外項目が追加された、改ざん防止機能が無効になった、履歴が削除された、などのイベントも検出できます。
 
 ## Bits-Client Operationalログ (Sigmaルール 6件)
  
@@ -285,8 +298,8 @@ You can detect not only Windows Defender alerts (which are important to monitor)
 
 デフォルトの設定: `有効。1 MB`
 
-Bitsadmin.exe is a popular [lolbin](https://lolbas-project.github.io/lolbas/Binaries/Bitsadmin/) that attackers will abuse for downloading and executing malware.
-You may find evidence of that in this log, although there will be a lot of false positives to watch out for.
+Bitsadmin.exeは、攻撃者がマルウェアのダウンロードや実行に悪用する一般的な[lolbin](https://lolbas-project.github.io/lolbas/Binaries/Bitsadmin/)です。
+このログを見れば、その証拠が見つかるかもしれません。ただし、誤検出が多いので、注意が必要です。
 
 ## Firewallログ (Sigmaルール 6件)
 
@@ -294,26 +307,26 @@ You may find evidence of that in this log, although there will be a lot of false
 
 デフォルトの設定: `有効？ 1 MB`
 
-You can find evidence of firewall rules being added/modified/deleted here.
-Malware will often add firewall rules to make sure they can communicate with their C2 server, add proxy rules for lateral movement, etc...
+ファイアウォールのルールが追加/変更/削除された形跡は、こちらで確認できます。
+マルウェアはしばしば、C2サーバと通信できるようにファイアウォールルールを追加したり、横展開するためにプロキシルールを追加したりします。
 
 ## NTLM Operationalログ (Sigmaルール 3件)
 
 ファイル: `Microsoft-Windows-NTLM%4Operational.evtx`
 
-デフォルトの設定: `Enabled but Auditing is disabled. 1 MB`
+デフォルトの設定: `ログ自体は有効になっているが、監査設定は無効になっている。1 MB`
 
 This log is recommended to enable if you want to disable NTLM authentication. 
 Disabling NTLM will most likely break some communication, so you can monitor this log on the DCs and other servers to see who is still using NTLM and disable NTLM gradually starting with those users before disabling it globally.
 It is possible to detect NTLM being used for incoming connections in logon events such as 4624 but you need to enable this log if you want to monitor who is making outgoing NTLM connections.
 
-To enable auditing, in Group Policy open `Computer Configuration\Policies\Windows Settings\Security Settings\Local Policies\Security Options` and configure the proper various `Network security: Restrict NTLM:` settings.
+監査設定を有効にするために、グループポリシーで`コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション`配下の`ネットワークセキュリティ: NTLMを制限する:`の様々な設定を正しく設定する必要があります。
 
-Reference: [Farewell NTLM](https://www.scip.ch/en/?labs.20210909)
+参考記事: [Farewell NTLM](https://www.scip.ch/en/?labs.20210909)
 
 ## Security-Mitigations KernelModeとUserModeログ (Sigmaルール 2件) 
 
-Files: `Microsoft-Windows-Security-Mitigations%4KernelMode.evtx`, `Microsoft-Windows-Security-Mitigations%4UserMode.evtx`
+ファイル: `Microsoft-Windows-Security-Mitigations%4KernelMode.evtx`, `Microsoft-Windows-Security-Mitigations%4UserMode.evtx`
 
 デフォルトの設定: `有効。1 MB`
 
@@ -321,11 +334,11 @@ At the moment there are only 2 sigma rules for these logs but you should probabl
 
 Unfortunately the Attack Surface Reduction logs (previously WDEG(Windows Defender Exploit Guard) and EMET) are spread across multiple logs and require complex XML queries to search them.
 
-Details: [https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide)
+詳細: [https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide)
 
 ## PrintServiceログ (Sigmaルール 2件)
 
-It is recommended to enable the Operational log as well to detect Print Spooler attackers. (Ex: PrintNightmare, etc...)
+印刷スプーラーへの攻撃を検知するために、Operationalログも有効にすることを推奨します。(例: PrintNightmare等々)
 
 ### Adminログ (Sigmaルール 1件)
 
@@ -337,7 +350,7 @@ It is recommended to enable the Operational log as well to detect Print Spooler 
 
 ファイル: `Microsoft-Windows-PrintService%4Operational.evtx`
 
-デフォルトの設定: `Disabled. 1 MB`
+デフォルトの設定: `無効。1 MB`
 
 ## SMBClient Securityログ (Sigmaルール 2件) 
 
@@ -345,15 +358,15 @@ It is recommended to enable the Operational log as well to detect Print Spooler 
 
 デフォルトの設定: `有効。8 MB`
 
-Used to attempt to detect PrintNightmare (Suspicious Rejected SMB Guest Logon From IP) and users mounting hidden shares.
+PrintNightmare攻撃 (ルール: `Suspicious Rejected SMB Guest Logon From IP`) や隠し共有をマウントするユーザを検出できます。
 
 ## AppLockerログ (Sigmaルール 1件) 
 
-Files: `Microsoft-Windows-AppLocker%4MSI and Script.evtx`, `Microsoft-Windows-AppLocker%4EXE and DLL.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Deployment.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Execution.evtx`
+ファイル: `Microsoft-Windows-AppLocker%4MSI and Script.evtx`, `Microsoft-Windows-AppLocker%4EXE and DLL.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Deployment.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Execution.evtx`
 
-デフォルトの設定: `Enabled if AppLocker is enabled? 1 MB`
+デフォルトの設定: `AppLockerが有効の場合、有効？ 1 MB`
 
-This is important to make sure is enabled and monitored if you are using AppLocker.
+AppLockerを使用している場合、有効になっているか確認し、監視することが重要です。
 
 ## CodeIntegrity Operationalログ (Sigmaルール 1件)
 
@@ -365,27 +378,27 @@ Check this log to detect driver load events that get blocked by Windows code int
 
 ## Diagnosis-Scripted Operationalログ (Sigmaルール 1件) 
 
-Files: `Microsoft-Windows-Diagnosis-Scripted%4Operational.evtx`
+ファイル: `Microsoft-Windows-Diagnosis-Scripted%4Operational.evtx`
 
 デフォルトの設定: `有効。1 MB`
 
-Evidence of diagcab packages being used for exploitation may be found here.
+diagcabパッケージが悪用された証拠は、こちらで確認できます。
 
 ## DriverFrameworks-UserMode Operationalログ (Sigmaルール 1件) 
 
-Files: `Microsoft-Windows-DriverFrameworks-UserMode%4Operational.evtx`
+ファイル: `Microsoft-Windows-DriverFrameworks-UserMode%4Operational.evtx`
 
 デフォルトの設定: `監査なし。1 MB`
 
-Detects plugged in USB devices.
+接続されたUSBデバイスの痕跡がここで記録されます。
 
 ## WMI-Activity Operationalログ (Sigmaルール 1件) 
 
 ファイル: `Microsoft-Windows-WMI-Activity%4Operational.evtx`
 
-デフォルトの設定: `Enabled on Win10+. 1 MB`
+デフォルトの設定: `Win10以降では有効になっている。1 MB`
 
-This is important to monitor as attackers will often exploit WMI for persistence and lateral movement.
+攻撃者はしばしばWMIを悪用して永続化や横展開するので、このログを監視することは重要です。
 
 ## TerminalServices-LocalSessionManager Operationalログ (Sigmaルール 1件) 
 
@@ -393,7 +406,9 @@ This is important to monitor as attackers will often exploit WMI for persistence
 
 デフォルトの設定: `有効。1 MB`
 
-Detects cases in which ngrok, a reverse proxy tool, forwards events to the local RDP port, which could be a sign of malicious behaviour
+リバースプロキシツールであるngrokが、ファイアウォールを迂回するためにローカルRDPポートに通信を転送した場合に検出します。
+
+リンク: [Bypassing Network Restrictions Through RDP Tunneling](https://www.mandiant.com/resources/blog/bypassing-network-restrictions-through-rdp-tunneling)
 
 ## TaskScheduler Operationalログ (Sigmaルール 1件) 
 
@@ -401,4 +416,4 @@ Detects cases in which ngrok, a reverse proxy tool, forwards events to the local
 
 デフォルトの設定: `無効。1 MB`
 
-Attackers will often abuse tasks for persistence and lateral movement so this should be enabled.
+攻撃者は、しばしば永続化や横展開するためにタスクを悪用するので、このログを有効にした方が良いです。

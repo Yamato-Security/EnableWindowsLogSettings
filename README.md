@@ -1,18 +1,18 @@
 <div align="center">
  <h1>
-    Yamato Security's ultimate guide to configuring and monitoring Windows event logs for Sigma users
+    Yamato Security's ultimate guide to configuring Windows event logs for DFIR and Threat Hunting
  </h1>
  [ <b>English</b> ] | [<a href="README-Japanese.md">日本語</a>]
 </div>
 <p>
 
-This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that sigma rules have something to detect.
+This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that sigma rules have logs to detect. 
 
 # TLDR
 
-* You can only use around 10~20% of [sigma](https://github.com/SigmaHQ/sigma) rules with the default Windows audit settings.
-* Even if Windows log is enabled, by default, the maximum size for logs is between 1~20 MB so there is a good chance that evidence gets quickly overwritten.
-* Enable the proper audit settings with [YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat) to use up to around 75% and retain logs for as long as you need them.
+* You can only use around 10~20% of [sigma](https://github.com/SigmaHQ/sigma) detection rules with the default Windows audit settings.
+* Even if a Windows log is enabled, by default, the maximum size for logs is between 1~20 MB so there is a good chance that evidence gets quickly overwritten.
+* Enable the proper audit settings with [YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat) to use up to around 75% of sigma rules and retain logs for as long as you need them.
     - **Warning: make sure you customize the script to your needs and test before using in production!**
 * Install [sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) to get full coverage. (Highly recommended!)
 
@@ -135,6 +135,13 @@ Example: `wevtutil sl Security /ms:1073741824` to increase the maximum file size
 
 ## Option 3: PowerShell
 
+Example:
+```powershell
+$sysmon = Get-WinEvent -ListLog Microsoft-Windows-Sysmon/Operational
+$sysmon.MaximumSizeInBytes = 2048000000 #2GB
+$sysmon.SaveChanges()
+```
+
 ## Option 4: Group Policy
 
 It is straightforward to increase the maximum file size for the classic event logs such as `Security`, `System`, and `Application`, however, unfortunately you need to install Administrative Templates and/or directly modify the registry in order to change the maximum file size for the other logs. It may just be easier to increase the file size with a `.bat` script on startup.
@@ -152,10 +159,11 @@ File: `Microsoft-Windows-Sysmon%4Operational.evtx`
 Default settings: `Not installed`
 
 Installing and configuring sysmon is the single best thing you can do to increase your visibility on Windows endpoints but it will require planning, testing and maintenance. This is a big topic in itself so it is out of scope of this document at the moment. Please check out the following resources:
-* TrustedSec Sysmon Community Guide: [https://github.com/trustedsec/SysmonCommunityGuide](https://github.com/trustedsec/SysmonCommunityGuide)
-* Sysmon Modular: [https://github.com/olafhartong/sysmon-modular](https://github.com/olafhartong/sysmon-modular)
-* Florian Roth's updated fork of the Swift On Security's sysmon config file: [https://github.com/Neo23x0/sysmon-config](https://github.com/Neo23x0/sysmon-config)
-* Ion-storms' updated fork of the Swift On Security's sysmon config file: [https://github.com/ion-storm/sysmon-config](https://github.com/ion-storm/sysmon-config)
+* [TrustedSec Sysmon Community Guide](https://github.com/trustedsec/SysmonCommunityGuide)
+* [Sysmon Modular](https://github.com/olafhartong/sysmon-modular)
+* [Florian Roth's updated fork of the Swift On Security's sysmon config file](https://github.com/Neo23x0/sysmon-config)
+* [Ion-storm's updated fork of the Swift On Security's sysmon config file](https://github.com/ion-storm/sysmon-config)
+* [Cyb3rWard0g's sysmon config file](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
 
 ## Security log (1045 sigma rules (903 process creation rules + 142 other rules))
 
@@ -194,7 +202,7 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \M
 
 ### Script Block Logging (134 sigma rules)
 
-Default settings: `On Win 10+, if a PowerShell script is flagged as suspicious by AMSI, it will be logged with a level of Warning.`
+Default settings: `On Win 10/2016+, if a PowerShell script is flagged as suspicious by AMSI, it will be logged with a level of Warning.`
 
 Turning on Script Block logging will enable event ID `4104` as well as `4105` and `4106` if you enable `Log script block invocation start / stop events`, however, it is not recommended to enable the script block invocation start and stop events. 
 It is supported by default in PowerShell 5.0+ (Win 10+), however you can enable this on older OSes (Win 7+) if you install .NET 4.5 and WMF 4.0+.
@@ -354,7 +362,7 @@ Check this log to detect driver load events that get blocked by Windows code int
 
 ## Diagnosis-Scripted Operational log (1 sigma rule) 
 
-Files: `Microsoft-Windows-Diagnosis-Scripted%4Operational.evtx`
+File: `Microsoft-Windows-Diagnosis-Scripted%4Operational.evtx`
 
 Default settings: `Enabled. 1 MB`
 
@@ -372,7 +380,7 @@ Detects plugged in USB devices.
 
 File: `Microsoft-Windows-WMI-Activity%4Operational.evtx`
 
-Default settings: `Enabled on Win10+. 1 MB`
+Default settings: `Enabled on Win10/2016+. 1 MB`
 
 This is important to monitor as attackers will often exploit WMI for persistence and lateral movement.
 
@@ -382,7 +390,9 @@ File: `Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx`
 
 Default settings: `Enabled. 1 MB`
 
-Detects cases in which ngrok, a reverse proxy tool, forwards events to the local RDP port, which could be a sign of malicious behaviour
+Detects when ngrok, a reverse proxy tool, forwards traffic to the local RDP port to bypass firewalls.
+
+Link: [Bypassing Network Restrictions Through RDP Tunneling](https://www.mandiant.com/resources/blog/bypassing-network-restrictions-through-rdp-tunneling)
 
 ## TaskScheduler Operational log  (1 sigma rule) 
 
