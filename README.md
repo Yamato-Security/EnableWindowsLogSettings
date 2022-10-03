@@ -6,7 +6,7 @@
 </div>
 <p>
 
-This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that sigma rules have logs to detect. 
+This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that [sigma](https://github.com/SigmaHQ/sigma) rules have logs to detect, as well as making sure the right evidence is saved to perform proper DFIR investigations.
 
 # TLDR
 
@@ -23,7 +23,7 @@ This is yet another guide on configuring and monitoring Windows event logs with 
 - [Author](#author)
 - [Acknowledgements](#acknowledgements)
 - [Problems with the default Windows log settings](#problems-with-the-default-windows-log-settings)
-- [Warning: Use at your own risk!](#warning-use-at-your-own-risk)
+- [Warning: Make changes to your systems at your own risk!](#warning-make-changes-to-your-systems-at-your-own-risk)
 - [Important Windows event logs](#important-windows-event-logs)
   - [Sigma's top log sources](#sigmas-top-log-sources)
     - [Top sigma log sources](#top-sigma-log-sources)
@@ -72,23 +72,23 @@ This is yet another guide on configuring and monitoring Windows event logs with 
 
 # Author
  
-Zach Mathis ([@yamatosecurity](https://twitter.com/yamatosecurity)). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor.
+Zach Mathis ([@yamatosecurity](https://twitter.com/yamatosecurity)). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor. If you find any errors in this documentation, please let me know and I will fix them as soon as possible.
 
 If you find any of this useful, please give a star on GitHub as it will probably help motivate me to continue updating this.
 
 # Acknowledgements
 
-Most of the information comes from Microsoft's [Advanced security auditing FAQ](https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/advanced-security-auditing-faq), [sigma](https://github.com/SigmaHQ/sigma) rules, the [ACSC guide](https://www.cyber.gov.au/acsc/view-all-content/publications/windows-event-logging-and-forwarding) and my own research/testing. I would like to thank the [sigma community](https://github.com/SigmaHQ/sigma/graphs/contributors) in particular for making threat detection open source and free for the benefit of all of the defenders out there.
+Most of the information comes from Microsoft's [Advanced security auditing FAQ](https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/advanced-security-auditing-faq), [sigma](https://github.com/SigmaHQ/sigma) rules, the [ACSC Event Logging Guide](https://www.cyber.gov.au/acsc/view-all-content/publications/windows-event-logging-and-forwarding) and my own research/testing. I would like to thank the [sigma community](https://github.com/SigmaHQ/sigma/graphs/contributors) in particular for making threat detection open source and free for the benefit of all of the defenders out there.
 
 # Problems with the default Windows log settings
 
 By default, Windows will not log many events necessary for detecting malicious activity and performing forensics investigations.
 Also, the default maxium size for event files is only 20 MB for the classic event logs (`Security`, `System`, `Application`), 15 MB for PowrShell and a mere 1 MB for almost all of the other logs so there is a good chance that evidence is overwritten over time.
-Simple PowerShell and Batch scripts in this repository have been provided to let systems administrators easily configure their Windows machines so that they will have the logs that they need when an incident occurs. For large networks, you probably want to use this document as a reference and configure your endpoints with Group Policy and/or InTune.
+A simple [batch script](YamatoSecurityConfigureWinEventLogs.bat) in this repository have been provided to let systems administrators easily configure their Windows machines so that they will have the logs that they need when an incident occurs. For large networks, you probably want to use this document as a reference and configure your endpoints with Group Policy and/or InTune.
 
-# Warning: Use at your own risk!
+# Warning: Make changes to your systems at your own risk!
 
-I do not take any responsibility for any adverse effects of enabling too much logging or the accuracy of anything in this repository.
+I highly recommend to improve the default Windows event logging settings and try my best to provide the most accurate information. However, I do not take any responsibility for any adverse effects of enabling too much logging or the accuracy of anything in this repository.
 It is your responsibility to understand and test out any changes you make to your systems on test machines before rolling out to production.
 I recommend turning on as much logging as possible on test machines that mimic your environment for at least a week and then confirm if there are any events that are generating too much noise or if there are events that you want but are not being generated.
 
@@ -98,14 +98,14 @@ Example: `hayabusa.exe -M -f path/to/Security.evtx`
 
 # Important Windows event logs
 
-* The most important event log to turn on is probably `Process Creation` which tracks what processes are run on a system.
+1. The most important event log to turn on is probably `Process Creation` which tracks what processes are run on a system.
   Currently, about half of [Sigma](https://github.com/SigmaHQ/sigma)'s detection rules rely on this event.
-  This can be accomplished by installing Sysmon (Event ID 1) or enabling built-in logs (Security Event ID 4688).
-  `Sysmon 1` will provide detailed information such as hashes and metadata of the executable so is ideal but in the case that Sysmon cannot be installed it is possible to turn on with Windows built-in functionality. However, it is important that command line logging is also enabled as many detection rules rely on this. Unfortunately `Security 4688` does not provide as detailed information as the Sysmon process creation logs.
-* The second most important event log is a properly tuned Security log.
-* The third most important are probably PowerShell Module logging and ScriptBlock logging as attackers will often abuse PowerShell.
-* The forth are probably all of the other Sysmon events.
-* After these, there are many other logs under the "Application and Services Logs" folder that are also very important: AppLocker, Bits-Client, NTLM, PowerShell, PrintService, Security-Mitigations, Windows Defender, Windows Firewall With Advanced Security, WMI-Activity, etc...
+  This can be accomplished by installing Sysmon (Event ID `1`) or enabling the built-in Security log Event ID `4688`.
+  `Sysmon 1` will provide detailed information such as hashes and metadata of the executable so is ideal but in the case that Sysmon cannot be installed it is possible use built-in `Security 4688` logs. However, it is important that command line logging is also enabled as many detection rules rely on this. Unfortunately `Security 4688` does not provide as detailed information as the Sysmon process creation logs, so not all `Process Creation` rules work with `Security 4688`.
+2. The second most important event log is a properly tuned Security log.
+3. The third most important are probably PowerShell Module logging and ScriptBlock logging as attackers will often abuse PowerShell.
+4. The forth are probably all of the other Sysmon events.
+5. After these, there are many other logs under the "Application and Services Logs" folder that are also very important: AppLocker, Bits-Client, NTLM, PowerShell, PrintService, Security-Mitigations, Windows Defender, Windows Firewall With Advanced Security, WMI-Activity, etc...
 
 ## Sigma's top log sources
 
@@ -158,7 +158,9 @@ File: `Microsoft-Windows-Sysmon%4Operational.evtx`
 
 Default settings: `Not installed`
 
-Installing and configuring sysmon is the single best thing you can do to increase your visibility on Windows endpoints but it will require planning, testing and maintenance. This is a big topic in itself so it is out of scope of this document at the moment. Please check out the following resources:
+Installing and configuring sysmon is the single best thing you can do to increase your visibility on Windows endpoints but it will require planning, testing and maintenance.
+This is a big topic in itself so it is out of scope of this document at the moment.
+Please check out the following resources:
 * [TrustedSec Sysmon Community Guide](https://github.com/trustedsec/SysmonCommunityGuide)
 * [Sysmon Modular](https://github.com/olafhartong/sysmon-modular)
 * [Florian Roth's updated fork of the Swift On Security's sysmon config file](https://github.com/Neo23x0/sysmon-config)
@@ -197,15 +199,15 @@ Enter `*` in the `Value` textbox to record all modules.
 ##### Option 2: Enabling through the registry
 ```
 HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging → EnableModuleLogging = 1
-HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \ModuleNames → * = *
+HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames → * = *
 ```
 
 ### Script Block Logging (134 sigma rules)
 
 Default settings: `On Win 10/2016+, if a PowerShell script is flagged as suspicious by AMSI, it will be logged with a level of Warning.`
 
-Turning on Script Block logging will enable event ID `4104` as well as `4105` and `4106` if you enable `Log script block invocation start / stop events`, however, it is not recommended to enable the script block invocation start and stop events. 
-It is supported by default in PowerShell 5.0+ (Win 10+), however you can enable this on older OSes (Win 7+) if you install .NET 4.5 and WMF 4.0+.
+Turning on Script Block logging will enable event ID `4104`. If you enable `Log script block invocation start / stop events`, EID `4105` and `4106` will also be enabled, however, this is not recommended as it will just create noise.
+Script Block logging is supported by default in PowerShell 5.0+ (Win 10+), however you can enable this on older OSes (Win 7+) if you install .NET 4.5 and WMF 4.0+.
 Unfortunately, the maximum size of a single Windows event log is 32 KB so any PowerShell scripts greater than this will be fragmented in 32 KB sized blocks.
 If you have the original PowerShell Operational `.evtx` file, you can use the [block-parser](https://github.com/matthewdunwoody/block-parser) tool to un-fragment these logs into a single easily readable text file.
 One good thing about Script Block logging is that even if a malicious script is obfuscated with XOR, Base 64, ROT13, etc... the decoded script will be logged making analysis much easier.
@@ -229,8 +231,10 @@ Default settings: `No Auditing`
 It is possible to also save PowerShell logs to text files on the local computer with transcription logs.
 While an attacker can usually easily delete the transcription logs for anti-forensics, there may be scenarios where the attacker clears all of the event logs but does not search for transcription logs to delete. 
 Therefore, it is recommended to also enable transcription logs if possible.
-Ideally, transcript logs should be saved to a write-only network file share, however, this may be difficult to implement in practice.
-Another benefit of transcription logs is they include the timestamp and metadata for each command and are very stroage efficient with less than 6 KB for Mimikatz execution. By default, they are saved to the user's documents folder. The downside is that the transcription logs only record what appears in the PowerShell terminal.
+By default, they are saved to the user's documents folder.
+Ideally transcript logs should be saved to a write-only network file share, however, this may be difficult to implement in practice.
+A benefit of transcription logs is they include the timestamp and metadata for each command and are very storage efficient with less than 6 KB for Mimikatz execution.
+The downside is that the transcription logs only record what appears in the PowerShell terminal.
 
 #### Enabling Transcription logging
 
@@ -318,7 +322,7 @@ At the moment there are only 2 sigma rules for these logs but you should probabl
 
 Unfortunately the Attack Surface Reduction logs (previously WDEG(Windows Defender Exploit Guard) and EMET) are spread across multiple logs and require complex XML queries to search them.
 
-Details: [https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide)
+Details: [Understand and use attack surface reduction capabilities](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide)
 
 ## PrintService logs (2 sigma rules)
 
