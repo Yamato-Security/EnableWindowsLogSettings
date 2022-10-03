@@ -156,7 +156,7 @@ Notable Sigma rule:
 
 ### Other Account Management Events
 
-Volume: Typcially low.
+Volume: Typically low.
 
 Default settings: `No Auditing`
 
@@ -237,7 +237,7 @@ Notable Sigma rules:
 | 4740 | User Account Lockout | 0 | |
 | 4765 | SID History Added To Account | 0 | |
 | 4766 | Attempt To Add SID History To Account Failed | 0 | |
-| 4767 | Attempt To Add SID History To Account Failed | 0 | |
+| 4767 | User account was unlocked | 0 | |
 | 4780 | ACL Set On Administrators Group Member | 0 | |
 | 4781 | Account Name Changed | 1 | |
 | 4794 | DSRM Administrator Password Set | 1 | |
