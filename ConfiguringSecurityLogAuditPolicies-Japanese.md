@@ -81,7 +81,7 @@
 
 ### 資格情報の確認
 
-ボリューム: Depends on NTLM usage. Could be high on DCs and low on clients and servers.
+ボリューム: NTLMの使用による。 Could be high on DCs and low on clients and servers.
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功`
 
@@ -95,7 +95,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4776 | ローカルユーザアカウントのNTLM認証 | 5 | The original event messages says it is for DCs only but this event gets logged for クライアントOS local authentication as well. | 
+| 4776 | ローカルユーザアカウントのNTLM認証 | 5 | The original event messages says it is for DCs only but this event gets logged for Client OS local authentication as well. | 
 
 ### Kerberos認証サービス
 
@@ -136,13 +136,13 @@ Sigmaルールの例:
 | :---: | :---: | :---: | :---: |
 | 4769 | Kerberosサービスチケットが要求された | 1 | |
 | 4770 | Kerberosサービスチケットが更新された | 0 | 実はTGT更新 |
-| 4773 | Kerberos Service Ticket Request Failed | 0 | |
+| 4773 | Kerberosサービスチケット要求が失敗した | 0 | 実際は使われていない。代わりに4769が使われている。 |
 
 ## アカウントの管理
 
 ### コンピュータアカウントの管理
 
-ボリューム: Low on DCs.
+ボリューム: ドメインコントローラでは低い
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功のみ`
 
@@ -254,7 +254,7 @@ Sigmaルールの例:
 
 This is important if you want to track physical attacks (Rubber Ducky, etc..) or someone exfiltrating data via USB devices.
 
-ボリューム: Depends but typically low.
+ボリューム: 通常、低い
 
 デフォルトの設定: `監査なし`
 
@@ -265,10 +265,10 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 6416 | New External Device | 1 | |
-| 6419 | Request To Disable Device | 0 | |
+| 6416 | 新規外部デバイスが認識された | 1 | |
+| 6419 | デバイスを無効にする要求 | 0 | |
 | 6420 | デバイスが無効にされた | 0 | |
-| 6421 | Request To Enable Device | 0 | |
+| 6421 | デバイスを有効にする要求 | 0 | |
 | 6422 | デバイスが有効にされた | 0 | |
 | 6423 | Device Installation Blocked | 0 | |
 | 6424 | Device Installation Allowed After Being Blocked | 0 | |
@@ -306,7 +306,7 @@ You may want to keep this off to save file space.
 
 ### RPCイベント
 
-ボリューム: High on RPC servers.
+ボリューム: RPCサーバでは高い
 
 デフォルトの設定: `監査なし`
 
@@ -326,7 +326,7 @@ You may want to keep this off to save file space.
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4703 | User's Token Changed | 0 | |
+| 4703 | ユーザ権利の調整 | 0 | |
 
 ## DS(ディレクトリサービス)アクセス
 
@@ -349,12 +349,12 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4661 | Handle To Object Requested | 2 | |
-| 4662 | Operation Performed On Object | 6 | |
+| 4661 | オブジェクトハンドル要求 | 2 | |
+| 4662 | オブジェクトに対する操作 | 6 | |
 
 ### ディレクトリサービスの変更
 
-ボリューム: High on DCs.
+ボリューム: ドメインコントローラでは高。
 
 デフォルトの設定: `監査なし`
 
@@ -372,7 +372,7 @@ Sigmaルールの例:
 | 5137 | Directory Service Object Created | 0 | |
 | 5138 | Directory Service Object Undeleted | 0 | |
 | 5139 | Directory Service Object Moved | 0 | |
-| 5141 | Directory Service Object Deleted | 0 | |
+| 5141 | Directory Service オブジェクト削除 | 0 | |
 
 ## ログオン/ログオフ
 
@@ -392,7 +392,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4625 | Logon Failed Due To Lockout | 4 | |
+| 4625 | ロックアウトによるログオンに失敗 | 4 | |
 
 ### グループメンバーシップ
 
@@ -461,7 +461,7 @@ Sigmaルールの例:
 | 4801 | 端末のロックが解除された | 0 | |
 | 4802 | スクリーンセーバーが開始された | 0 | |
 | 4803 | スクリーンセーバーが停止された | 0 | |
-| 5378 | CredSSP Credentials Delegation Blocked | 0 | Usually when WinRM double-hop session was not properly set. |
+| 5378 | 要求された資格情報の委任は、ポリシーによって許可されない | 0 | 通常、WinRMダブルホップセッションのCredSSP委任が正しく設定されていない場合に発生する。 |
 | 5632 | 無線ネットワークへの802.1x認証 | 0 | |
 | 5633 | 有線ネットワークへの802.1x認証 | 0 | |
 
@@ -522,7 +522,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 5145 | Network Share File Access | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
+| 5145 | ネットワーク共有へのファイルアクセス | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
 
 ### ファイル共有
 
@@ -541,7 +541,7 @@ Sigmaルールの例:
 | 5142 | ネットワーク共有が作成された | 0 | |
 | 5143 | ネットワーク共有が変更された | 0 | |
 | 5144 | ネットワーク共有が削除された | 0 | |
-| 5168 | SPN Check For SMB/SMB2 Failed | 0 | |
+| 5168 | SMB/SMB2のSPNチェックに失敗 | 0 | |
 
 ### ファイルシステム
 
@@ -561,14 +561,14 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドルへのリクエスト | 0 | Could fail if the process does not have the right permissions. |
-| 4658 | Object Handle Closed | 0 | |
-| 4660 | Object Deleted | 0 | |
-| 4663 | Access To An Object | 2 | Differs from 4656 in that there are only success events. |
-| 4664 | Attempt To Create Hard Link | 0 | |
-| 4670 | Object Permission Changed | 0 | |
-| 4985 | State Of A Transaction Changed | 0 | Used for Transaction Manager and not relevent for security. |
-| 5051 | A File Was Virtualized | 0 | Rarely occurs during LUAFV virtualization. Not relevent for security. |
+| 4656 | オブジェクトハンドル要求 | 0 | Could fail if the process does not have the right permissions. |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | |
+| 4660 | オブジェクト削除 | 0 | |
+| 4663 | オブジェクトアクセス | 2 | Differs from 4656 in that there are only success events. |
+| 4664 | ハードリンク作成の試行 | 0 | |
+| 4670 | オブジェクト権限の変更 | 0 | |
+| 4985 | トランザクション状態の変更 | 0 | Used for Transaction Manager and not relevent for security. |
+| 5051 | ファイルが仮想化された | 0 | Rarely occurs during LUAFV virtualization. Not relevent for security. |
 
 **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured seperately.** 
 
@@ -591,7 +591,7 @@ Sigmaルールの例:
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
 | 5031 | WFP Blocked Incoming Connection | 0 |  |
-| 5150 | WFP Blocked A Packet | 0 | |
+| 5150 | WFPがパケットを遮断した | 0 | |
 | 5151 | More Restrictive WFP Filter Blocked A Packet | 0 | |
 | 5154 | Process Listening For Connections | 0 | |
 | 5155 | Process Blocked To Listen For Connections  | 0 | |
@@ -610,7 +610,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 5152 | WFP Blocked A Packet | 0 |  |
+| 5152 | WFPがパケットを遮断した | 0 |  |
 | 5153 | More Restrictive WFP Filter Blocked A Packet | 0 |  |
 
 ### カーネルオブジェクト
@@ -621,7 +621,7 @@ Only kernel objects with a matching SACL generate security audit events. You can
 
 デフォルトの設定: `監査なし`
 
-推奨設定: ACSC recommends `成功と失敗`, however, I have encountered a high amount of `4663: Object Access` events when enabling this.
+推奨設定: ACSC recommends `成功と失敗`, however, I have encountered a high amount of `4663: オブジェクトアクセス` events when enabling this.
 
 Sigmaルールの例:
 * `(4656) Generic Password Dumper Activity on LSASS`
@@ -629,10 +629,10 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドルへのリクエスト | 4 |  |
-| 4658 | Object Handle Closed | 0 |  |
-| 4660 | Object Deleted | 0 |  |
-| 4663 | Object Access  | 2 |  |
+| 4656 | オブジェクトハンドル要求 | 4 |  |
+| 4658 | オブジェクトハンドルが閉じられた | 0 |  |
+| 4660 | オブジェクト削除 | 0 |  |
+| 4663 | オブジェクトアクセス  | 2 |  |
 
 **Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured seperately.** 
 
@@ -653,16 +653,16 @@ Sigmaルールの例:
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
 | 4691 | Indirect Access To Object | 0 |  |
-| 4698 | Task Created | 2 | |
-| 4699 | Task Deleted | 1 | |
-| 4700 | Task Enabled | 0 | |
-| 4701 | Task Disabled | 1 | |
-| 4702 | Task Updated | 0 | |
+| 4698 | タスク作成 | 2 | |
+| 4699 | タスク削除 | 1 | |
+| 4700 | タスクの有効化 | 0 | |
+| 4701 | タスクの無効化 | 1 | |
+| 4702 | タスク更新 | 0 | |
 | 5148 | WFP Detected DoS Attack And Is Blocking Source Packets | 0 |  |
 | 5149 | DoS Attack Has Subsided And Normal Processing Resumed | 0 |  |
-| 5888 | COM+ Catalog Object Modified | 0 |  |
-| 5889 | COM+ Catalog Object Deleted | 0 |  |
-| 5890 | COM+ Catalog Object Added | 0 |  |
+| 5888 | COM+カタログオブジェクト変更 | 0 |  |
+| 5889 | COM+カタログオブジェクト削除 | 0 |  |
+| 5890 | COM+カタログオブジェクト作成 | 0 |  |
 
 ### レジストリ
 
@@ -693,12 +693,12 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドルへのリクエスト | 2 |  |
-| 4657 | Registry Value Modified | 182 |  |
-| 4658 | Object Handle Closed | 0 |  |
+| 4656 | オブジェクトハンドル要求 | 2 |  |
+| 4657 | レジストリ値の変更 | 182 |  |
+| 4658 | オブジェクトハンドルが閉じられた | 0 |  |
 | 4660 | オブジェクト削除  | 0 |  |
-| 4663 | オブジェクトがアクセスされた | 0 |  |
-| 4670 | オブジェクトの権限が変更された | 0 |  |
+| 4663 | オブジェクトアクセス | 0 |  |
+| 4670 | オブジェクト権限の変更 | 0 |  |
 
 **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured seperately.** 
 
@@ -715,9 +715,9 @@ You may want to enable to track employees exfiltrating data via USB storage.
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドルへのリクエスト | 0 |  |
-| 4658 | Object Handle Closed | 0 |  |
-| 4663 | Object Access | 0 |  |
+| 4656 | オブジェクトハンドル要求 | 0 |  |
+| 4658 | オブジェクトハンドルが閉じられた | 0 |  |
+| 4663 | オブジェクトアクセス | 0 |  |
 
 **Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured seperately.** 
 
@@ -737,20 +737,20 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4661 | オブジェクトハンドルへのリクエスト | 2 |  |
+| 4661 | オブジェクトハンドル要求 | 2 |  |
 
 ## ポリシーの変更
 
 ### 監査ポリシーの変更
 
-Changes to audit policy that are audited include:
-* Changing permissions and audit settings on the audit policy object (by using “auditpol /set /sd” command).
-* Changing the system audit policy.
-* Registering and unregistering security event sources.
-* Changing per-user audit settings.
-* Changing the value of CrashOnAuditFail.
-* Changing audit settings on an object (for example, modifying the system access control list (SACL) for a file or registry key).
-* Changing anything in the Special Groups list.
+監査される監査ポリシーの変更には、次のものが含まれる:
+* 監査ポリシーオブジェクトのアクセス許可と監査設定の変更 (`auditpol /set /sd`コマンドを使用)。
+* システム監査ポリシーの変更
+* セキュリティイベントソースの登録と登録解除
+* ユーザごとの監査設定の変更
+* CrashOnAuditFail値の変更
+* オブジェクトの監査設定の変更 (例: ファイルまたはレジストリキーのシステムアクセス制御リスト(SACL)の変更)
+* 特別なグループリスト内の変更
 
 ボリューム: 低
 
@@ -776,16 +776,16 @@ Sigmaルールの例:
 
 ### 認証ポリシーの変更
 
-Changes made to authentication policy include:
-* Creation, modification, and removal of forest and domain trusts.
-* Changes to Kerberos policy under `Computer Configuration > Windows Settings > Security Settings > Account Policies > Kerberos Policy`.
-* When any of the following user logon rights is granted to a user or group:
-* Access this computer from the network
-* Allow logon locally
-* Allow logon through Remote Desktop
-* Logon as a batch job
-* Logon as a service
-* Namespace collision, such as when an added trust collides with an existing namespace name.
+認証ポリシーに加えた変更は次のとおり:
+* フォレストとドメインの信頼の作成、変更、および削除。
+* `コンピューターの構成 > Windows設定 > アカウントポリシー > Kerberosポリシー`のKerberosポリシー設定に対する変更。
+* ユーザーまたはグループに次のユーザー ログオン権限が付与されている場合。
+  * ネットワークからこのコンピューターにアクセスする
+  * ローカルでのログオンを許可する
+  * リモート デスクトップ経由のログオンを許可する
+  * バッチ ジョブとしてのログオン
+  * サービスとしてのログオン
+* 追加された信頼が既存の名前空間名と衝突する場合など、名前空間の競合。
 
 This setting is useful for tracking changes in domain-level and forest-level trust and privileges that are granted to user accounts or groups.
 
@@ -800,18 +800,18 @@ Sigmaルールの例:
  
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4670 | Permissions on an object were changed. | 0 | |
-| 4706 | A new trust was created to a domain. | 1 | |
-| 4707 | A trust to a domain was removed. | 0 | |
-| 4713 | Kerberos policy was changed. | 0 | |
-| 4716 | Trusted domain information was modified. | 0 | |
-| 4717 | System security access was granted to an account. | 0 | |
-| 4718 | System security access was removed from an account. | 0 | |
-| 4739 | Domain Policy was changed. | 0 | |
-| 4864 | A namespace collision was detected. | 0 | |
-| 4865 | A trusted forest information entry was added. | 0 | |
-| 4866 | A trusted forest information entry was removed. | 0 | |
-| 4867 | A trusted forest information entry was modified. | 0 | |
+| 4670 | オブジェクト権限の変更  | 0 | |
+| 4706 | ドメインに新しい信頼が作成された | 1 | |
+| 4707 | ドメインへの信頼が削除された | 0 | |
+| 4713 | Kerberosポリシーが変更された | 0 | |
+| 4716 | 信頼できるドメイン情報が変更された | 0 | |
+| 4717 | システムセキュリティアクセスがアカウントに付与された | 0 | |
+| 4718 | システムセキュリティアクセスがアカウントから削除された | 0 | |
+| 4739 | ドメイン ポリシーが変更された | 0 | |
+| 4864 | 名前空間の競合が検出され | 0 | |
+| 4865 | 信頼できるフォレスト情報エントリが追加された | 0 | |
+| 4866 | 信頼できるフォレスト情報エントリが削除された | 0 | |
+| 4867 | 信頼できるフォレスト情報エントリが変更された | 0 | |
 
 ### 承認ポリシーの変更
 
@@ -828,20 +828,20 @@ However, if you are using an application or system service that makes changes to
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4703 | A user right was adjusted. | 0 | As of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. |
-| 4704 | A user right was assigned. | 0 | |
-| 4705 | A user right was removed. | 0 | |
-| 4670 | Permissions on an object were changed. | 0 | |
-| 4911 | Resource attributes of the object were changed. | 0 | |
-| 4913 | Central Access Policy on the object was changed. | 0 | |
+| 4703 | ユーザ権利の調整 | 0 | As of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. |
+| 4704 | ユーザ権限の割り当て | 0 | |
+| 4705 | ユーザ権限の削除 | 0 | |
+| 4670 | オブジェクト権限の変更 | 0 | |
+| 4911 | オブジェクトのリソース属性が変更された | 0 | |
+| 4913 | オブジェクトの中央アクセス ポリシーが変更された | 0 | |
 
 ### フィルタリングプラットフォームポリシーの変更
 
 Audit events generated by changes to the Windows Filtering Platform (WFP), such as the following:
-* IPsec services status.
-* Changes to IPsec policy settings.
-* Changes to Windows Filtering Platform Base Filtering Engine policy settings.
-* Changes to WFP providers and engine.
+* IPsecサービスの状態。
+* IPsecポリシー設定の変更。
+* フィルタープラットフォームベースWindowsポリシー設定に対する変更点。
+* WFPプロバイダーとエンジンに対する変更。
 
 ボリューム: 低
 
@@ -849,18 +849,18 @@ Audit events generated by changes to the Windows Filtering Platform (WFP), such 
 
 推奨設定: `不明。テストが必要。`
 
-There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these イベントIDs at the moment.
+このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
 ### MPSSVCルールレベルポリシーの変更
 
 Audit MPSSVC Rule-Level Policy Change determines whether the operating system generates audit events when changes are made to policy rules for the Microsoft Protection Service (MPSSVC.exe).
 The Microsoft Protection Service, which is used by Windows Firewall, is an integral part of the computer’s threat protection against malware. The tracked activities include:
-* Active policies when the Windows Firewall service starts.
-* Changes to Windows Firewall rules.
-* Changes to the Windows Firewall exception list.
-* Changes to Windows Firewall settings.
-* Rules ignored or not applied by the Windows Firewall service.
-* Changes to Windows Firewall Group Policy settings.
+* ファイアウォールサービスの開始時Windowsポリシー。
+* ファイアウォールルールWindows変更。
+* ファイアウォール例外一覧Windows変更します。
+* ファイアウォールの設定Windows変更します。
+* ファイアウォールサービスによって無視または適用Windowsルール。
+* ファイアウォールグループポリシーWindowsに対する変更。
 
 Changes to firewall rules are important for understanding the security state of the computer and how well it is protected against network attacks.
 
@@ -887,7 +887,7 @@ Changes to firewall rules are important for understanding the security state of 
 | 4957 | FW did not apply rule. | 0 | |
 | 4958 | FW did not apply rule because rule referred to items not configured on this computer. | 0 | |
 
-There are no sigma detection rules for this sub-category at the moment.
+現在、このサブカテゴリーにはSigmaルールはありません。
 
 ### その他のポリシー変更イベント
 
@@ -899,34 +899,34 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 
 推奨設定: ACSC recommends `成功と失敗`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.
 
-There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these イベントIDs at the moment.
+このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
 ## 特権の使用
 
 ### 重要でない特権の使用
 
 Audit Non-Sensitive Privilege Use contains events that show usage of non-sensitive privileges:
-* Access Credential Manager as a trusted caller
-* Add workstations to domain
-* Adjust memory quotas for a process
-* Bypass traverse checking
-* Change the system time
-* Change the time zone
-* Create a page file
-* Create global objects
-* Create permanent shared objects
-* Create symbolic links
-* Force shutdown from a remote system
-* Increase a process working set
-* Increase scheduling priority
-* Lock pages in memory
-* Modify an object label
-* Perform volume maintenance tasks
-* Profile single process
-* Profile system performance
-* Remove computer from docking station
-* Shut down the system
-* Synchronize directory service data
+* 資格情報マネージャーに信頼された呼び出し側としてアクセス
+* ドメインにワークステーションを追加
+* プロセスのメモリ クォータの増加
+* 走査チェックのバイパス
+* システム時刻の変更
+* タイムゾーンの変更
+* ページファイルの作成
+* グローバルオブジェクトの作成
+* 永続的共有オブジェクトの作成
+* シンボリックリンクの作成
+* リモートコンピューターからの強制シャットダウン
+* プロセスワーキング セットの増加
+* スケジューリング優先順位の繰り上げ
+* メモリ内のページのロック
+* オブジェクトラベルの変更
+* ボリュームの保守タスクを実行
+* 単一プロセスのプロファイル
+* システムパフォーマンスのプロファイル
+* ドッキングステーションからコンピューターを削除
+* システムのシャットダウン
+* ディレクトリサービスデータの同期化
 
 ボリューム: とても高い
 
@@ -936,29 +936,29 @@ Audit Non-Sensitive Privilege Use contains events that show usage of non-sensiti
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4673 | A privileged service was called. | 0 | |
-| 4674 | An operation was attempted on a privileged object. | 0 | |
-| 4985 | The state of a transaction has changed. | 0 | |
+| 4673 | 特権サービスが呼び出された | 0 | |
+| 4674 | 特権オブジェクトに対する操作の試行 | 0 | |
+| 4985 | トランザクション状態の変更 | 0 | |
 
 **Note: Non-sensitive and sensitive privilege use events use the same イベントID.**
 
 ### 重要な特権の使用
 
 Audit Sensitive Privilege Use contains events that show the usage of sensitive privileges:
-* Act as part of the operating system
-* Back up files and directories
-* Restore files and directories
-* Create a token object
-* Debug programs
-* Enable computer and user accounts to be trusted for delegation
-* Generate security audits
-* Impersonate a client after authentication
-* Load and unload device drivers
-* Manage auditing and security log
-* Modify firmware environment values
-* Replace a process-level token
-* Take ownership of files or other objects
-
+* オペレーティングシステムの一部として機能する
+* ファイルとディレクトリのバックアップ
+* ファイルとディレクトリの復元
+* トークンオブジェクトの作成
+* プログラムのデバッグ
+* コンピュータとユーザアカウントに委任時の信頼を付与
+* セキュリティ監査の生成
+* 認証後にクライアントを偽装
+* デバイスドライバーのロードとアンロード
+* 監査とセキュリティログの管理
+* ファームウェア環境値の修正
+* プロセスレベルのトークンを置き換える
+* ファイルとその他のオブジェクトの所有権の取得
+ 
 The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
 
 ボリューム: 高
@@ -974,9 +974,9 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4673 | A privileged service was called. | 2 | |
-| 4674 | An operation was attempted on a privileged object. | 1 | |
-| 4985 | The state of a transaction has changed. | 0 | |
+| 4673 | 特権サービスが呼び出された | 2 | |
+| 4674 | 特権オブジェクトに対する操作の試行 | 1 | |
+| 4985 | トランザクション状態の変更 | 0 | |
 
 **Note: Non-sensitive and sensitive privilege use events use the same イベントID.**
 
@@ -996,7 +996,7 @@ Audit Other System Events contains Windows Firewall Service and Windows Firewall
 
 推奨設定: `不明。テストが必要。`
 
-There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these イベントIDs at the moment.
+このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
 ### セキュリティ状態の変更
 
@@ -1013,9 +1013,9 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4608 | Windows is starting up. | 0 | |
-| 4616 | The system time was changed. | 1 | |
-| 4621 | Administrator recovered system from CrashOnAuditFail. | 0 | |
+| 4608 | 端末起動 | 0 | |
+| 4616 | システム時刻の変更 | 1 | |
+| 4621 | 管理者がCrashOnAuditFailからシステムを回復した | 0 | |
 
 ### セキュリティシステムの拡張
 
@@ -1023,7 +1023,7 @@ This policy setting allows you to audit events related to security system extens
 * A security system extension, such as an authentication, notification, or security package is loaded and is registered with the Local Security Authority (LSA). It is used to authenticate logon attempts, submit logon requests, and any account or password changes. Examples of security system extensions are Kerberos and NTLM.
 * A service is installed and registered with the Service Control Manager. The audit log contains information about the service name, binary, type, start type, and service account.
 
-ボリューム: Low, but more on DCs.
+ボリューム: 低。ドメインコントローラでは高？
 
 デフォルトの設定: `監査なし`
 
@@ -1041,11 +1041,11 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4610 | An authentication package has been loaded by the Local Security Authority. | 0 | Should be monitored with an allowlist. |
-| 4611 | A trusted logon process has been registered with the Local Security Authority. | 1 | Should display "SYSTEM" in the "Subject" field. |
-| 4614 | A notification package has been loaded by the Security Account Manager. | 0 | |
-| 4622 | A security package has been loaded by the Local Security Authority. | 0 | |
-| 4697 | A service was installed in the system. | 20 | This is the most important event in this sub-category. |
+| 4610 | LSAが認証パッケージを読み込んだ | 0 | Should be monitored with an allowlist. |
+| 4611 | 信頼できるログオンプロセスがLSAに登録された | 1 | Should display "SYSTEM" in the "Subject" field. |
+| 4614 | SAMが通知パッケージを読み込んだ | 0 | |
+| 4622 | LSAがセキュリティパッケージを読み込んだ | 0 | |
+| 4697 | サービスインストール | 20 | このサブカテゴリでは最も重要なイベント。Win 10/2016以上が必要。 |
 
 ### システムの整合性
 
@@ -1064,23 +1064,24 @@ According to Microsoft, violations of security subsystem integrity are critical 
 
 推奨設定: `成功と失敗`
 
-Currently, there are no sigma rules for this sub-category.
+現在、このサブカテゴリーにはSigmaルールはありません。
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4612 | Internal resources allocated for the queuing of audit messages have been exhausted, leading to the loss of some audits. | 0 | This is important to monitor. |
-| 4615 | Invalid use of LPC port. | 0 |  |
-| 4618 | A monitored security event pattern has occurred. | 0 | This event can only be invoked manually. |
-| 4816 | RPC detected an integrity violation while decrypting an incoming message. | 0 |  |
+| 4612 | リソース切れで一部のログが失われた可能性がある | 0 | This is important to monitor. |
+| 4615 | LPCポートの使用が無効 | 0 |  |
+| 4618 | 監視対象のセキュリティイベントパターンが発生した | 0 | This event can only be invoked manually. |
+| 4816 | RPCが受信メッセージの復号中に整合性違反が起こった | 0 |  |
 | 5038 | Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error. | 0 |  |
-| 5056 | A cryptographic self-test was performed. | 0 |  |
-| 5057 | A cryptographic primitive operation failed. | 0 |  |
-| 5060 | Verification operation failed. | 0 |  |
-| 5061 | Cryptographic operation. | 0 |  |
-| 5062 | A kernel-mode cryptographic self-test was performed. | 0 |  |
+| 5056 | 暗号化の自己テストの実行 | 0 |  |
+| 5057 | 暗号化プリミティブ操作の失敗 | 0 |  |
+| 5060 | 検証操作の失敗 | 0 |  |
+| 5061 | 暗号化操作 | 0 |  |
+| 5062 | カーネルモードの暗号化セルフテストの実行 | 0 |  |
 | 6281 | Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error. | 0 |  |
 | 6410 | Code integrity determined that a file does not meet the security requirements to load into a process. | 0 |  |
 
 ## グローバルオブジェクトアクセス
 
-You can configure all `ファイルシステム` and `レジストリ` access to be recorded here but it is not recommended due to the very high amount of logs you will generate.
+You can configure all `ファイルシステム` and `レジストリ` access to be recorded here but it is not recommended in production due to the very high amount of logs you will generate.
+It is recommended to turn on when simulating attacks to find out what registry and files are changed in order to write detection rules.
