@@ -66,9 +66,9 @@
 
 # Notes about configuring Security log auditing
 
-* You can configure the Security log audit policies with Group Policy at an organizational level, with the Local Security Policy Editor (`gpedit.msc`) for standalone machines, or use scripts to configure them with the built-in `auditpol` command.
+* At an organizational level, you can configure the Security log audit policies with Group Policy or InTune. For standalone machines, you can configure with the Local Security Policy Editor (`gpedit.msc`). You can also use PowerShell or Batch scripts with built-in commands such as `auditpol` to configure either standalone machines or use them as startup scripts to configure endpoints at scale.
 * You should always enable Security log auditing at the sub-category level (`Computer Configuration > Windows Settings > Security Settings > Advanced security audit policy settings > System Audit Policies` in Group Policy) instead of the broad category level as the latter will usually enable too many events and will override any granular settings you made at the sub-category level.
-* There are sub-categories and event IDs that are in this documentation but not actually used or are not needed for investigations. Only the important ones that you should enable are listed.
+* In this document, I have ommited sub-categories and event IDs that are not actually used or are not needed for monitoring or DFIR investigations. Only the important ones that you should enable are listed here.
 * You cannot turn on or off specific event IDs, only sub-categories at the most granular level. This is unfortunate as sometimes there will be a couple of noisy event IDs that you can not disable unless you disable the entire sub-category.
 * The number of sigma rules were taken at 2022/09/24. Be aware that even if there are few or no sigma rules for a certain event, it does not mean that the event is not important.
 
@@ -272,9 +272,9 @@ Notable Sigma rule:
 
 ### Process Creation
 
-Note: A seperate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration > Windows Settings > Administrative Templates > System > Audit Process Creation > Include command line in process creation events` in Group Policy.
+Note: A separate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration > Windows Settings > Administrative Templates > System > Audit Process Creation > Include command line in process creation events` in Group Policy.
 
-If you do not have Sysmon installed and configured to monitor Process Creation, then you should enable this as about half os Sigma's detection rules rely on process creation with command line options enabled.
+If you do not have Sysmon installed and configured to monitor Process Creation, then you should enable this as about half of Sigma's detection rules rely on process creation with command line options enabled.
 
 Volume: High.
 
@@ -289,7 +289,7 @@ Recommended settings: `Success and Failure` if sysmon is not configured.
 
 ### Process Termination
 
-You may want to keep this off to save file space.
+You may want to keep this disabled to save file space.
 
 Volume: High.
 
@@ -589,7 +589,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: |
 | 5031 | WFP Blocked Incoming Connection | 0 |  |
 | 5150 | WFP Blocked A Packet | 0 | |
-| 5151 | More Restrictive WFP Filter Blocked A Packet | 0 | |
+| 5151 | A More Restrictive WFP Filter Blocked A Packet | 0 | |
 | 5154 | Process Listening For Connections | 0 | |
 | 5155 | Process Blocked To Listen For Connections  | 0 | |
 | 5156 | Network Connection | 4 | |
@@ -608,7 +608,7 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
 | 5152 | WFP Blocked A Packet | 0 |  |
-| 5153 | More Restrictive WFP Filter Blocked A Packet | 0 |  |
+| 5153 | A More Restrictive WFP Filter Blocked A Packet | 0 |  |
 
 ### Kernel Object
 
@@ -1069,13 +1069,13 @@ Currently, there are no sigma rules for this sub-category.
 | 4615 | Invalid use of LPC port. | 0 |  |
 | 4618 | A monitored security event pattern has occurred. | 0 | This event can only be invoked manually. |
 | 4816 | RPC detected an integrity violation while decrypting an incoming message. | 0 |  |
-| 5038 | Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error. | 0 |  |
+| 5038 | Invalid image hash | 0 | Original event title: `Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error.` |
 | 5056 | A cryptographic self-test was performed. | 0 |  |
 | 5057 | A cryptographic primitive operation failed. | 0 |  |
 | 5060 | Verification operation failed. | 0 |  |
 | 5061 | Cryptographic operation. | 0 |  |
 | 5062 | A kernel-mode cryptographic self-test was performed. | 0 |  |
-| 6281 | Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error. | 0 |  |
+| 6281 | Invalid image page hash | 0 | Original event title: `Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error.` |
 | 6410 | Code integrity determined that a file does not meet the security requirements to load into a process. | 0 |  |
 
 ## Global Object Access Auditing
