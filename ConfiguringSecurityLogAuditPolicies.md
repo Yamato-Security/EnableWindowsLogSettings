@@ -43,6 +43,7 @@
     - [Filtering Platform Connection](#filtering-platform-connection)
     - [Filtering Platform Packet Drop](#filtering-platform-packet-drop)
     - [Kernel Object](#kernel-object)
+    - [Handle Manipulation](#handle-manipulation)
     - [Other Object Access Events](#other-object-access-events)
     - [Registry](#registry)
     - [Removable Storage](#removable-storage)
@@ -96,7 +97,7 @@ Notable Sigma rules:
 
 ### Kerberos Authentication Service
 
-**Note: Enable only for Domain Controllers**
+> **Note: Enable only for Domain Controllers**
 
 Volume: High.
 
@@ -118,7 +119,7 @@ Notable Sigma rules:
 
 ### Kerberos Service Ticket Operations
 
-**Note: Enable only for Domain Controllers**
+> **Note: Enable only for Domain Controllers**
 
 Volume: High
 
@@ -327,7 +328,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 ## DS (Directory Service) Access
 
-**Note: Enable only for Domain Controllers**
+> **Note: Enable only for Domain Controllers**
 
 ### Directory Service Access
 
@@ -481,7 +482,7 @@ Recommended settings: `Success and Failure`
 
 ### Certification Services
 
-**Note: Enable only for servers providing AD CS role services.**
+> **Note: Enable only for servers providing AD CS role services.**
 
 Volume: Low to medium.
 
@@ -497,11 +498,13 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: |
 | 4898 | Certificate Services Loaded A Template | 2 | |
 
-**Note: Many event IDs are enabled. Only the one with sigma rules is shown above.**
+> **Note: Many event IDs are enabled. Only the one with sigma rules is shown above.**
 
 ### Detailed File Share
 
 Volume: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
+
+> **Warning: There are no SACLs (System Access Control Lists) for shared folders so everything is logged.**
 
 Default settings: `No Auditing`
 
@@ -519,7 +522,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 5145 | Network Share File Access | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
+| 5145 | Network Share File Access | 17 |  |
 
 ### File Share
 
@@ -542,7 +545,7 @@ Notable Sigma rule:
 
 ### File System
 
-You need to seperately configure audit permissions on files and/or folders in order for access to be logged. 
+You need to separately configure audit permissions on files and/or folders in order for access to be logged. 
 For example, by right-clicking, opening Properties, Security tab, Advanced, Auditing tab and then adding a Principal and what permissions to monitor.
 It is recommended only to monitor access to sensitive files as there will be too much noise if too many files are enabled for logging.
 
@@ -558,16 +561,16 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 0 | Could fail if the process does not have the right permissions. |
-| 4658 | Object Handle Closed | 0 | |
+| 4656 | Object Handle Requested | 0 | Fails if the process does not have the right permissions. You need to enable the `Handle Manipulation` subcategory to record these events. |
+| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record these events. |
 | 4660 | Object Deleted | 0 | |
 | 4663 | Object Access | 2 | Differs from 4656 in that there are only success events. |
 | 4664 | Attempt To Create Hard Link | 0 | |
 | 4670 | Object Permissions Changed | 0 | |
-| 4985 | State Of A Transaction Changed | 0 | Used for Transaction Manager and not relevent for security. |
-| 5051 | A File Was Virtualized | 0 | Rarely occurs during LUAFV virtualization. Not relevent for security. |
+| 4985 | State Of A Transaction Changed | 0 | Used for Transaction Manager and not relevant for security. |
+| 5051 | A File Was Virtualized | 0 | Rarely occurs during LUAFV virtualization. Not relevant for security. |
 
-**Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured seperately.** 
+> **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured separately.** 
 
 ### Filtering Platform Connection
 
@@ -612,13 +615,16 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 
 ### Kernel Object
 
-Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
+This feature is mainly for kernel developers.
+This audits attempts to access the kernel objects, such as mutexes, symbolic links, named pipes, etc... 
+Only kernel objects with SACLs generate security audit events. By default, kernel objects will not have SACLS defined so they will not be audited.
+You can enable auditing of all kernel objects by enabling `Audit the access of global system objects` (GPO: `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit the access of global system objects`) which will define SACLS for all kernel objects, however, it is not recommended as you will probably generate too many unneeded events. On Windows 11, access to the lsass process seems to be enabled by default, which is good to monitor.
 
-Volume: High if auditing access of global system objects is enabled.
+Volume: High if auditing access of global object access is enabled.
 
 Default settings: `No Auditing`
 
-Recommended settings: ACSC recommends `Success and Failure`, however, I have encountered a high amount of `4663: Object Access` events when enabling this.
+Recommended settings: `Success and Failure` but do not enable `Audit the access of global system objects` as you will generate too many `4663: Object Access` events.
 
 Notable Sigma rules:
 * `(4656) Generic Password Dumper Activity on LSASS`
@@ -626,12 +632,24 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 4 |  |
-| 4658 | Object Handle Closed | 0 |  |
+| 4656 | Object Handle Requested | 4 | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
 | 4660 | Object Deleted | 0 |  |
 | 4663 | Object Access  | 2 |  |
 
-**Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured seperately.** 
+> **Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured separately.** 
+
+### Handle Manipulation
+
+This subcategory needs to be enabled to enable events like `4656`, `4658` and `4661` in other subcategories. It also enables an additional event `4690`, however, this event not useful for investigations. It is recommended to enable this subcategory in order to enable more useful events in other subcategories.
+
+Default settings: `No Auditing`
+
+Recommended settings: `Success and Failure` 
+
+| Event ID | Description | Sigma Rules | Notes |
+| :---: | :---: | :---: | :---: |
+| 4690 | An attempt was made to duplicate a handle to an object | 0 | |
 
 ### Other Object Access Events
 
@@ -690,14 +708,14 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 2 |  |
+| 4656 | Object Handle Requested | 2 | You need to enable the `Handle Manipulation` subcategory to record this event. |
 | 4657 | Registry Value Modified | 182 |  |
-| 4658 | Object Handle Closed | 0 |  |
+| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
 | 4660 | Object Deleted  | 0 |  |
 | 4663 | Object Access | 0 |  |
 | 4670 | Object Permissions Changed | 0 |  |
 
-**Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured seperately.** 
+> **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured separately.** 
 
 ### Removable Storage
 
@@ -712,11 +730,11 @@ Recommended settings: `Success and Failure` if you want to monitor external devi
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 0 |  |
-| 4658 | Object Handle Closed | 0 |  |
+| 4656 | Object Handle Requested | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
 | 4663 | Object Access | 0 |  |
 
-**Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured seperately.** 
+> **Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured separately.** 
 
 ### SAM
 
@@ -734,7 +752,7 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4661 | Object Handle Requested | 2 |  |
+| 4661 | Object Handle Requested | 2 | You need to enable the `Handle Manipulation` subcategory to record this event. |
 
 ## Policy Change
 
@@ -846,7 +864,7 @@ Default settings: `No Auditing`
 
 Recommended settings: `Unknown, Needs testing.`
 
-There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
+> There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
 ### MPSSVC Rule-Level Policy Change
 
@@ -896,7 +914,7 @@ Default settings: `No Auditing`
 
 Recommended settings: ACSC recommends `Success and Failure`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.
 
-There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
+> There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
 ## Privilege Use
 
@@ -937,7 +955,7 @@ Recommended settings: `No Auditing`
 | 4674 | An operation was attempted on a privileged object. | 0 | |
 | 4985 | The state of a transaction has changed. | 0 | |
 
-**Note: Non-sensitive and sensitive privilege use events use the same event ID.**
+> **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
 ### Sensitive Privilege Use
 
@@ -956,7 +974,8 @@ Audit Sensitive Privilege Use contains events that show the usage of sensitive p
 * Replace a process-level token
 * Take ownership of files or other objects
 
-The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
+The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled.
+However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
 
 Volume: High.
 
@@ -975,7 +994,7 @@ Notable Sigma rules:
 | 4674 | An operation was attempted on a privileged object. | 1 | |
 | 4985 | The state of a transaction has changed. | 0 | |
 
-**Note: Non-sensitive and sensitive privilege use events use the same event ID.**
+> **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
 ## System
 
@@ -993,7 +1012,7 @@ Default settings: `Success and Failure`
 
 Recommended settings: `Unknown. Needs testing.`
 
-There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
+> There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
 ### Security State Change
 
@@ -1065,18 +1084,18 @@ Currently, there are no sigma rules for this sub-category.
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
-| 4612 | Some logs may have been loss due to lack of resources. | 0 | This is important to monitor. |
+| 4612 | Potential Log Loss Due To Lack Of Resources | 0 | This is important to monitor. |
 | 4615 | Invalid use of LPC port. | 0 |  |
 | 4618 | A monitored security event pattern has occurred. | 0 | This event can only be invoked manually. |
-| 4816 | RPC detected an integrity violation while decrypting an incoming message. | 0 |  |
-| 5038 | Invalid image hash | 0 | Original event title: `Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error.` |
+| 4816 | RPC Integrity Violation | 0 | Orginally `RPC detected an integrity violation while decrypting an incoming message.`  |
+| 5038 | Code Integrity Error: Invalid Image Hash | 0 | Originally `Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error.` |
 | 5056 | A cryptographic self-test was performed. | 0 |  |
 | 5057 | A cryptographic primitive operation failed. | 0 |  |
 | 5060 | Verification operation failed. | 0 |  |
 | 5061 | Cryptographic operation. | 0 |  |
 | 5062 | A kernel-mode cryptographic self-test was performed. | 0 |  |
-| 6281 | Invalid image page hash | 0 | Original event title: `Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error.` |
-| 6410 | Code integrity determined that a file does not meet the security requirements to load into a process. | 0 |  |
+| 6281 | Code Integrity Error: Invalid Image Page Hash | 0 | Originally `Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error.` |
+| 6410 | Code Integrity Error: Requirements Not Met | 0 |  |
 
 ## Global Object Access Auditing
 

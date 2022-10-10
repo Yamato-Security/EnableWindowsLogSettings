@@ -46,6 +46,7 @@
     - [フィルタリングプラットフォームの接続](#フィルタリングプラットフォームの接続)
     - [フィルタリングプラットフォームパケットの破棄](#フィルタリングプラットフォームパケットの破棄)
     - [カーネルオブジェクト](#カーネルオブジェクト)
+    - [ハンドル操作](#ハンドル操作)
     - [その他のオブジェクトアクセスイベント](#その他のオブジェクトアクセスイベント)
     - [レジストリ](#レジストリ)
     - [リムーバブル記憶域](#リムーバブル記憶域)
@@ -167,8 +168,8 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4782 | アカウントのパスワードハッシュがアクセスされた | 0 | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. |
-| 4793 | パスワードポリシーチェックAPIが呼び出された | 0 | Generated during password resets or attackers checking the password policy. |
+| 4782 | アカウントのパスワードハッシュがアクセスされた | 0 | AD Migration Toolkitを使用したアカウントのパスワード移行時、または攻撃者がパスワードハッシュにアクセスしようとした際にDC上で生成される。 |
+| 4793 | パスワードポリシーチェックAPIが呼び出された | 0 | パスワードリセット時や攻撃者がパスワードポリシーをチェックする際に生成される。 |
 
 ### セキュリティグループの管理
 
@@ -243,7 +244,7 @@ Sigmaルールの例:
 | 4767 | ユーザアカウントのロックが解除された | 0 | |
 | 4780 | 管理者グループのメンバーであるアカウントにACLが設定された | 0 | |
 | 4781 | アカウントの名前が変更された | 1 | |
-| 4794 | DSRM Administrator Password Set | 1 | |
+| 4794 | DSRM管理者のパスワード設定 | 1 | |
 | 4798 | ユーザーローカルグループメンバーシップが列挙された | 0 | |
 | 5376 | 資格情報マネージャの資格情報がバックアップされた | 0 | |
 | 5377 | 資格情報マネージャの資格情報がバックアップから復元された | 0 | |
@@ -385,7 +386,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: Detects scans for the BlueKeep vulnerability.
+* `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: BlueKeep脆弱性を検出するスキャンを検出する。
 * `Failed Logon From Public IP`
 * `Multiple Users Failing to Authenticate from Single Process`
 * `Multiple Users Remotely Failing To Authenticate From Single Source`
@@ -400,11 +401,11 @@ Sigmaルールの例:
 
 デフォルトの設定: `監査なし`
 
-推奨設定: ACSC recommends `成功と失敗` but this is probably not needed if you can easily lookup what groups a user belongs to.
+推奨設定: ACSCのガイドでは、`成功失敗`が推奨されているが、ユーザがどのグループに属しているか簡単に調べられる場合はおそらく`監査なし`でも良い。
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4627 | グループメンバーシップ情報 | 0 | Shows what group a user belongs to when they log in. |
+| 4627 | グループメンバーシップ情報 | 0 | ユーザがログインした時に、どのグループに属しているかが記録される。 |
 
 ### ログオフ
 
@@ -484,7 +485,7 @@ Sigmaルールの例:
 
 ### 証明書サービス
 
-**Note: Enable only for servers providing AD CS role services.**
+> **注意: AD CSロールサービスを提供するサーバに対してのみ有効にします。**
 
 ボリューム: 低〜中
 
@@ -500,11 +501,13 @@ Sigmaルールの例:
 | :---: | :---: | :---: | :---: |
 | 4898 | 証明書サービスがテンプレートをロードした | 2 | |
 
-**注意: 多くのイベントIDが有効になります。SigmaルールがあるイベントIDだけ上記で記載されています。**
+> **注意: 多くのイベントIDが有効になります。SigmaルールがあるイベントIDだけ上記で記載されています。**
 
 ### 詳細なファイル共有
 
 ボリューム: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
+
+> **注意: 共有フォルダにはSACL（システムアクセス制御リスト）がないので、すべてログに記録される。**
 
 デフォルトの設定: `監査なし`
 
@@ -522,7 +525,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 5145 | ネットワーク共有へのファイルアクセス | 17 | There are no SACLs (System Access Control Lists) for shared folders so everything is logged. |
+| 5145 | ネットワーク共有へのファイルアクセス | 17 | |
 
 ### ファイル共有
 
@@ -537,7 +540,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 5140 | ネットワーク共有への接続 | 1 | Can be combined with File System auditing to track what files were accessed. |
+| 5140 | ネットワーク共有への接続 | 1 | ファイルシステム監査と組み合わせることで、どのファイルがアクセスされたかを追跡できる。 |
 | 5142 | ネットワーク共有が作成された | 0 | |
 | 5143 | ネットワーク共有が変更された | 0 | |
 | 5144 | ネットワーク共有が削除された | 0 | |
@@ -561,16 +564,16 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 0 | Could fail if the process does not have the right permissions. |
+| 4656 | オブジェクトハンドル要求 | 0 | プロセスに適切な権限がない場合、失敗する。 |
 | 4658 | オブジェクトハンドルが閉じられた | 0 | |
 | 4660 | オブジェクト削除 | 0 | |
 | 4663 | オブジェクトアクセス | 2 |　4656と異なって、成功イベントしか記録されない。 |
 | 4664 | ハードリンク作成の試行 | 0 | |
 | 4670 | オブジェクト権限の変更 | 0 | |
-| 4985 | トランザクション状態の変更 | 0 | Used for Transaction Manager and not relevent for security. |
-| 5051 | ファイルが仮想化された | 0 | Rarely occurs during LUAFV virtualization. Not relevent for security. |
+| 4985 | トランザクション状態の変更 | 0 | トランザクションマネージャに使用され、セキュリティには関係ない。 |
+| 5051 | ファイルが仮想化された | 0 | LUAFVの仮想化時にまれに発生する。セキュリティには関係ない。 |
 
-**Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured seperately.** 
+> **注意: イベントID 4656、4658、4660、4663は、レジストリ、ファイルシステムオブジェクトへのアクセス、リムーバブルストレージへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
 ### フィルタリングプラットフォームの接続
 
@@ -580,10 +583,10 @@ Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and ne
 
 デフォルトの設定: `監査なし`
 
-推奨設定: `成功と失敗` if you have enough space and are not monitoring network connections with sysmon. This should cause a high amount of events though.
+推奨設定: 十分な容量があり、sysmonでネットワーク接続を監視していない場合は、`成功失敗`を推奨する。ただ、イベントが多発してしまう可能性が高い。
 
 Sigmaルールの例:
-* `(5156) Enumeration via the Global Catalog`: To detect Bloodhound and similar tools.
+* `(5156) Enumeration via the Global Catalog`: Bloodhound等のツールを検知する。
 * `(5156) RDP over Reverse SSH Tunnel WFP`
 * `(5156) Remote PowerShell Sessions Network Connections (WinRM)`
 * `(5156) Suspicious Outbound Kerberos Connection`: Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.
@@ -606,7 +609,7 @@ Sigmaルールの例:
 
 デフォルトの設定: `監査なし`
 
-推奨設定: `成功と失敗` if you have enough space and are not monitoring network connections with sysmon. This should cause a high amount of events though.
+推奨設定: 十分な容量があり、sysmonでネットワーク接続を監視していない場合は、`成功失敗`を推奨する。ただ、イベントが多発してしまう可能性が高い。
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -615,13 +618,19 @@ Sigmaルールの例:
 
 ### カーネルオブジェクト
 
-Only kernel objects with a matching SACL generate security audit events. You can enable auditing of all kernel objects at `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects`, however, it is not recommended as you will probably generate too many unneeded events. It is recommended to only enable logging for events that you have detection rules for.
+この機能は、主にカーネル開発者向けです。
+ミューテックス、シンボリックリンク、名前付きパイプ等々のカーネルオブジェクトにアクセスしようとするイベントが記録されます。
+SACLを持つカーネル・オブジェクトだけが、セキュリティ監査イベントを生成します。
+デフォルトでは、カーネルオブジェクトにSACLが設定されていないため、監査されません。
+`グローバルシステムオブジェクトのアクセスを監査する` (GPO: `コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション > 監査: グローバルシステムオブジェクトのアクセスを監査する`)を有効にすると、すべてのカーネルオブジェクトに対してSACLが設定され、すべてのカーネルオブジェクトへのアクセスが記録されます。
+しかし、不要なイベントを大量に発生させる可能性があるため、推奨できません。
+Windows 11では、監視すべきlsassプロセスへのアクセスはデフォルトで有効になっているようです。
 
-ボリューム: High if auditing access of global system objects is enabled.
+ボリューム: `グローバルシステムオブジェクトのアクセスを監査する`が有効の場合、高。
 
 デフォルトの設定: `監査なし`
 
-推奨設定: ACSC recommends `成功と失敗`, however, I have encountered a high amount of `4663: オブジェクトアクセス` events when enabling this.
+推奨設定: `成功と失敗`。ただし、`4663: オブジェクトアクセス`イベントが大量に生成されるため、`グローバルシステムオブジェクトのアクセスを監査する`の有効化を推奨しない。
 
 Sigmaルールの例:
 * `(4656) Generic Password Dumper Activity on LSASS`
@@ -634,7 +643,22 @@ Sigmaルールの例:
 | 4660 | オブジェクト削除 | 0 |  |
 | 4663 | オブジェクトアクセス  | 2 |  |
 
-**Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured seperately.** 
+> **注意: イベントID 4656、4658、4660、4663は、レジストリ、ファイルシステムオブジェクトへのアクセス、リムーバブルストレージへのアクセスにも使用されていますが、個別に設定する必要があります。** 
+
+### ハンドル操作
+
+This subcategory needs to be enabled to enable events like `4656`, `4658` and `4661` in other subcategories. 
+It also enables an additional event `4690`, however, this event not useful for investigations. It is recommended to enable this subcategory in order to enable more useful events in other subcategories.
+
+ボリューム: SACLの設定による
+
+デフォルトの設定: `監査なし`
+
+推奨設定: `成功と失敗`
+
+| イベントID | タイトル | Sigmaルール数 | 備考欄 |
+| :---: | :---: | :---: | :---: |
+| 4690 | ハンドルをオブジェクトに複製しようとした | 0 | |
 
 ### その他のオブジェクトアクセスイベント
 
@@ -700,7 +724,7 @@ Sigmaルールの例:
 | 4663 | オブジェクトアクセス | 0 |  |
 | 4670 | オブジェクト権限の変更 | 0 |  |
 
-**Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured seperately.** 
+> **注意: イベントID 4656、4658、4660、4663、4670は、カーネル、ファイルシステムオブジェクトへのアクセス、リムーバブルストレージへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
 ### リムーバブル記憶域
 
@@ -719,7 +743,7 @@ USBストレージ経由でデータを流出させる従業員などを追跡�
 | 4658 | オブジェクトハンドルが閉じられた | 0 |  |
 | 4663 | オブジェクトアクセス | 0 |  |
 
-**Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured seperately.** 
+**注意: イベントID 4656、4658、4663は、レジストリ、カーネル、ファイルシステムオブジェクトへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
 ### SAM
 
@@ -833,7 +857,7 @@ However, if you are using an application or system service that makes changes to
 | 4705 | ユーザ権限の削除 | 0 | |
 | 4670 | オブジェクト権限の変更 | 0 | |
 | 4911 | オブジェクトのリソース属性が変更された | 0 | |
-| 4913 | オブジェクトの中央アクセス ポリシーが変更された | 0 | |
+| 4913 | オブジェクトの中央アクセスポリシーが変更された | 0 | |
 
 ### フィルタリングプラットフォームポリシーの変更
 
@@ -849,7 +873,7 @@ Windows Filtering Platform（WFP）の変更によって発生する以下のよ
 
 推奨設定: `不明。テストが必要。`
 
-このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
+> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
 ### MPSSVCルールレベルポリシーの変更
 
@@ -899,7 +923,7 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 
 推奨設定: ACSC recommends `成功と失敗`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.
 
-このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
+> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
 ## 特権の使用
 
@@ -940,7 +964,7 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 | 4674 | 特権オブジェクトに対する操作の試行 | 0 | |
 | 4985 | トランザクション状態の変更 | 0 | |
 
-**注意: 重要でない特権の使用イベントと重要な特権の使用イベントは同じイベントIDを使用します。**
+> **注意: 重要でない特権の使用イベントと重要な特権の使用イベントは同じイベントIDを使用します。**
 
 ### 重要な特権の使用
 
@@ -959,7 +983,8 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 * プロセスレベルのトークンを置き換える
 * ファイルとその他のオブジェクトの所有権の取得
  
-The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled on the computer or device. However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
+The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled.
+However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
 
 ボリューム: 高
 
@@ -978,7 +1003,7 @@ Sigmaルールの例:
 | 4674 | 特権オブジェクトに対する操作の試行 | 1 | |
 | 4985 | トランザクション状態の変更 | 0 | |
 
-**注意: 重要でない特権の使用イベントと重要な特権の使用イベントは同じイベントIDを使用します。**
+> **注意: 重要でない特権の使用イベントと重要な特権の使用イベントは同じイベントIDを使用します。**
 
 ## システム
 
@@ -996,7 +1021,7 @@ Sigmaルールの例:
 
 推奨設定: `不明。テストが必要。`
 
-このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
+> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
 ### セキュリティ状態の変更
 
@@ -1041,8 +1066,8 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4610 | LSAが認証パッケージを読み込んだ | 0 | Should be monitored with an allowlist. |
-| 4611 | 信頼できるログオンプロセスがLSAに登録された | 1 | Should display "SYSTEM" in the "Subject" field. |
+| 4610 | LSAが認証パッケージを読み込んだ | 0 | 許可リストで監視すべき。 |
+| 4611 | 信頼できるログオンプロセスがLSAに登録された | 1 | `Subject`フィールドが`SYSTEM`になっているはず。 |
 | 4614 | SAMが通知パッケージを読み込んだ | 0 | |
 | 4622 | LSAがセキュリティパッケージを読み込んだ | 0 | |
 | 4697 | サービスインストール | 20 | このサブカテゴリでは最も重要なイベント。Win 10/2016以上が必要。 |
@@ -1072,14 +1097,14 @@ Sigmaルールの例:
 | 4615 | LPCポートの使用が無効 | 0 |  |
 | 4618 | 監視対象のセキュリティイベントパターンが発生した | 0 | このイベントは手動で呼び出された時だけ記録される。 |
 | 4816 | RPCが受信メッセージの復号中に整合性違反が起こった | 0 |  |
-| 5038 | イメージのハッシュ値が不正 | 0 | 元のイベントタイトル: `コードの整合性により、ファイルのイメージ ハッシュが無効であると判断されました。 不正な変更が原因でファイルが破損している可能性があります。無効なハッシュは、ディスク デバイス エラーの可能性があることを示している可能性があります。`  |
+| 5038 | コード整合性エラー: イメージのハッシュ値が不正 | 0 | 元のイベントタイトル: `コードの整合性により、ファイルのイメージ ハッシュが無効であると判断されました。 不正な変更が原因でファイルが破損している可能性があります。無効なハッシュは、ディスク デバイス エラーの可能性があることを示している可能性があります。`  |
 | 5056 | 暗号化の自己テストの実行 | 0 |  |
 | 5057 | 暗号化プリミティブ操作の失敗 | 0 |  |
 | 5060 | 検証操作の失敗 | 0 |  |
 | 5061 | 暗号化操作 | 0 |  |
 | 5062 | カーネルモードの暗号化セルフテストの実行 | 0 |  |
-| 6281 | イメージのページハッシュ値が不正 | 0 | 元のイベントタイトル: `コード整合性により、イメージファイルのページハッシュが無効であると判断されました。ページハッシュなしでファイルに正しく署名されていないか、不正な変更が原因で破損している可能性があります。無効なハッシュは、潜在的なディスクデバイスエラーを示している可能性があります。` |
-| 6410 | Code integrity determined that a file does not meet the security requirements to load into a process. | 0 | 元のイベントタイトル: `コードの整合性により、ファイルがプロセスに読み込むセキュリティ要件を満たしていないと判断されました。` |
+| 6281 | コード整合性エラー: イメージのページハッシュ値が不正 | 0 | 元のイベントタイトル: `コード整合性により、イメージファイルのページハッシュが無効であると判断されました。ページハッシュなしでファイルに正しく署名されていないか、不正な変更が原因で破損している可能性があります。無効なハッシュは、潜在的なディスクデバイスエラーを示している可能性があります。` |
+| 6410 | コード整合性エラー: 要件を満たしていない | 0 | 元のイベントタイトル: `コードの整合性により、ファイルがプロセスに読み込むセキュリティ要件を満たしていないと判断されました。` |
 
 ## グローバルオブジェクトアクセス
 
