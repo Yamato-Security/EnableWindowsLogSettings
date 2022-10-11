@@ -19,7 +19,9 @@
 ## 目次
 
 - [TLDR](#tldr)
+  - [目次](#目次)
 - [作者](#作者)
+- [コントリビュータ](#コントリビュータ)
 - [Acknowledgements](#acknowledgements)
 - [デフォルトの Windows ログ設定の問題](#デフォルトの-windows-ログ設定の問題)
 - [注意: 端末の設定変更は自己責任で！](#注意-端末の設定変更は自己責任で)
@@ -71,11 +73,15 @@
 
 # 作者
  
-田中ザック ([@yamatosecurity](https://twitter.com/yamatosecurity))。
+田中ザック (Zaku / [@yamatosecurity](https://twitter.com/yamatosecurity))。
 より多くの研究とテストを行い、(検知ルールとドキュメンテーションの)改善の余地があるため、定期的に更新していく予定です。
 PRは歓迎され、喜んでコントリビューターとして追加させていただきます。
 
 もし、このガイドが役に立つのであれば、GitHubで星を付けてください。更新し続けるモチベーションが上がります。
+
+# コントリビュータ
+
+* DustInDark: 日本語版の修正。
 
 # Acknowledgements
 

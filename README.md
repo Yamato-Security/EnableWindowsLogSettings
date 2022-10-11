@@ -21,6 +21,7 @@ This is yet another guide on configuring and monitoring Windows event logs with 
 - [TLDR](#tldr)
 - [Table of Contents](#table-of-contents)
 - [Author](#author)
+- [Contributors](#contributors)
 - [Acknowledgements](#acknowledgements)
 - [Problems with the default Windows log settings](#problems-with-the-default-windows-log-settings)
 - [Warning: Make changes to your systems at your own risk!](#warning-make-changes-to-your-systems-at-your-own-risk)
@@ -72,9 +73,13 @@ This is yet another guide on configuring and monitoring Windows event logs with 
 
 # Author
  
-Zaku (Zach Mathis / ([@yamatosecurity](https://twitter.com/yamatosecurity))). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor. If you find any errors in this documentation, please let me know and I will fix them as soon as possible.
+Zach Mathis (Zaku / ([@yamatosecurity](https://twitter.com/yamatosecurity))). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor. If you find any errors in this documentation, please let me know and I will fix them as soon as possible.
 
 If you find any of this useful, please give a star on GitHub as it will probably help motivate me to continue updating this.
+
+# Contributors
+
+* DustInDark: Japanese translation fixes.
 
 # Acknowledgements
 
