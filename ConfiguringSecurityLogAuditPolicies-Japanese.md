@@ -89,7 +89,7 @@
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Metasploit SMB Authentication`: Detect when someone is running Metasploit on your network.
+* `Metasploit SMB Authentication`: MetasploitのSMB攻撃の検知
 * `Valid Users Failing to Authenticate from Single Source Using NTLM`: パスワード推測攻撃
 * `Invalid Users Failing To Authenticate From Single Source Using NTLM`: ユーザ名の推測
 * `Failed Logins with Different Accounts from Single Source System`: パスワードスプレー攻撃
@@ -150,7 +150,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Possible DC Shadow`: Detects DCShadow via create new SPN.
+* `Possible DC Shadow`: 新規SPNによるDCShadow攻撃の検知
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -173,13 +173,20 @@ Sigmaルールの例:
 
 ### セキュリティグループの管理
 
-A "security-enabled" group is a group that you can assign access permissions (ACLs). The other type is a Distribution Group, which is "security-disabled" and cannot be assigned access permissions. Since security-enabled groups are most common, we will refer to them simply as "groups". For example, `Local Group Created`, instead of `A security-enabled local group was created.`.
+「セキュリティが有効なグループ」とはアクセス件(ACL)付与することができるグループのことです。
+もう1つのタイプは、「セキュリティが無効なグループ」でアクセス権を割り当てられない「ディストリビューショングループ」です。
+セキュリティが有効なグループが最も一般的であるため、ここでは単に「グループ」と呼ぶことにします。
+例えば、「セキュリティが有効なローカルグループが作成された」の代わりに、「ローカルグループが作成された」というイベントタイトルにしました。
 
-A domain local group is a security or distribution group that can contain universal groups, global groups, other domain local groups from its own domain, and accounts from any domain in the forest. You can give domain local security groups rights and permissions on resources that reside only in the same domain where the domain local group is located.
+ドメインローカルグループは、ユニバーサルグループ、グローバルグループ、自ドメインの他のドメインローカルグループ、およびフォレスト内の任意のドメインのアカウントを含むことができるセキュリティまたは配布グループです。
+ドメインローカルセキュリティグループには、ドメインローカルグループが配置されている同じドメイン内にのみ存在するリソースに対する権利と権限を与えることができます。
 
-A global group is a group that can be used in its own domain, in member servers and in workstations of the domain, and in trusting domains. In all those locations, you can give a global group rights and permissions and the global group can become a member of local groups. However, a global group can contain user accounts that are only from its own domain.
+グローバルグループは、自身のドメイン、ドメインのサーバと端末、および信頼するドメインで使用することができるグループです。
+それらのすべての場所で、グローバルグループに権利と権限を与え、グローバルグループはローカルグループのメンバーになることができます。
+ただし、グローバルグループには、そのドメインに所属するユーザアカウントのみを含めることができます。
 
-A universal group is a security or distribution group that contains users, groups, and computers from any domain in its forest as members. You can give universal security groups rights and permissions on resources in any domain in the forest.
+ユニバーサルグループは、そのフォレスト内の任意のドメインのユーザ、グループ、および端末をメンバーとして含むセキュリティまたは配布グループです。
+ユニバーサルセキュリティグループには、フォレスト内のどのドメイン内のリソースに対しても権利と権限を与えることができます。
 
 ボリューム: 低
 
@@ -189,7 +196,7 @@ A universal group is a security or distribution group that contains users, group
 
 Sigmaルールの例:
 * `User Added to Local Administrators`
-* `Operation Wocao Activity`: Detects China-based cyber espionage.
+* `Operation Wocao Activity`: 中国政府によるスパイ活動の検知
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -219,7 +226,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Hidden Local User Creation`: Detects hidden user accounts most likely used as a backdoor account.
+* `Hidden Local User Creation`: バックドアアカウントとして使用されている可能性が高い隠しユーザアカウントを検出する。
 * `Suspicious Windows ANONYMOUS LOGON Local Account Created`
 * `Local User Creation`
 * `Active Directory User Backdoors`
@@ -335,7 +342,7 @@ Sigmaルールの約半分は、コマンドラインオプションを有効に
 
 ### ディレクトリサービスアクセス
 
-ボリューム: High on servers running AD DS role services.
+ボリューム: AD DSロールサービスを実行しているサーバーでは高。
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功`
 
@@ -505,13 +512,13 @@ Sigmaルールの例:
 
 ### 詳細なファイル共有
 
-ボリューム: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
+ボリューム: ファイルサーバやDCでは非常に高いが、誰がどのファイルにアクセスしているかを追跡したり、さまざまな横展開等を検出したい場合は必要かもしれない。
 
 > **注意: 共有フォルダにはSACL（システムアクセス制御リスト）がないので、すべてログに記録される。**
 
 デフォルトの設定: `監査なし`
 
-推奨設定: `監査なし` due to the high noise level. Enable if you can though.
+推奨設定:  ノイズが多いため`監査なし`。可能であれば、有効にした方が良い。
 
 Sigmaルールの例:
 * `Remote Task Creation via ATSVC Named Pipe`
@@ -548,9 +555,9 @@ Sigmaルールの例:
 
 ### ファイルシステム
 
-You need to seperately configure audit permissions on files and/or folders in order for access to be logged. 
-For example, by right-clicking, opening Properties, Security tab, Advanced, Auditing tab and then adding a Principal and what permissions to monitor.
-It is recommended only to monitor access to sensitive files as there will be too much noise if too many files are enabled for logging.
+アクセスログを記録するためには、ファイルやフォルダーに別途監査権限を設定する必要があります。
+例えば、右クリックで「プロパティ」→「セキュリティ」タブ→「詳細設定」→「監査」タブを開き、プリンシパルと監視する権限を追加することで記録できます。
+多くのファイルをログに記録するとノイズが多くなるため、機密ファイルへのアクセスを監視する場合にのみ使用することをお勧めします。
 
 ボリューム: SACL設定による
 
@@ -560,7 +567,7 @@ It is recommended only to monitor access to sensitive files as there will be too
 
 Sigmaルールの例:
 * `(4663) ISO Image Mount`
-* `(4663) Suspicious Teams Application Related ObjectAcess Event`: Detects access to MS Teams authentication tokens.
+* `(4663) Suspicious Teams Application Related ObjectAcess Event`: MS Teamsの認証トークンへのアクセスを検知する
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -577,7 +584,7 @@ Sigmaルールの例:
 
 ### フィルタリングプラットフォームの接続
 
-Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and network connections.
+WFP（Windows Filtering Platform）がポートバインディングやネットワーク接続を許可または遮断したときのログが記録されます。
 
 ボリューム: 高
 
@@ -638,8 +645,8 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 4 |  |
-| 4658 | オブジェクトハンドルが閉じられた | 0 |  |
+| 4656 | オブジェクトハンドル要求 | 4 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
 | 4660 | オブジェクト削除 | 0 |  |
 | 4663 | オブジェクトアクセス  | 2 |  |
 
@@ -647,8 +654,9 @@ Sigmaルールの例:
 
 ### ハンドル操作
 
-This subcategory needs to be enabled to enable events like `4656`, `4658` and `4661` in other subcategories. 
-It also enables an additional event `4690`, however, this event not useful for investigations. It is recommended to enable this subcategory in order to enable more useful events in other subcategories.
+このサブカテゴリを有効にすると、他のサブカテゴリの`4656`、`4658`、`4661`のイベントが有効になります。
+また、追加のイベント`4690`も有効になりますが、このイベントは調査には役立ちません。
+他のサブカテゴリでより有用なイベントを有効にするために、このサブカテゴリを有効にすることが推奨されます。
 
 ボリューム: SACLの設定による
 
@@ -676,7 +684,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4691 | Indirect Access To Object | 0 |  |
+| 4691 | オブジェクトへの間接アクセス | 0 |  |
 | 4698 | タスク作成 | 2 | |
 | 4699 | タスク削除 | 1 | |
 | 4700 | タスクの有効化 | 0 | |
@@ -690,7 +698,7 @@ Sigmaルールの例:
 
 ### レジストリ
 
-Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degredation.
+多くの攻撃やマルウェアはレジストリを悪用するため、レジストリに証拠がよく残されますが、検知に必要なものだけをログに残すことは難しく、グローバルにすべてのレジストリへのアクセスを有効にすると、イベントの量が極端に増え、パフォーマンスが低下するリスクもあります。
 
 ボリューム: SACLの設定による
 
@@ -717,9 +725,9 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 2 |  |
+| 4656 | オブジェクトハンドル要求 | 2 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
 | 4657 | レジストリ値の変更 | 182 |  |
-| 4658 | オブジェクトハンドルが閉じられた | 0 |  |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
 | 4660 | オブジェクト削除  | 0 |  |
 | 4663 | オブジェクトアクセス | 0 |  |
 | 4670 | オブジェクト権限の変更 | 0 |  |
@@ -739,8 +747,8 @@ USBストレージ経由でデータを流出させる従業員などを追跡�
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 0 |  |
-| 4658 | オブジェクトハンドルが閉じられた | 0 |  |
+| 4656 | オブジェクトハンドル要求 | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
 | 4663 | オブジェクトアクセス | 0 |  |
 
 **注意: イベントID 4656、4658、4663は、レジストリ、カーネル、ファイルシステムオブジェクトへのアクセスにも使用されていますが、個別に設定する必要があります。** 
@@ -753,7 +761,7 @@ USBストレージ経由でデータを流出させる従業員などを追跡�
 
 デフォルトの設定: `監査なし`
 
-推奨設定: `成功と失敗` if you can but may cause too high volume of noise so should be tested beforehand.
+推奨設定: 可能であれば、`成功失敗`だが、ノイズが大きくなりすぎる可能性があるので、事前にテストしておく必要がある。
 
 Sigmaルールの例:
 * `(4661) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
@@ -761,7 +769,7 @@ Sigmaルールの例:
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4661 | オブジェクトハンドル要求 | 2 |  |
+| 4661 | オブジェクトハンドル要求 | 2 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
 
 ## ポリシーの変更
 
@@ -783,7 +791,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4719) Disabling Windows Event Auditing`: Detects anti-forensics via local GPO policy.
+* `(4719) Disabling Windows Event Auditing`: ローカルGPOポリシーによるアンチフォレンジックの検知。
  
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -839,10 +847,9 @@ Sigmaルールの例:
 
 ### 承認ポリシーの変更
 
-Audits assignment and removal of user rights in user right policies, changes in security token object permission, resource attributes changes and Central Access Policy changes for file system objects.
-
-You can get information related to changes in user rights policies, or changes of resource attributes or Central Access Policy applied to file system objects.
-However, if you are using an application or system service that makes changes to system privileges through the AdjustPrivilegesToken API, it is not recommended to enable due to the high volume of events.
+ユーザ権限ポリシーにおけるユーザ権限の割り当てと削除、セキュリティトークンオブジェクトの許可変更、リソース属性の変更、ファイルシステムオブジェクトのセントラルアクセスポリシーの変更を監査します。
+ユーザ権限ポリシーの変更、またはファイルシステムオブジェクトに適用されるリソース属性やセントラルアクセスポリシーの変更に関連する情報を取得することができます。
+ただし、AdjustPrivilegesToken APIを通じてシステム権限の変更を行うアプリケーションやシステムサービスを使用している場合は、イベントが大量に発生するため、有効にすることは推奨されません。
 
 ボリューム: 中〜高
 
@@ -852,7 +859,7 @@ However, if you are using an application or system service that makes changes to
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
-| 4703 | ユーザ権利の調整 | 0 | As of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. |
+| 4703 | ユーザ権利の調整 | 0 | Windows 10では、このイベントは、トークン権限を動的に調整するアプリケーションやサービスによって生成されます。例えば、Microsoft Endpoint Configuration Managerは、定期的にWMIクエリーを実行し、svchost.exeプロセスから大量のイベントを発生させます。 |
 | 4704 | ユーザ権限の割り当て | 0 | |
 | 4705 | ユーザ権限の削除 | 0 | |
 | 4670 | オブジェクト権限の変更 | 0 | |
@@ -877,8 +884,9 @@ Windows Filtering Platform（WFP）の変更によって発生する以下のよ
 
 ### MPSSVCルールレベルポリシーの変更
 
-Audit MPSSVC Rule-Level Policy Change determines whether the operating system generates audit events when changes are made to policy rules for the Microsoft Protection Service (MPSSVC.exe).
-The Microsoft Protection Service, which is used by Windows Firewall, is an integral part of the computer’s threat protection against malware. The tracked activities include:
+「MPSSVCルールレベルポリシーの変更の監査」は、Microsoft Protection Service (MPSSVC.exe)のポリシールールが変更されたときに、OSが監査イベントを生成するかどうかを決定します。
+Windowsファイアウォールで使用されるMicrosoft Protection Serviceは、マルウェアからコンピュータの脅威を防ぐために不可欠なものです。
+記録されるアクティビティは以下の通り:
 * ファイアウォール(`FW`)開始時のポリシー
 * FWルールの変更
 * FW例外リストの変更
@@ -903,25 +911,25 @@ FWルールの変更は、端末のセキュリティ状態を把握し、ネッ
 | 4948 | FW例外リストのルールが削除された | 0 | |
 | 4949 | FWが既定値に復元された | 0 | |
 | 4950 | FW設定が変更された | 0 | |
-| 4951 | FW rule ignored because major version number was not recognized. | 0 | |
-| 4952 | Parts of FW rule ignored because minor version number was not recognized. | 0 | |
+| 4951 | FWルールはメジャーバージョン番号を認識できないため、無視された | 0 | |
+| 4952 | マイナーバージョン番号を認識できないため、FWルールの一部が無視された | 0 | |
 | 4953 | FWルールをパースできなかった | 0 | |
 | 4954 | GPOによるFWルールの変更　 | 0 | |
 | 4956 | FWのアクティブプロファイルが変更された | 0 | |
 | 4957 | FWルールが適用されなかった | 0 | |
-| 4958 | FW did not apply rule because rule referred to items not configured on this computer. | 0 | |
+| 4958 | ルールが端末に設定されていない項目を参照しているため、FWはルールを適用しなかった | 0 | |
 
 現在、このサブカテゴリーにはSigmaルールはありません。
 
 ### その他のポリシー変更イベント
 
-Audit Other Policy Change Events contains events about EFS Data Recovery Agent policy changes, changes in Windows Filtering Platform filter, status on Security policy settings updates for local Group Policy settings, Central Access Policy changes, and detailed troubleshooting events for Cryptographic Next Generation (CNG) operations.
+「その他のポリシー変更イベント」には、EFSデータ回復エージェントのポリシー変更、Windows Filtering Platformフィルタの変更、ローカルグループポリシー設定のセキュリティポリシー設定の更新状況、中央アクセスポリシーの変更、Cryptographic Next Generation（CNG）操作の詳細トラブルシューティングイベントについてのイベントが含まれています。
 
 ボリューム: 低
 
 デフォルトの設定: `監査なし`
 
-推奨設定: ACSC recommends `成功と失敗`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.
+推奨設定: `監査なし`。(※ACSCは`成功失敗`を推奨していますが、この場合`5447 (A Windows Filtering Platform filter has been changed)`というイベントが大量に発生してしまいます。)
 
 > このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
 
@@ -983,8 +991,7 @@ Audit Other Policy Change Events contains events about EFS Data Recovery Agent p
 * プロセスレベルのトークンを置き換える
 * ファイルとその他のオブジェクトの所有権の取得
  
-The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled.
-However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
+「ファイルとディレクトリのバックアップ」と「ファイルとディレクトリの復元」の2つイベントを記録するのに、`コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション > 監査: グローバルシステムオブジェクトのアクセスを監査する`の設定を有効にする必要がありますが、イベントが大量に生成されるので、お勧めしません。
 
 ボリューム: 高
 
@@ -1034,7 +1041,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4616) Unauthorized System Time Modification`: Detect scenarios where a potentially unauthorized application or user is modifying the system time.
+* `(4616) Unauthorized System Time Modification`: システム時刻改ざんの検知。
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |

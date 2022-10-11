@@ -681,7 +681,7 @@ Notable Sigma rules:
 
 ### Registry
 
-Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degredation.
+Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degradation.
 
 Volume: Depends on SACLs.
 
@@ -912,7 +912,7 @@ Volume: Low.
 
 Default settings: `No Auditing`
 
-Recommended settings: ACSC recommends `Success and Failure`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.
+Recommended settings: `No Auditing` (Note: ACSC recommends `Success and Failure`, however, this results in a lot of noise of `5447 (A Windows Filtering Platform filter has been changed)` events being generated.)
 
 > There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
