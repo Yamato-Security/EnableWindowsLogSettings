@@ -1,12 +1,15 @@
 <div align="center">
  <h1>
+    <img alt="Yamato Security Logo" src="YamatoSecurityLogo.png" width="80%">
+ </h1>
+ <h1>
     大和セキュリティによる、DFIRと脅威ハンティングのためのWindowsイベントログ設定の究極ガイド
  </h1>
  [<a href="README.md">English</a>] | [<b>日本語</b>]
 </div>
 <p>
 
-これは、Windowsのイベントログの設定と監視に関するガイドで、Sigmaルールが何かを検出するために、また正しいDFIR調査のために適切なログを有効にすることに重点を置いています。
+Windowsのイベントログの設定と監視に関するガイドで、Sigmaルールが何かを検出するために、また正しいDFIR調査のために適切なログを有効にすることに重点を置いています。
 
 # TLDR
 

@@ -1,5 +1,8 @@
 <div align="center">
  <h1>
+    <img alt="Yamato Security Logo" src="YamatoSecurityLogo.png" width="80%">
+ </h1>
+ <h1>
     Securityログ設定について
  </h1>
  [<a href="ConfiguringSecurityLogAuditPolicies.md">English</a>] | [<b>日本語</b>]

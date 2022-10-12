@@ -1,12 +1,15 @@
 <div align="center">
  <h1>
-    Yamato Security's ultimate guide to configuring Windows event logs for DFIR and Threat Hunting
+    <img alt="Yamato Security Logo" src="YamatoSecurityLogo.png" width="80%">
  </h1>
+ <h1>Yamato Security's Ultimate Windows Event Log Configuration Guide For DFIR And Threat Hunting</h1>
  [ <b>English</b> ] | [<a href="README-Japanese.md">日本語</a>]
 </div>
 <p>
 
-This is yet another guide on configuring and monitoring Windows event logs with an emphasis on making sure you have the proper logging enabled so that [sigma](https://github.com/SigmaHQ/sigma) rules have logs to detect, as well as making sure the right evidence is saved to perform proper DFIR investigations.
+This is yet another guide on properly configuring and monitoring Windows event logs with an emphasis on logging for [sigma](https://github.com/SigmaHQ/sigma) rules.
+
+> This is a work in progress, so check back periodically for updates.
 
 # TLDR
 
@@ -14,7 +17,7 @@ This is yet another guide on configuring and monitoring Windows event logs with 
 * Even if a Windows log is enabled, by default, the maximum size for logs is between 1~20 MB so there is a good chance that evidence gets quickly overwritten.
 * Enable the proper audit settings with [YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat) to use up to around 75% of sigma rules and retain logs for as long as you need them.
     - **Warning: make sure you customize the script to your needs and test before using in production!**
-* Install [sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) to get full coverage. (Highly recommended!)
+* Install [sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) to get full coverage. (**Highly recommended!**)
 
 # Table of Contents
 
@@ -149,7 +152,7 @@ $sysmon.SaveChanges()
 
 ## Option 4: Group Policy
 
-It is straightforward to increase the maximum file size for the classic event logs such as `Security`, `System`, and `Application`, however, unfortunately you need to install Administrative Templates and/or directly modify the registry in order to change the maximum file size for the other logs. It may just be easier to increase the file size with a `.bat` script on startup.
+It is straightforward to increase the maximum file size for the classic event logs such as `Security`, `System`, and `Application`, however, unfortunately you need to install Administrative Templates and/or directly modify the registry in order to change the maximum file size for the other logs. It may just be easier to increase the file size with a batch or PowerShell script on startup.
 
 # Configuration script
 
