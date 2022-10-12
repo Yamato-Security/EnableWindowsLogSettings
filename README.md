@@ -9,7 +9,7 @@
 
 This is yet another guide on properly configuring and monitoring Windows event logs with an emphasis on logging for [sigma](https://github.com/SigmaHQ/sigma) rules.
 
-> This is a work in progress, so check back periodically for updates.
+> This is a work in progress, so check back please periodically for updates.
 
 # TLDR
 
