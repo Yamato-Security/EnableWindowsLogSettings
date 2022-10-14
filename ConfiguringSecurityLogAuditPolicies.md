@@ -82,11 +82,11 @@
 
 ### Credential Validation
 
-Volume: Depends on NTLM usage. Could be high on DCs and low on clients and servers.
+Volume: `Depends on NTLM usage. Could be high on DCs and low on clients and servers.`
 
 Default settings: `Client OS: No Auditing` | `Server OS: Success`
 
-Recommended settings: `Success and Failure`
+Recommended settings: `Client and Server OSes: Success and Failure`
 
 Notable Sigma rules:
 * `Metasploit SMB Authentication`: Detect when someone is running Metasploit on your network.
@@ -94,82 +94,84 @@ Notable Sigma rules:
 * `Invalid Users Failing To Authenticate From Single Source Using NTLM`: Username guessing.
 * `Failed Logins with Different Accounts from Single Source System`: Password spraying.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4776 | NTLM Authentication | 5 | The original event messages says it is for DCs only but this event gets logged for client OS local authentication as well. | 
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4776 | NTLM Authentication | 5 | Yes | Info~High | The original event messages says it is for DCs only but this event gets logged for client OS local authentication as well. | 
 
 ### Kerberos Authentication Service
 
-> **Note: Enable only for Domain Controllers**
+> **Note: These events are only generated on domain controllers**
 
-Volume: High.
+Volume: `High`
 
 Default settings: `Client OS: No Auditing` | `Server OS: Success`
 
 Recommended settings: `Client OS: No Auditing` | `Server OS: Success and Failure`
 
 Notable Sigma rules:
-* `(4768) PetitPotam Suspicious Kerberos TGT Request`
-* `(4768) Disabled Users Failing To Authenticate From Source Using Kerberos`
-* `(4768) Invalid Users Failing To Authenticate From Source Using Kerberos`: Username guessing.
-* `(4771) Valid Users Failing to Authenticate From Single Source Using Kerberos`: Password guessing.
+* `(4768) (High) PetitPotam Suspicious Kerberos TGT Request`
+* `(4768) (Med) Disabled Users Failing To Authenticate From Source Using Kerberos`
+* `(4768) (Med) Invalid Users Failing To Authenticate From Source Using Kerberos`: Username guessing.
+* `(4771) (Med) Valid Users Failing to Authenticate From Single Source Using Kerberos`: Password guessing.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4768 | Kerberos TGT Request | 3 | |
-| 4771 | Kerberos Pre-Auth Failed | 1 | |
-| 4772 | Kerberos Authentication Ticket Request Failed | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4768 | Kerberos TGT Request | 3 | Yes | Info~High | |
+| 4771 | Kerberos Pre-Auth Failed | 1 | Not Yet | Info~Med | |
+| 4772 | Kerberos Authentication Ticket Request Failed | 0 | No | None | This log is not in use. EID 4768 failure events are used instead. |
 
 ### Kerberos Service Ticket Operations
 
-> **Note: Enable only for Domain Controllers**
+> **Note: These events are only generated on domain controllers**
 
-Volume: High
+Volume: `High`
 
 Default settings: `Client OS: No Auditing` | `Server OS: Success`
 
-Recommended settings: `Client OS: No Auditing` | `Server OS: Success and Failure`
+Recommended settings: `Domain Controllers: Success and Failure`
 
 Notable Sigma rule:
-* `(4769) Suspicious Kerberos RC4 Ticket Encryption`: Detects service ticket requests using RC4 encryption. This could be for Kerberoasting (password cracking) or just older systems using legacy encryption.
+* `(4769) (Med) Suspicious Kerberos RC4 Ticket Encryption`: Detects service ticket requests using RC4 encryption. This could be for Kerberoasting (password cracking) or just older systems using legacy encryption.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4769 | Kerberos Service Ticket Request | 1 | |
-| 4770 | Kerberos Service Ticket Renewel | 0 | |
-| 4773 | Kerberos Service Ticket Request Failed | 0 | This is not actually used. 4769 is used instead. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4769 | Kerberos Service Ticket Request | 1 | Yes | Info~Med | |
+| 4770 | Kerberos Service Ticket Renewel | 0 | Not Yet | Info | |
+| 4773 | Kerberos Service Ticket Request Failed | 0 | No | None | This log is not in use. EID 4769 is used instead. |
 
 ## Account Management
 
 ### Computer Account Management
 
-Volume: Low on DCs.
+> **Note: These events are only generated on domain controllers**
+ 
+Volume: `Low`
 
 Default settings: `Client OS: No Auditing` | `Server OS: Success Only`
 
-Recommended settings: `Success and Failure`
+Recommended settings: `Domain Controllers: Success and Failure`
 
 Notable Sigma rule:
-* `Possible DC Shadow`: Detects DCShadow via create new SPN.
+* `(4742) (Med) Possible DC Shadow`: Detects DCShadow via create new SPN.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4741 | Computer Account Created | 0 | |
-| 4742 | Computer Account Changed | 1 | |
-| 4743 | Computer Account Deleted | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4741 | Computer Account Created | 0 | Not Yet | Info | I have not seen this before.  |
+| 4742 | Computer Account Changed | 1 | Not Yet | Info~Med | |
+| 4743 | Computer Account Deleted | 0 | Not Yet | Info | I have not seen this before. |
 
 ### Other Account Management Events
 
-Volume: Typically low.
+Volume: `Low`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4782 | Account Pasword Hash Was Accessed | 0 | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. |
-| 4793 | Password Policy Checking API Was Called | 0 | Generated during password resets or attackers checking the password policy. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4782 | Account Pasword Hash Was Accessed | 0 | Not Yet | Info | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. I have not seen this before. |
+| 4793 | Password Policy Checking API Was Called | 0 | Not Yet | Low | Generated during password resets or attackers checking the password policy. I have not seen this before. |
 
 ### Security Group Management
 
@@ -181,73 +183,73 @@ A global group is a group that can be used in its own domain, in member servers 
 
 A universal group is a security or distribution group that contains users, groups, and computers from any domain in its forest as members. You can give universal security groups rights and permissions on resources in any domain in the forest.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
 Notable Sigma rules:
-* `User Added to Local Administrators`
-* `Operation Wocao Activity`: Detects China-based cyber espionage.
+* `(4732) (Med) User Added to Local Administrators`
+* `(4799) (High) Operation Wocao Activity`: Detects China-based cyber espionage.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4731 | Local Group Created | 0 | |
-| 4732 | Member Added To Local Group | 1 | |
-| 4733 | Member Removed From Local Group | 0 | |
-| 4734 | Local Group Deleted | 0 | |
-| 4764 | Group Type Changed | 0 | |
-| 4799 | Local Group Membership Enumerated | 1 | |
-| 4727 | Global Group Created | 0 | |
-| 4737 | Global Group Changed | 0 | |
-| 4728 | Member Added To Global Group | 0 | |
-| 4729 | Member Removed From Global Group | 0 | |
-| 4730 | Global Group Deleted | 0 | |
-| 4754 | Universal Group Created | 0 | |
-| 4755 | Universal Group Changed | 0 | |
-| 4756 | Member Added To Universal Group | 0 | |
-| 4757 | Member Removed From Universal Group | 0 | |
-| 4758 | Universal Group Deleted | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4727 | Global Group Created | 0 | Not Yet | Info | |
+| 4728 | Member Added To Global Group | 0 | Yes | Info | |
+| 4731 | Local Group Created | 0 | Not Yet | Info | |
+| 4732 | Member Added To Local Group | 1 | Yes | Info~Med | |
+| 4733 | Member Removed From Local Group | 0 | Not Yet | Info | |
+| 4734 | Local Group Deleted | 0 | Not Yet | Info | |
+| 4764 | Group Type Changed | 0 | Not Yet | Info | |
+| 4799 | Local Group Membership Enumerated | 1 | Not Yet | Info~High | |
+| 4737 | Global Group Changed | 0 | Not Yet | Info | |
+| 4729 | Member Removed From Global Group | 0 | Not Yet | Info | |
+| 4730 | Global Group Deleted | 0 | Not Yet | Info | |
+| 4754 | Universal Group Created | 0 | Not Yet | Info |
+| 4755 | Universal Group Changed | 0 | Not Yet | Info |
+| 4756 | Member Added To Universal Group | 0 | Not Yet | Info |
+| 4757 | Member Removed From Universal Group | 0 | Not Yet | Info |
+| 4758 | Universal Group Deleted | 0 | Not Yet | Info |
 
 ### User Account Management
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
 Notable Sigma rules:
-* `Hidden Local User Creation`: Detects hidden user accounts most likely used as a backdoor account.
-* `Suspicious Windows ANONYMOUS LOGON Local Account Created`
-* `Local User Creation`
-* `Active Directory User Backdoors`
-* `Weak Encryption Enabled and Kerberoast`
-* `Addition of SID History to Active Directory Object`: An attacker can use the SID history attribute to gain additional privileges.
-* `Possible Remote Password Change Through SAMR`: Detects a possible remote NTLM hash change through SAMR API SamiChangePasswordUser() or SamSetInformationUser().
-* `Suspicious Computer Account Name Change CVE-2021-42287`: Detects the renaming of an existing computer account to a account name that doesn't contain a $ symbol as seen in attacks against CVE-2021-42287
-* `Password Change on Directory Service Restore Mode (DSRM) Account`: The Directory Service Restore Mode (DSRM) account is a local administrator account on Domain Controllers. Attackers may change the password to gain persistence.
+* `(4720) (High) Hidden Local User Creation`: Detects hidden user accounts most likely used as a backdoor account.
+* `(4720) (High) Suspicious Windows ANONYMOUS LOGON Local Account Created`
+* `(4720) (Low) Local User Creation`
+* `(4738) (High) Active Directory User Backdoors`
+* `(4738) (High) Weak Encryption Enabled and Kerberoast`
+* `(4765, 4766, 4738) (Med) Addition of SID History to Active Directory Object`: An attacker can use the SID history attribute to gain additional privileges.
+* `(5145, 4738) (Med) Possible Remote Password Change Through SAMR`: Detects a possible remote NTLM hash change through SAMR API SamiChangePasswordUser() or SamSetInformationUser().
+* `(4781) (High) Suspicious Computer Account Name Change CVE-2021-42287`: Detects the renaming of an existing computer account to a account name that doesn't contain a $ symbol as seen in attacks against CVE-2021-42287
+* `(4794) (High) Password Change on Directory Service Restore Mode (DSRM) Account`: The Directory Service Restore Mode (DSRM) account is a local administrator account on Domain Controllers. Attackers may change the password to gain persistence.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4720 | User Account Created | 3 | |
-| 4722 | User Account Enabled | 0 | |
-| 4723 | Account Password Change | 0 | |
-| 4724 | Account Password Reset | 0 | |
-| 4725 | User Account Disabled | 0 | |
-| 4726 | User Account Deleted | 0 | |
-| 4738 | User Account Changed | 4 | |
-| 4740 | User Account Lockout | 0 | |
-| 4765 | SID History Added To Account | 0 | |
-| 4766 | Attempt To Add SID History To Account Failed | 0 | |
-| 4767 | User account was unlocked | 0 | |
-| 4780 | ACL Set On Administrators Group Member | 0 | |
-| 4781 | Account Name Changed | 1 | |
-| 4794 | DSRM Administrator Password Set | 1 | |
-| 4798 | User's Local Group Membership Enumerated | 0 | |
-| 5376 | Credential Manager Credentials Backup | 0 | |
-| 5377 | Credential Manager Credentials Restored | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4720 | User Account Created | 3 | Yes | Info~High | |
+| 4722 | User Account Enabled | 0 | Not Yet | Info | |
+| 4723 | Account Password Change | 0 | Not Yet | Info | |
+| 4724 | Account Password Reset | 0 | Not Yet | Info | |
+| 4725 | User Account Disabled | 0 | Not Yet | Info | |
+| 4726 | User Account Deleted | 0 | Not Yet | Info | |
+| 4738 | User Account Changed | 4 | Not Yet | Info~High | |
+| 4740 | User Account Lockout | 0 | Not Yet | Med | I have not seen this before. |
+| 4765 | SID History Added To Account | 1 | Not Yet | Info~Med | |
+| 4766 | Attempt To Add SID History To Account Failed | 0 | Not Yet | Info~Med | |
+| 4767 | User account was unlocked | 0 | Not Yet | Info | |
+| 4780 | ACL Set On Administrators Group Member | 0 | Not Yet | Info | |
+| 4781 | Account Name Changed | 1 | Not Yet | Info | |
+| 4794 | DSRM Administrator Password Set | 1 | Not Yet | Info~High | |
+| 4798 | User's Local Group Membership Enumerated | 0 | Not Yet | Info | |
+| 5376 | Credential Manager Credentials Backup | 0 | Not Yet | Info | |
+| 5377 | Credential Manager Credentials Restored | 0 | Not Yet | Info | |
 
 ## Detailed Tracking
 
@@ -264,15 +266,15 @@ Recommended settings: `Success and Failure`
 Notable Sigma rule:
 * `(6416) External Disk Drive Or USB Storage Device`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 6416 | New External Device | 1 | |
-| 6419 | Request To Disable Device | 0 | |
-| 6420 | Device Disabled | 0 | |
-| 6421 | Request To Enable Device | 0 | |
-| 6422 | Device Enabled | 0 | |
-| 6423 | Device Installation Blocked | 0 | |
-| 6424 | Device Installation Allowed After Being Blocked | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 6416 | New External Device | 1 | Not Yet | Info~Low | |
+| 6419 | Request To Disable Device | 0 | No | Info | |
+| 6420 | Device Disabled | 0 | | No | Info | |
+| 6421 | Request To Enable Device | 0 | No | Info | |
+| 6422 | Device Enabled | 0 | No | Info | |
+| 6423 | Device Installation Blocked | 0 | No | Info | |
+| 6424 | Device Installation Allowed After Being Blocked | 0 | No | Info | |
 
 ### Process Creation
 
@@ -286,48 +288,48 @@ Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` if sysmon is not configured.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4688 | Process Creation | 902 | |
-| 4696 | Primary Token Assigned To Process | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4688 | Process Creation | 902 | Yes | Info~Crit | |
+| 4696 | Primary Token Assigned To Process | 0 | No | Info | Event is deprecated since Win 7/2008 R2 so may only been generated on Vista/2008. |
 
 ### Process Termination
 
 You may want to keep this disabled to save file space.
 
-Volume: High.
+Volume: `High`
 
 Default settings: `No Auditing`
 
 Recommended settings: `No Auditing` unless you want to track the lifespan of processes.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4689 | Process Exited | 1 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4689 | Process Exited | 1 | Not Yet | Info | |
 
 ### RPC (Remote Procedure Call) Events
 
-Volume: High on RPC servers.
+Volume: `High on RPC servers`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Unknown. Needs testing.`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 5712 | RPC Attempt | 0 | Logged when inbound RPC connection is made. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5712 | RPC Attempt | 0 | Logged when inbound RPC connection is made. | Not Yet | ? | I have not seen this before | |
 
 ### Token Right Adjusted Events
 
-Volume: High.
+Volume: `Unknown`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Unknown. Needs testing.`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4703 | User's Token Changed | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4703 | User's Token Changed | 0 | Not Yet | Info | I have not seen this before. |
 
 ## DS (Directory Service) Access
 
@@ -355,7 +357,7 @@ Notable Sigma rules:
 
 ### Directory Service Changes
 
-Volume: High on DCs.
+Volume: `High`
 
 Default settings: `No Auditing`
 
@@ -363,8 +365,8 @@ Recommended settings: `Client OS: No Auditing` | `ADDS Server: Success and Failu
 
 Notable Sigma rules:
 * `Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
-* `Active Directory User Backdoors`: Detects scenarios where one can control another users or computers account without having to use their credentials.
-* `Possible DC Shadow`
+* `(5136) (High) Active Directory User Backdoors`: Detects scenarios where one can control another users or computers account without having to use their credentials.
+* `(5136) (Med) Possible DC Shadow`
 * `Suspicious LDAP-Attributes Used`: Detects LDAPFragger, a C2 tool that lets attackers route Cobalt Strike beacon data over LDAP attributes.
 
 | Event ID | Description | Sigma Rules | Notes |
