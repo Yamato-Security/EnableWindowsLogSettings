@@ -11,7 +11,6 @@
 
 # 目次
 
-- [目次](#目次)
 - [セキュリティログ監査の設定に関する注意事項](#セキュリティログ監査の設定に関する注意事項)
 - [SecurityイベントログのカテゴリとイベントID](#securityイベントログのカテゴリとイベントid)
   - [アカウントログオン](#アカウントログオン)
@@ -71,11 +70,11 @@
 
 # セキュリティログ監査の設定に関する注意事項
 
-* 組織レベルでは、グループポリシーまたはInTuneを使用して、Securityログの監査ポリシーを設定することができます。スタンドアロン端末の場合は、ローカルセキュリティポリシーエディタ（`gpedit.msc`）で設定できます。また、PowerShellスクリプトや`auditpol`などのビルトインコマンドを組み込んだBatchクリプトを使用して、スタンドアロン端末およびスタートアップスクリプトで組織レベルの端末を設定することもできます。
+* 組織レベルでは、グループポリシーまたはInTuneを使用して、Securityログの監査ポリシーを設定することができます。スタンドアロン端末の場合は、ローカルセキュリティポリシーエディタ（`gpedit.msc`）で設定できます。また、PowerShellスクリプトや`auditpol`などのビルトインコマンドを組み込んだBatchスクリプトを使用して、スタンドアロン端末およびスタートアップスクリプトで組織レベルの端末を設定することもできます。
 * Securityログ監査は、大まかなカテゴリレベルではなく、より細かい設定ができるサブカテゴリレベル（グループポリシーの`コンピュータの構成 > Windowsの設定 > セキュリティの設定 > セキュリティ監査ポリシーの詳細設定 > システム監査ポリシー`）で有効にすべきです。カテゴリレベルで設定してしまうと、多くの不要のイベントが記録され、サブカテゴリレベルで行った詳細な設定が上書きされるリスクがあります。
 * このドキュメントでは、そもそも実際に記録されていないイベントIDや監視・DFIR調査に役に立たないサブカテゴリとイベントIDについては記載していません。有効化すべきもののみ記載しています。
 * 特定のイベントIDの有効化・無効化はできず、最も細かい設定レベルはサブカテゴリになります。たまにいくつかのノイズが多いイベントIDが記録されますが、サブカテゴリ全体を無効にしない限り、無効にできないのが残念です。
-* Sigmaルールの数は、2022/09/24で取得しました。あるイベントについてSigmaルールがほとんどない、あるいはないとしても、そのイベントが重要でないことを意味するわけではないことに注意して下さい。
+* Sigmaルールの数は、2022/09/24で取得しました。あるイベントについてSigmaルールが少ないとしても、そのイベントが重要でないことを意味するわけではないことに注意して下さい。
 
 # SecurityイベントログのカテゴリとイベントID
 
@@ -132,7 +131,7 @@ Sigmaルールの例:
 推奨設定: `クライアントOS: 監査なし` | `サーバOS: 成功と失敗`
 
 Sigmaルールの例:
-* `(4769) Suspicious Kerberos RC4 Ticket Encryption`: Detects service ticket requests using RC4 encryption. This could be for Kerberoasting (password cracking) or just older systems using legacy encryption.
+* `(4769) Suspicious Kerberos RC4 Ticket Encryption`: RC4暗号化を用いたサービスチケットリクエストの検知。 これはレガシーな暗号化を利用した古いシステムもしくはKerberoasting(パスワードクラッキング)の可能性がある
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -174,20 +173,20 @@ Sigmaルールの例:
 
 ### セキュリティグループの管理
 
-「セキュリティが有効なグループ」とはアクセス件(ACL)付与することができるグループのことです。
-もう1つのタイプは、「セキュリティが無効なグループ」でアクセス権を割り当てられない「ディストリビューショングループ」です。
+「セキュリティが有効なグループ」とはアクセス権(ACL)を付与することができるグループのことです。
+「セキュリティが無効なグループ」はアクセス権を割り当てられない「ディストリビューショングループ」です。
 セキュリティが有効なグループが最も一般的であるため、ここでは単に「グループ」と呼ぶことにします。
 例えば、「セキュリティが有効なローカルグループが作成された」の代わりに、「ローカルグループが作成された」というイベントタイトルにしました。
 
 ドメインローカルグループは、ユニバーサルグループ、グローバルグループ、自ドメインの他のドメインローカルグループ、およびフォレスト内の任意のドメインのアカウントを含むことができるセキュリティまたは配布グループです。
-ドメインローカルセキュリティグループには、ドメインローカルグループが配置されている同じドメイン内にのみ存在するリソースに対する権利と権限を与えることができます。
+ドメインローカルセキュリティグループには、ドメインローカルグループが配置されている同じドメイン内にのみ存在するリソースに対するアクセス許可と権限を与えることができます。
 
 グローバルグループは、自身のドメイン、ドメインのサーバと端末、および信頼するドメインで使用することができるグループです。
-それらのすべての場所で、グローバルグループに権利と権限を与え、グローバルグループはローカルグループのメンバーになることができます。
+それらのすべての場所で、グローバルグループに権限を与え、グローバルグループはローカルグループのメンバーになることができます。
 ただし、グローバルグループには、そのドメインに所属するユーザアカウントのみを含めることができます。
 
 ユニバーサルグループは、そのフォレスト内の任意のドメインのユーザ、グループ、および端末をメンバーとして含むセキュリティまたは配布グループです。
-ユニバーサルセキュリティグループには、フォレスト内のどのドメイン内のリソースに対しても権利と権限を与えることができます。
+ユニバーサルセキュリティグループには、フォレスト内のどのドメイン内のリソースに対してもアクセス許可と権限を与えることができます。
 
 ボリューム: 低
 
@@ -227,15 +226,15 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Hidden Local User Creation`: バックドアアカウントとして使用されている可能性が高い隠しユーザアカウントを検出する。
+* `Hidden Local User Creation`: バックドアアカウントとして使用されている可能性が高い隠しユーザアカウントを検出した
 * `Suspicious Windows ANONYMOUS LOGON Local Account Created`
 * `Local User Creation`
 * `Active Directory User Backdoors`
 * `Weak Encryption Enabled and Kerberoast`
-* `Addition of SID History to Active Directory Object`: An attacker can use the SID history attribute to gain additional privileges.
-* `Possible Remote Password Change Through SAMR`: Detects a possible remote NTLM hash change through SAMR API SamiChangePasswordUser() or SamSetInformationUser().
-* `Suspicious Computer Account Name Change CVE-2021-42287`: Detects the renaming of an existing computer account to a account name that doesn't contain a $ symbol as seen in attacks against CVE-2021-42287
-* `Password Change on Directory Service Restore Mode (DSRM) Account`: The Directory Service Restore Mode (DSRM) account is a local administrator account on Domain Controllers. Attackers may change the password to gain persistence.
+* `Addition of SID History to Active Directory Object`: 攻撃者が追加の権限を得るためにSID履歴を用いた可能性がある
+* `Possible Remote Password Change Through SAMR`: SAMR APIのSamiChangePasswordUser() または SamSetInformationUser()を通して、NTLMハッシュの変更が遠隔で行われた可能性がある
+* `Suspicious Computer Account Name Change CVE-2021-42287`: CVE-2021-42287に対しての攻撃に見られる$シンボルが含まれていない既存コンピュータアカウントの変更を検知する
+* `Password Change on Directory Service Restore Mode (DSRM) Account`: ドメインコントローラにおいてディレクトリサービス復元モード(DSRM) アカウントがローカル管理者アカウントとして存在している。攻撃者が永続化を行うためにパスワードを変更した可能性がある
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -284,9 +283,9 @@ Sigmaルールの例:
 
 ### プロセス作成
 
-注意: 非常に重要なコマンドライン情報のログを取るには、別の設定を有効にする必要があります。グループポリシーでは: `コンピュータの構成 > Windowsの設定 > 管理用テンプレート > システム > プロセス作成の監査 > プロセス作成イベントにコマンドラインを含める`
+注意: 非常に重要なコマンドライン情報のログを取るには、別の設定を有効にする必要があります。グループポリシーでは `コンピュータの構成 > Windowsの設定 > 管理用テンプレート > システム > プロセス作成の監査 > プロセス作成イベントにコマンドラインを含める` の手順で有効にすることが出来ます。
 
-Sigmaルールの約半分は、コマンドラインオプションを有効にしたプロセス作成に依存しているので、Sysmonをインストールし、プロセス作成を監視するように設定していない場合は、Securityログでプロセス作成イベントを有効にした方が良いです。
+Sigmaルールの約半分は、コマンドラインオプションを有効にしたプロセス作成に依存しています。Sysmonをインストールし、プロセス作成を監視するように設定していない場合は、Securityログでプロセス作成イベントを有効にした方が良いです。
 
 ボリューム: 高
 
@@ -352,9 +351,9 @@ Sigmaルールの約半分は、コマンドラインオプションを有効に
 Sigmaルールの例:
 * `AD Object WriteDAC Access`
 * `Active Directory Replication from Non Machine Account`
-* `AD User Enumeration`: Detects access to a domain user from a non-machine account. (Requires the "Read all properties" permission on the user object to be audited for the "Everyone" principal.)
-* `DPAPI Domain Backup Key Extraction`: Detects tools extracting LSA secret DPAPI domain backup key from Domain Controllers.
-* `WMI Persistence`: Detects malware that autostarts via WMI.
+* `AD User Enumeration`: マシンアカウントでないアカウントからドメインユーザに対してのアクセスを検知する("Everyone"プリンシパルに対するユーザオブジェクトで「すべてのプロパティの読み取り」権限が必要)
+* `DPAPI Domain Backup Key Extraction`: ドメインコントローラからLSAシークレットDPAPIドメインバックアップキーがツールによって取り出されたことを検知する
+* `WMI Persistence`: WMIを通じたautostartsマルウェアを検知する
 
 | イベントID | タイトル | Sigmaルール数 | 備考欄 |
 | :---: | :---: | :---: | :---: |
@@ -394,7 +393,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: BlueKeep脆弱性を検出するスキャンを検出する。
+* `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: BlueKeep脆弱性を検出するスキャンを検出する
 * `Failed Logon From Public IP`
 * `Multiple Users Failing to Authenticate from Single Process`
 * `Multiple Users Remotely Failing To Authenticate From Single Source`
@@ -476,7 +475,7 @@ Sigmaルールの例:
 
 ### 特殊なログオン
 
-「特別なグループ」と「特別な権限」は管理者グループと管理者権限だと考えたら良いです。
+「特別なグループ」と「特別な権限」は、「管理者グループ」と「管理者権限」と考えて良いです。
 
 ボリューム: クライアントOSでは低。DCやネットワークサーバでは中。
 
@@ -841,7 +840,7 @@ Sigmaルールの例:
 | 4717 | システムセキュリティアクセスがアカウントに付与された | 0 | |
 | 4718 | システムセキュリティアクセスがアカウントから削除された | 0 | |
 | 4739 | ドメイン ポリシーが変更された | 0 | |
-| 4864 | 名前空間の競合が検出され | 0 | |
+| 4864 | 名前空間の競合が検出された | 0 | |
 | 4865 | 信頼できるフォレスト情報エントリが追加された | 0 | |
 | 4866 | 信頼できるフォレスト情報エントリが削除された | 0 | |
 | 4867 | 信頼できるフォレスト情報エントリが変更された | 0 | |
@@ -881,7 +880,7 @@ Windows Filtering Platform（WFP）の変更によって発生する以下のよ
 
 推奨設定: `不明。テストが必要。`
 
-> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
+> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。現時点では、これらのイベントIDを使用するSigmaルールはありません。
 
 ### MPSSVCルールレベルポリシーの変更
 
@@ -893,7 +892,7 @@ Windowsファイアウォールで使用されるMicrosoft Protection Serviceは
 * FW例外リストの変更
 * FW設定の変更
 * FWルールの適用と無視
-* FWのグループポリシー設定の変更。
+* FWのグループポリシー設定の変更
 
 FWルールの変更は、端末のセキュリティ状態を把握し、ネットワーク攻撃からどの程度保護されているかを知るために重要です。
 
@@ -932,7 +931,7 @@ FWルールの変更は、端末のセキュリティ状態を把握し、ネッ
 
 推奨設定: `監査なし`。(※ACSCは`成功失敗`を推奨していますが、この場合`5447 (A Windows Filtering Platform filter has been changed)`というイベントが大量に発生してしまいます。)
 
-> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
+> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。現時点ではこれらのイベントIDを使用するSigmaルールはありません。
 
 ## 特権の使用
 
@@ -1029,11 +1028,11 @@ Sigmaルールの例:
 
 推奨設定: `不明。テストが必要。`
 
-> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。また、これらのイベントIDを使用するSigmaルールは、現時ありません。
+> このサブカテゴリで有効にされるイベントが多すぎて、リストアップできません。現時点では、これらのイベントIDを使用するSigmaルールはありません。
 
 ### セキュリティ状態の変更
 
-セキュリティ状態の変更には、端末起動、回復、シャットダウンの各イベント、およびシステム時間の変更に関する情報が含まれています。
+セキュリティ状態の変更には、端末起動、回復、シャットダウンの各イベント、システム時間の変更に関する情報が含まれています。
 
 ボリューム: 低
 
@@ -1117,4 +1116,4 @@ Sigmaルールの例:
 ## グローバルオブジェクトアクセス
 
 ここですべての`ファイルシステム`と`レジストリ`アクセスを記録するように設定できますが、非常に多くのログが生成されるため、実運用ではお勧めしません。
-検出ルールを作成するために、どのレジストリキーとファイルが変更されたかを調べるために、攻撃のシミュレーションを行う際に有効にすることが推奨されます。
+検出ルールを作成するときには、どのレジストリキーとファイルが変更されたかを調べるために、攻撃のシミュレーションを行う際に有効にすることが推奨されます。
