@@ -71,13 +71,13 @@ auditpol /set /subcategory:{0CCE9240-69AE-11D9-BED3-505054503030} /success:enabl
 
 :: Account Management
 :::: Computer Account Management
-auditpol /set /category:{0CCE9236-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+auditpol /set /subcategory:{0CCE9236-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Other Account Management Events
-auditpol /set /category:{0CCE923A-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+auditpol /set /subcategory:{0CCE923A-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Security Group Management
-auditpol /set /category:{0CCE9237-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+auditpol /set /subcategory:{0CCE9237-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: User Account Management
-auditpol /set /category:{0CCE9235-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+auditpol /set /subcategory:{0CCE9235-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 
 :: Detailed Tracking
 :::: Plug and Play

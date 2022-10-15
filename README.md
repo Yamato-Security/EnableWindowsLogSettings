@@ -83,6 +83,7 @@ If you find any of this useful, please give a star on GitHub as it will probably
 # Contributors
 
 * DustInDark: Japanese translation fixes.
+* LasseKrache: Pointing out a bug in the batch script.
 
 # Acknowledgements
 
