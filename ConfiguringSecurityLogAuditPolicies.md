@@ -202,7 +202,7 @@ Notable Sigma rules:
 | 4733 | Member Removed From Local Group | 0 | Not Yet | Info | |
 | 4734 | Local Group Deleted | 0 | Not Yet | Info | |
 | 4764 | Group Type Changed | 0 | Not Yet | Info | |
-| 4799 | Local Group Membership Enumerated | 1 | Not Yet | Info~High | |
+| 4799 | Local Group Membership Enumerated | 1 | Not Yet | Info~High | This is a pretty noisy event that is generated almost as often as `4672` Admin Logon events that will probably generate many false positives. |
 | 4737 | Global Group Changed | 0 | Not Yet | Info | |
 | 4729 | Member Removed From Global Group | 0 | Not Yet | Info | |
 | 4730 | Global Group Deleted | 0 | Not Yet | Info | |
@@ -450,7 +450,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4624 | Logon | 11 | Yes | Info~High | |
 | 4625 | Logon Failed | 4 | Yes | Info~Med | |
-| 4648 | Explicit Logon | 2 | Yes | Info~Med | |
+| 4648 | Explicit Logon | 2 | Yes | Info~Med | Will be logged on the source host. |
 
 ### Other Logon/Logoff Events
 
@@ -576,10 +576,10 @@ Notable Sigma rules:
 | 4658 | Object Handle Closed | 0 | Not Yet | Info | You need to enable the `Handle Manipulation` subcategory to record these events. |
 | 4660 | Object Deleted | 0 | Not Yet | Info | |
 | 4663 | Object Access | 2 | Not Yet | Info~High | Differs from 4656 in that there are only success events. |
-| 4664 | Attempt To Create Hard Link | 0 | Not Yet | Info | |
+| 4664 | Attempt To Create Hard Link | 0 | Not Yet | Info | Seems to be a rare event. |
 | 4670 | Object Permissions Changed | 0 | Not Yet | Info | |
-| 4985 | State Of A Transaction Changed | 0 | No | Info | Used for Transaction Manager and not relevant for security. |
-| 5051 | A File Was Virtualized | 0 | No | Info | Rarely occurs during LUAFV virtualization. Not relevant for security. |
+| 4985 | State Of A Transaction Changed | 0 | No | Info | Used for Transaction Manager and not relevant for security. Seems to be a rare event. |
+| 5051 | A File Was Virtualized | 0 | No | Info | Rarely occurs during LUAFV virtualization. Not relevant for security. Seems to be a rare event. |
 
 > **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured separately.** 
 
@@ -717,14 +717,14 @@ Notable Sigma rules:
 * `(4657) (Med) Common Autorun Keys Modification`
 * `(4657) (High) Disable Sysmon Event Logging Via Registry`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 2 | You need to enable the `Handle Manipulation` subcategory to record this event. |
-| 4657 | Registry Value Modified | 182 |  |
-| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
-| 4660 | Object Deleted  | 0 |  |
-| 4663 | Object Access | 0 |  |
-| 4670 | Object Permissions Changed | 0 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | Object Handle Requested | 2 | Not Yet | Info~High | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4657 | Registry Value Modified | 182 | Not Yet | Info~High | |
+| 4658 | Object Handle Closed | 0 | No | Info | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4660 | Object Deleted  | 0 | Not Yet | Info | |
+| 4663 | Object Access | 0 |  Not Yet | Info~? | |
+| 4670 | Object Permissions Changed | 0 | Not Yet | Info~? | |
 
 > **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured separately.** 
 
@@ -739,11 +739,11 @@ Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` if you want to monitor external device usage.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
-| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
-| 4663 | Object Access | 0 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | Object Handle Requested | 0 | Not Yet | Info | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4658 | Object Handle Closed | 0 | Not Yet | Info | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4663 | Object Access | 0 | Not Yet | Info | 
 
 > **Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured separately.** 
 
@@ -758,12 +758,12 @@ Default settings: `No Auditing`
 Recommended settings: `Success and Failure` if you can but may cause too high volume of noise so should be tested beforehand.
 
 Notable Sigma rules:
-* `(4661) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
-* `(4661) AD Privileged Users or Groups Reconnaissance`: Detect privileged users or groups recon based on 4661 eventid and known privileged users or groups SIDs.
+* `(4661) (High) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
+* `(4661) (High) AD Privileged Users or Groups Reconnaissance`: Detect privileged users or groups recon based on 4661 eventid and known privileged users or groups SIDs.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4661 | Object Handle Requested | 2 | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4661 | Object Handle Requested | 2 | Not Yet | Info~High | You need to enable the `Handle Manipulation` subcategory to record this event. |
 
 ## Policy Change
 
@@ -785,20 +785,20 @@ Default settings: `Success`
 Recommended settings: `Success and Failure`
 
 Notable Sigma rule:
-* `(4719) Disabling Windows Event Auditing`: Detects anti-forensics via local GPO policy.
+* `(4719) (High) Disabling Windows Event Auditing`: Detects anti-forensics via local GPO policy.
  
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4715 | The audit policy (SACL) on an object was changed. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4719 | System audit policy was changed. | 1 | Logged regardless of Audit Policy Change settings. |
-| 4817 | Auditing settings on object were changed. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4902 | The Per-user audit policy table was created. | 0 | |
-| 4904 | An attempt was made to register a security event source. | 0 | |
-| 4905 | An attempt was made to unregister a security event source. | 0 | |
-| 4906 | The CrashOnAuditFail value has changed. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4907 | Auditing settings on object were changed. | 0 | |
-| 4908 | Special Groups Logon table modified. | 0 | Logged regardless of Audit Policy Change settings. |
-| 4912 | Per User Audit Policy was changed. | 0 | Logged regardless of Audit Policy Change settings. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4715 | The audit policy (SACL) on an object was changed. | 0 | Not Yet | Info | Logged regardless of Audit Policy Change settings. |
+| 4719 | System audit policy was changed. | 1 | Not Yet | Info~High | Logged regardless of Audit Policy Change settings. |
+| 4817 | Auditing settings on object were changed. | 0 | Not Yet | Info | Logged regardless of Audit Policy Change settings. Seems to be a rare event. |
+| 4902 | The Per-user audit policy table was created. | 0 | Not Yet | Info | Seems to be a rare event. |
+| 4904 | An attempt was made to register a security event source. | 0 | Not Yet | Info | |
+| 4905 | An attempt was made to unregister a security event source | 0 | Not Yet | Info | |
+| 4906 | The CrashOnAuditFail value has changed | 0 | No | Info | Logged regardless of Audit Policy Change settings. Seems to be a rare event. |
+| 4907 | Auditing settings on object were changed | 0 | Not Yet | Info | Seems to be a rare event. |
+| 4908 | Special Groups Logon table modified | 0 | Not Yet | Low | Logged regardless of Audit Policy Change settings. Seems to be a rare event. |
+| 4912 | Per User Audit Policy was changed | 0 | Not Yet | Low | Logged regardless of Audit Policy Change settings. Seems to be a rare event. |
 
 ### Authentication Policy Change
 
@@ -822,22 +822,22 @@ Default settings: `Success`
 Recommended settings: `Success and Failure`
 
 Notable Sigma rule:
-* `(4706) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
+* `(4706) (Med) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
  
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4670 | Object permissions changed. | 0 | |
-| 4706 | A new trust was created to a domain. | 1 | |
-| 4707 | A trust to a domain was removed. | 0 | |
-| 4713 | Kerberos policy was changed. | 0 | |
-| 4716 | Trusted domain information was modified. | 0 | |
-| 4717 | System security access was granted to an account. | 0 | |
-| 4718 | System security access was removed from an account. | 0 | |
-| 4739 | Domain Policy was changed. | 0 | |
-| 4864 | A namespace collision was detected. | 0 | |
-| 4865 | A trusted forest information entry was added. | 0 | |
-| 4866 | A trusted forest information entry was removed. | 0 | |
-| 4867 | A trusted forest information entry was modified. | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4670 | Object permissions changed. | 0 | Not Yet | Info | |
+| 4706 | A new trust was created to a domain. | 1 | Not Yet | Info~Med | |
+| 4707 | A trust to a domain was removed. | 0 | Not Yet | Med | |
+| 4713 | Kerberos policy was changed. | 0 | Not Yet | Info | |
+| 4716 | Trusted domain information was modified. | 0 | Not Yet | Med | |
+| 4717 | System security access was granted to an account. | 0 | Not Yet | Info | |
+| 4718 | System security access was removed from an account. | 0 | Not Yet | Info | |
+| 4739 | Domain Policy was changed. | 0 | Not Yet | Med | |
+| 4864 | A namespace collision was detected. | 0 | Not Yet | Info | |
+| 4865 | A trusted forest information entry was added. | 0 | Not Yet | Info | |
+| 4866 | A trusted forest information entry was removed. | 0 | Not Yet | Info | |
+| 4867 | A trusted forest information entry was modified. | 0 | Not Yet | Info | |
 
 ### Authorization Policy Change
 
@@ -852,9 +852,9 @@ Default settings: `No Auditing`
 
 Recommended settings: `Unknown. Needs testing.`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4703 | A user right was adjusted. | 0 | As of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4703 | A user right was adjusted. | 0 | Apparently s of Windows 10, this event is generated by applications and services that dynamically adjust token privileges. An example is Microsoft Endpoint Configuration Manager, which makes WMI queries at recurring intervals generating a large amount of events from the svchost.exe process. However, I have not seen this event. |
 | 4704 | A user right was assigned. | 0 | |
 | 4705 | A user right was removed. | 0 | |
 | 4670 | Object permissions changed. | 0 | |
@@ -896,24 +896,24 @@ Default settings: `No Auditing`
 
 Recommended settings: `Unknown. Needs testing.`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4944 | Active policy when FW started. | 0 | |
-| 4945 | Rule listed when FW started. | 0 | |
-| 4946 | Rule added to FW exception list. | 0 | |
-| 4947 | Rule modified to FW exception list. | 0 | |
-| 4948 | Rule deleted from FW exception list. | 0 | |
-| 4949 | FW settings restored to default. | 0 | |
-| 4950 | FW setting changed. | 0 | |
-| 4951 | FW rule ignored because major version number was not recognized. | 0 | |
-| 4952 | Parts of FW rule ignored because minor version number was not recognized. | 0 | |
-| 4953 | FW rule could not be parsed. | 0 | |
-| 4954 | FW Group Policy settings changed. New settings applied. | 0 | |
-| 4956 | FW active profile changed. | 0 | |
-| 4957 | FW did not apply rule. | 0 | |
-| 4958 | FW did not apply rule because rule referred to items not configured on this computer. | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4944 | Active policy when FW started. | 0 | Not Yet | Info | |
+| 4945 | Rule listed when FW started. | 0 | Not Yet | Info | |
+| 4946 | Rule added to FW exception list. | 0 | Not Yet | Info | |
+| 4947 | Rule modified to FW exception list. | 0 | Not Yet | Info | |
+| 4948 | Rule deleted from FW exception list. | 0 | Not Yet | Info | |
+| 4949 | FW settings restored to default. | 0 | Not Yet | Info | |
+| 4950 | FW setting changed. | 0 | Not Yet | Info | |
+| 4951 | FW rule ignored because major version number was not recognized. | 0 | Not Yet | Info | |
+| 4952 | Parts of FW rule ignored because minor version number was not recognized. | 0 | Not Yet | Info | |
+| 4953 | FW rule could not be parsed. | 0 | Not Yet | Info | |
+| 4954 | FW Group Policy settings changed. New settings applied. | 0 | Not Yet | Info | |
+| 4956 | FW active profile changed. | 0 | Not Yet | Info | |
+| 4957 | FW did not apply rule. | 0 | Not Yet | Info | |
+| 4958 | FW did not apply rule because rule referred to items not configured on this computer. | 0 | Not Yet | Info | |
 
-There are no sigma detection rules for this sub-category at the moment.
+There are no sigma or hayabusa rules for this sub-category at the moment.
 
 ### Other Policy Change Events
 
@@ -995,15 +995,15 @@ Default settings: `No Auditing`
 Recommended settings: `Success and Failure` However, this may be too noisy.
 
 Notable Sigma rules:
-* `(4673) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
-* `(4673) Suspicious Driver Loaded By User`: Detects the loading of drivers via 'SeLoadDriverPrivilege' required to load or unload a device driver. With this privilege, the user can dynamically load and unload device drivers or other code in to kernel mode. This user right does not apply to Plug and Play device drivers. If you exclude privileged users/admins and processes, which are allowed to do so, you are maybe left with bad programs trying to load malicious kernel drivers. This will detect Ghost-In-The-Logs (https://github.com/bats3c/Ghost-In-The-Logs) and the usage of Sysinternals and various other tools. So you have to work with a whitelist to find the bad stuff.
-* `(4674) SCM Database Privileged Operation`: Detects non-system users performing privileged operation os the SCM database.
+* `(4673) (High) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
+* `(4673) (Med) Suspicious Driver Loaded By User`: Detects the loading of drivers via 'SeLoadDriverPrivilege' required to load or unload a device driver. With this privilege, the user can dynamically load and unload device drivers or other code in to kernel mode. This user right does not apply to Plug and Play device drivers. If you exclude privileged users/admins and processes, which are allowed to do so, you are maybe left with bad programs trying to load malicious kernel drivers. This will detect Ghost-In-The-Logs (https://github.com/bats3c/Ghost-In-The-Logs) and the usage of Sysinternals and various other tools. So you have to work with a whitelist to find the bad stuff.
+* `(4674) (Med) SCM Database Privileged Operation`: Detects non-system users performing privileged operation os the SCM database.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4673 | A privileged service was called. | 2 | |
-| 4674 | An operation was attempted on a privileged object. | 1 | |
-| 4985 | The state of a transaction has changed. | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4673 | A privileged service was called. | 2 | Not Yet | Info~High | |
+| 4674 | An operation was attempted on a privileged object. | 1 | Not Yet | Info~Med | |
+| 4985 | The state of a transaction has changed. | 0 | Not Yet | Info | |
 
 > **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
@@ -1036,13 +1036,13 @@ Default settings: `Success`
 Recommended settings: `Success and Failure`
 
 Notable Sigma rule:
-* `(4616) Unauthorized System Time Modification`: Detect scenarios where a potentially unauthorized application or user is modifying the system time.
+* `(4616) (Low) Unauthorized System Time Modification`: Detect scenarios where a potentially unauthorized application or user is modifying the system time.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4608 | Windows is starting up. | 0 | |
-| 4616 | The system time was changed. | 1 | |
-| 4621 | Administrator recovered system from CrashOnAuditFail. | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4608 | Windows is starting up. | 0 | Not Yet | Info | This event does not seem to be generated. |
+| 4616 | The system time was changed. | 1 | Not Yet | Low | |
+| 4621 | Administrator recovered system from CrashOnAuditFail. | 0 | No | Info | Seems to be a rare event. |
 
 ### Security System Extension
 
@@ -1057,22 +1057,22 @@ Default settings: `No Auditing`
 Recommended settings: `Success and Failure`
 
 Notable Sigma rule:
-* `(4611) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
-* `(4697) Invoke-Obfuscation Obfuscated IEX Invocation`
-* `(4697) Invoke-Obfuscation Via Use Rundll32`
-* `(4697) Invoke-Obfuscation Via Use MSHTA`
-* `(4697) CobaltStrike Service Installations`
-* `(4697) Credential Dumping Tools Service Execution`
-* `(4697) Malicious Service Installations`
-* `(4697) Meterpreter or Cobalt Strike Getsystem Service Installation`
+* `(4611) (High) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
+* `(4697) (High) Invoke-Obfuscation Obfuscated IEX Invocation`
+* `(4697) (High) Invoke-Obfuscation Via Use Rundll32`
+* `(4697) (High) Invoke-Obfuscation Via Use MSHTA`
+* `(4697) (High) CobaltStrike Service Installations`
+* `(4697) (High) Credential Dumping Tools Service Execution`
+* `(4697) (Crit) Malicious Service Installations`
+* `(4697) (Crit) Meterpreter or Cobalt Strike Getsystem Service Installation`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4610 | An authentication package has been loaded by the Local Security Authority. | 0 | Should be monitored with an allowlist. |
-| 4611 | A trusted logon process has been registered with the Local Security Authority. | 1 | Should display "SYSTEM" in the "Subject" field. |
-| 4614 | A notification package has been loaded by the Security Account Manager. | 0 | |
-| 4622 | A security package has been loaded by the Local Security Authority. | 0 | |
-| 4697 | A service was installed in the system. | 20 | This is the most important event in this sub-category.　Requires Win 10/2016+. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4610 | An authentication package has been loaded by the Local Security Authority. | 0 | No | ? | According to MS, this should be monitored with an allowlist but this event seems to not be generated.  |
+| 4611 | A trusted logon process has been registered with the Local Security Authority. | 1 | Not Yet | Low~High | Should display "SYSTEM" in the "Subject" field. |
+| 4614 | A notification package has been loaded by the Security Account Manager. | 0 | No | ? | Seems to be a rare event. |
+| 4622 | A security package has been loaded by the Local Security Authority. | 0 | No | ? | Seems to be a rare event. |
+| 4697 | A service was installed in the system. | 20 | Yes | Info~High | This is the most important event in this sub-category.　Requires Win 10/2016+. |
 
 ### System Integrity
 
@@ -1093,20 +1093,20 @@ Recommended settings: `Success and Failure`
 
 Currently, there are no sigma rules for this sub-category.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4612 | Potential Log Loss Due To Lack Of Resources | 0 | This is important to monitor. |
-| 4615 | Invalid use of LPC port. | 0 |  |
-| 4618 | A monitored security event pattern has occurred. | 0 | This event can only be invoked manually. |
-| 4816 | RPC Integrity Violation | 0 | Orginally `RPC detected an integrity violation while decrypting an incoming message.`  |
-| 5038 | Code Integrity Error: Invalid Image Hash | 0 | Originally `Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error.` |
-| 5056 | A cryptographic self-test was performed. | 0 |  |
-| 5057 | A cryptographic primitive operation failed. | 0 |  |
-| 5060 | Verification operation failed. | 0 |  |
-| 5061 | Cryptographic operation. | 0 |  |
-| 5062 | A kernel-mode cryptographic self-test was performed. | 0 |  |
-| 6281 | Code Integrity Error: Invalid Image Page Hash | 0 | Originally `Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error.` |
-| 6410 | Code Integrity Error: Requirements Not Met | 0 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4612 | Potential Log Loss Due To Lack Of Resources | 0 | Not Yet | Med | This should be important to monitor but I have not seen it. |
+| 4615 | Invalid use of LPC port. | 0 | No | Info | Seems to be a rare event.  |
+| 4618 | A monitored security event pattern has occurred. | 0 | No | None | This event can only be invoked manually. |
+| 4816 | RPC Integrity Violation | 0 | Not Yet | Low | Orginally `RPC detected an integrity violation while decrypting an incoming message`. Seems to be a rare event.  |
+| 5038 | Code Integrity Error: Invalid Image Hash | 0 | Yes | Low |  Originally `Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error`. |
+| 5056 | A cryptographic self-test was performed. | 0 | No | None | Seems to be a rare event.  |
+| 5057 | A cryptographic primitive operation failed. | 0 | No | Info | Seems to be a rare event. |
+| 5060 | Verification operation failed. | 0 | No | Info | Seems to be a rare event. |
+| 5061 | Cryptographic operation. | 0 | No | Info | Seems to be a rare event. |
+| 5062 | A kernel-mode cryptographic self-test was performed. | 0 | No | Info | Seems to be a rare event. |
+| 6281 | Code Integrity Error: Invalid Image Page Hash | 0 | Yes | Low | Originally `Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error.` |
+| 6410 | Code Integrity Error: Requirements Not Met | 0 | Yes | Low | Seems to be a rare event. |
 
 ## Global Object Access Auditing
 
