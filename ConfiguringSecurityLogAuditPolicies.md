@@ -156,9 +156,9 @@ Notable Sigma rule:
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4741 | Computer Account Created | 0 | Not Yet | Info | I have not seen this before.  |
+| 4741 | Computer Account Created | 0 | Not Yet | Info | Seems to be a rare event.  |
 | 4742 | Computer Account Changed | 1 | Not Yet | Info~Med | |
-| 4743 | Computer Account Deleted | 0 | Not Yet | Info | I have not seen this before. |
+| 4743 | Computer Account Deleted | 0 | Not Yet | Info | Seems to be a rare event. |
 
 ### Other Account Management Events
 
@@ -170,8 +170,8 @@ Recommended settings: `Success and Failure`
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4782 | Account Pasword Hash Was Accessed | 0 | Not Yet | Info | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. I have not seen this before. |
-| 4793 | Password Policy Checking API Was Called | 0 | Not Yet | Low | Generated during password resets or attackers checking the password policy. I have not seen this before. |
+| 4782 | Account Pasword Hash Was Accessed | 0 | Not Yet | Info | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. Seems to be a rare event. |
+| 4793 | Password Policy Checking API Was Called | 0 | Not Yet | Low | Generated during password resets or attackers checking the password policy. Seems to be a rare event. |
 
 ### Security Group Management
 
@@ -240,7 +240,7 @@ Notable Sigma rules:
 | 4725 | User Account Disabled | 0 | Not Yet | Info | |
 | 4726 | User Account Deleted | 0 | Not Yet | Info | |
 | 4738 | User Account Changed | 4 | Not Yet | Info~High | |
-| 4740 | User Account Lockout | 0 | Not Yet | Med | I have not seen this before. |
+| 4740 | User Account Lockout | 0 | Not Yet | Med | Seems to be a rare event. |
 | 4765 | SID History Added To Account | 1 | Not Yet | Info~Med | |
 | 4766 | Attempt To Add SID History To Account Failed | 0 | Not Yet | Info~Med | |
 | 4767 | User account was unlocked | 0 | Not Yet | Info | |
@@ -309,7 +309,7 @@ Recommended settings: `No Auditing` unless you want to track the lifespan of pro
 
 ### RPC (Remote Procedure Call) Events
 
-Volume: `High on RPC servers`
+Volume: `High on RPC servers` (According to Microsoft)
 
 Default settings: `No Auditing`
 
@@ -317,7 +317,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 5712 | RPC Attempt | 0 | Logged when inbound RPC connection is made. | Not Yet | ? | I have not seen this before | |
+| 5712 | RPC Attempt | 0 | Logged when inbound RPC connection is made. | Not Yet | ? | Seems to be a rare event. | |
 
 ### Token Right Adjusted Events
 
@@ -329,7 +329,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4703 | User's Token Changed | 0 | Not Yet | Info | I have not seen this before. |
+| 4703 | User's Token Changed | 0 | Not Yet | Info | Seems to be a rare event. |
 
 ## DS (Directory Service) Access
 
@@ -337,23 +337,23 @@ Recommended settings: `Unknown. Needs testing.`
 
 ### Directory Service Access
 
-Volume: High on servers running AD DS role services.
+Volume: `High`
 
 Default settings: `Client OS: No Auditing` | `Server OS: Success`
 
 Recommended settings: `Client OS: No Auditing` | `ADDS Server: Success and Failure`
 
 Notable Sigma rules:
-* `AD Object WriteDAC Access`
-* `Active Directory Replication from Non Machine Account`
-* `AD User Enumeration`: Detects access to a domain user from a non-machine account. (Requires the "Read all properties" permission on the user object to be audited for the "Everyone" principal.)
-* `DPAPI Domain Backup Key Extraction`: Detects tools extracting LSA secret DPAPI domain backup key from Domain Controllers.
-* `WMI Persistence`: Detects malware that autostarts via WMI.
+* `(4662) (Crit) AD Object WriteDAC Access`
+* `(4662) (Crit) Active Directory Replication from Non Machine Account`
+* `(4662) (Med) AD User Enumeration`: Detects access to a domain user from a non-machine account. (Requires the "Read all properties" permission on the user object to be audited for the "Everyone" principal.)
+* `(4662) (High) DPAPI Domain Backup Key Extraction`: Detects tools extracting LSA secret DPAPI domain backup key from Domain Controllers.
+* `(4662) (Med) WMI Persistence`: Detects malware that autostarts via WMI.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4661 | Handle To Object Requested | 2 | |
-| 4662 | Operation Performed On Object | 6 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4661 | Handle To Object Requested | 2 | Not Yet | Info~Crit | |
+| 4662 | Operation Performed On Object | 6 | Not Yet | Info~Crit | |
 
 ### Directory Service Changes
 
@@ -364,124 +364,129 @@ Default settings: `No Auditing`
 Recommended settings: `Client OS: No Auditing` | `ADDS Server: Success and Failure`
 
 Notable Sigma rules:
-* `Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
+* `(5136) (High) Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
 * `(5136) (High) Active Directory User Backdoors`: Detects scenarios where one can control another users or computers account without having to use their credentials.
 * `(5136) (Med) Possible DC Shadow`
-* `Suspicious LDAP-Attributes Used`: Detects LDAPFragger, a C2 tool that lets attackers route Cobalt Strike beacon data over LDAP attributes.
+* `(5136) (High) Suspicious LDAP-Attributes Used`: Detects LDAPFragger, a C2 tool that lets attackers route Cobalt Strike beacon data over LDAP attributes.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 5136 | Directory Service Object Modified | 6 | |
-| 5137 | Directory Service Object Created | 0 | |
-| 5138 | Directory Service Object Undeleted | 0 | |
-| 5139 | Directory Service Object Moved | 0 | |
-| 5141 | Directory Service Object Deleted | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5136 | Directory Service Object Modified | 6 | Not Yet | Info~Crit | |
+| 5137 | Directory Service Object Created | 0 | Not Yet | Info | |
+| 5138 | Directory Service Object Undeleted | 0 | Not Yet | Info | |
+| 5139 | Directory Service Object Moved | 0 | Not Yet | Info | |
+| 5141 | Directory Service Object Deleted | 0 | Not Yet | Info | |
 
 ## Logon/Logoff
 
 ### Account Lockout
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rules:
-* `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: Detects scans for the BlueKeep vulnerability.
-* `Failed Logon From Public IP`
-* `Multiple Users Failing to Authenticate from Single Process`
-* `Multiple Users Remotely Failing To Authenticate From Single Source`
+Currently there is no sigma rule for account lockout.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4625 | Logon Failed Due To Lockout | 4 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4625 | Logon Failed Due To Lockout | 0 | Yes | Med | Substatus: `0xC0000234` |
 
 ### Group Membership
 
-Volume: Adds an extra log about a user's group membership to every logon.
+Shows what group a user belongs to when they log in.
+ACSC recommends `Success and Failure` but this is probably not needed if you can easily lookup what groups a user belongs to.
+
+Volume: Adds an extra `4627` event to every logon.
 
 Default settings: `No Auditing`
 
-Recommended settings: ACSC recommends `Success and Failure` but this is probably not needed if you can easily lookup what groups a user belongs to.
+Recommended settings: `No Auditing`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4627 | Group Membership Information | 0 | Shows what group a user belongs to when they log in. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4627 | Group Membership Information | 0 | Not Yet | Info | |
 
 ### Logoff
 
-Volume: High.
+Note: Unfortunately, Windows will sometimes not record any logoff event when logging off.
+
+Volume: `High`
 
 Default settings: `Success`
 
 Recommended settings: `Success`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4634 | Logoff | 0 | |
-| 4647 | User Initiated Logoff | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4634 | Logoff | 0 | Yes | Info | |
+| 4647 | User Initiated Logoff | 0 | Yes | Info | |
 
 ### Logon
 
-Volume: Low on clients, medium on DCs or network servers.
+Volume: `Low on clients, medium on DCs or network servers`
 
 Default settings: `Client OS: Success` | `Server OS: Success and Failure`
 
 Recommended settings: `Success and Failure`
 
 Notable Sigma rules:
-* `Admin User Remote Logon`
-* `Successful Overpass the Hash Attempt`
-* `Pass the Hash Activity`
-* `RDP Login from Localhost`
-* `Login with WMI`
-* `KrbRelayUp Attack Pattern`
-* `RottenPotato Like Attack Pattern`
-* `Failed Logon From Public IP`
-* `Suspicious Remote Logon with Explicit Credentials`
+* `(4624) (Low) Admin User Remote Logon`
+* `(4624) (High) Successful Overpass the Hash Attempt`
+* `(4624) (Med) Pass the Hash Activity`
+* `(4624) (Med) RDP Login from Localhost`
+* `(4624) (Low) Login with WMI`
+* `(4624) (High) KrbRelayUp Attack Pattern`
+* `(4624) (High) RottenPotato Like Attack Pattern`
+* `(4625) (Med) Failed Logon From Public IP`
+* `(4648) (Med) Suspicious Remote Logon with Explicit Credentials`
+* `(4624) (High) Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: Detects scans for the BlueKeep vulnerability.
+* `(4625) (Med) Failed Logon From Public IP`
+* `(4625) (Med) Multiple Users Failing to Authenticate from Single Process`
+* `(4625) (Med) Multiple Users Remotely Failing To Authenticate From Single Source`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4624 | Logon | 11 | |
-| 4625 | Logon Failed | 4 | |
-| 4648 | Explicit Logon | 2 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4624 | Logon | 11 | Yes | Info~High | |
+| 4625 | Logon Failed | 4 | Yes | Info~Med | |
+| 4648 | Explicit Logon | 2 | Yes | Info~Med | |
 
 ### Other Logon/Logoff Events
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4649 | Possible Kerberos Replay Attack | 0 | |
-| 4778 | Session Reconnected To Window Station | 0 | Logged at source for RDP or Fast User Switching. |
-| 4779 | Session Disconnected From Window Station | 0 | Logged at source for RDP or Fast User Switching. |
-| 4800 | Computer Locked | 0 | |
-| 4801 | Computer Unlocked | 0 | |
-| 4802 | Screensaver Started | 0 | |
-| 4803 | Screensaver Stopped | 0 | |
-| 5378 | CredSSP Credentials Delegation Blocked | 0 | Usually when WinRM double-hop session was not properly set. |
-| 5632 | 802.1x Authentication To Wireless Network | 0 | |
-| 5633 | 802.1x Authentication To Wired Network | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4649 | Possible Kerberos Replay Attack | 0 | Not Yet | Med | Seems to be a rare event. |
+| 4778 | Session Reconnected To Window Station | 0 | Yes | Info| Logged at source for RDP or Fast User Switching. |
+| 4779 | Session Disconnected From Window Station | 0 | Yes | Info | Logged at source for RDP or Fast User Switching. |
+| 4800 | Computer Locked | 0 | Not Yet | Info | |
+| 4801 | Computer Unlocked | 0 | Not Yet | Info | |
+| 4802 | Screensaver Started | 0 | Not Yet | Info | |
+| 4803 | Screensaver Stopped | 0 | Not Yet | Info | |
+| 5378 | CredSSP Credentials Delegation Blocked | 0 | No | Info | Usually when WinRM double-hop session was not properly set. Seems to be a rare event. |
+| 5632 | 802.1x Authentication To Wireless Network | 0 | Not Yet | Info | |
+| 5633 | 802.1x Authentication To Wired Network | 0 | Not Yet | Info | |
 
 ### Special Logon
 
 "Special groups" and "Special Privileges" can be thought of as Administrator groups or privileges.
 
-Volume: Low on client. Medium on DC or network servers.
+Volume: `Low on clients. Medium on DC or network servers.`
 
 Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4672 | Admin Logon | 0 | |
-| 4964 | Logon From Admin Group | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4672 | Admin Logon | 0 | Yes | Info | |
+| 4964 | Logon From Admin Group | 0 | Not Yet | Info | Seems to be a rare event. |
 
 ## Object Access
 
@@ -489,25 +494,26 @@ Recommended settings: `Success and Failure`
 
 > **Note: Enable only for servers providing AD CS role services.**
 
-Volume: Low to medium.
+Volume: `Low to medium`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` for AD CS role servers.
 
 Notable Sigma rules:
-* `ADCS Certificate Template Configuration Vulnerability with Risky EKU`
-* `ADCS Certificate Template Configuration Vulnerability`
+* `(4898, 4899) (High) ADCS Certificate Template Configuration Vulnerability with Risky EKU`
+* `(4898, 4899) (High) ADCS Certificate Template Configuration Vulnerability`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4898 | Certificate Services Loaded A Template | 2 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4898 | Certificate Services Loaded A Template | 2 | Not Yet | Info~High | |
+| 4899 | Certificate Services Template Updated | 2 | Not Yet | Info~High | |
 
-> **Note: Many event IDs are enabled. Only the one with sigma rules is shown above.**
+> **Note: Many event IDs are enabled. Only the ones with sigma rules are shown above.**
 
 ### Detailed File Share
 
-Volume: Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.
+Volume: `Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.`
 
 > **Warning: There are no SACLs (System Access Control Lists) for shared folders so everything is logged.**
 
@@ -516,37 +522,37 @@ Default settings: `No Auditing`
 Recommended settings: `No Auditing` due to the high noise level. Enable if you can though.
 
 Notable Sigma rules:
-* `Remote Task Creation via ATSVC Named Pipe`
-* `Persistence and Execution at Scale via GPO Scheduled Task`
-* `Impacket PsExec Execution`
-* `Possible Impacket SecretDump Remote Activity`
-* `First Time Seen Remote Named Pipe`
-* `Possible PetitPotam Coerce Authentication Attempt`
-* `Suspicious Access to Sensitive File Extensions`
-* `Transferring Files with Credential Data via Network Shares`
+* `(5145) (Med) Remote Task Creation via ATSVC Named Pipe`
+* `(5145) (High) Persistence and Execution at Scale via GPO Scheduled Task`
+* `(5145) (High) Impacket PsExec Execution`
+* `(5145) (High) Possible Impacket SecretDump Remote Activity`
+* `(5145) (High) First Time Seen Remote Named Pipe`
+* `(5145) (High) Possible PetitPotam Coerce Authentication Attempt`
+* `(5145) (Med) Suspicious Access to Sensitive File Extensions`
+* `(5145) (Med) Transferring Files with Credential Data via Network Shares`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 5145 | Network Share File Access | 17 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5145 | Network Share File Access | 17 | Yes | Info~High | |
 
 ### File Share
 
-Volume: High for file servers and DCs.
+Volume: `High for file servers and DCs.`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
 Notable Sigma rule:
-* `(5140) Access to ADMIN$ Share`
+* `(5140) (Low) Access to ADMIN$ Share`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 5140 | Network Share Connection | 1 | Can be combined with File System auditing to track what files were accessed. |
-| 5142 | Network Share Created | 0 | |
-| 5143 | Network Share Modified | 0 | |
-| 5144 | Network Share Deleted | 0 | |
-| 5168 | SPN Check For SMB/SMB2 Failed | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5140 | Network Share Connection | 1 | Yes | Info~High | Can be combined with File System auditing to track what files were accessed. |
+| 5142 | Network Share Created | 0 | Not Yet | Info | |
+| 5143 | Network Share Modified | 0 | Not Yet | Info | |
+| 5144 | Network Share Deleted | 0 | Not Yet | Info | |
+| 5168 | SPN Check For SMB/SMB2 Failed | 0 | Not Yet | Info | Seems to be a rare event. |
 
 ### File System
 
@@ -554,26 +560,26 @@ You need to separately configure audit permissions on files and/or folders in or
 For example, by right-clicking, opening Properties, Security tab, Advanced, Auditing tab and then adding a Principal and what permissions to monitor.
 It is recommended only to monitor access to sensitive files as there will be too much noise if too many files are enabled for logging.
 
-Volume: Depends on SACL rules.
+Volume: `Depends on SACL rules`
 
 Default settings: `No Auditing`
 
-Recommended settings: Enable SACLs for sensitive files.
+Recommended settings: `Enable SACLs just for sensitive files`
 
 Notable Sigma rules:
-* `(4663) ISO Image Mount`
-* `(4663) Suspicious Teams Application Related ObjectAcess Event`: Detects access to MS Teams authentication tokens.
+* `(4663) (Med) ISO Image Mount`
+* `(4663) (High) Suspicious Teams Application Related ObjectAcess Event`: Detects access to MS Teams authentication tokens.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 0 | Fails if the process does not have the right permissions. You need to enable the `Handle Manipulation` subcategory to record these events. |
-| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record these events. |
-| 4660 | Object Deleted | 0 | |
-| 4663 | Object Access | 2 | Differs from 4656 in that there are only success events. |
-| 4664 | Attempt To Create Hard Link | 0 | |
-| 4670 | Object Permissions Changed | 0 | |
-| 4985 | State Of A Transaction Changed | 0 | Used for Transaction Manager and not relevant for security. |
-| 5051 | A File Was Virtualized | 0 | Rarely occurs during LUAFV virtualization. Not relevant for security. |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | Object Handle Requested | 0 | Not Yet | Info | Fails if the process does not have the right permissions. You need to enable the `Handle Manipulation` subcategory to record these events. |
+| 4658 | Object Handle Closed | 0 | Not Yet | Info | You need to enable the `Handle Manipulation` subcategory to record these events. |
+| 4660 | Object Deleted | 0 | Not Yet | Info | |
+| 4663 | Object Access | 2 | Not Yet | Info~High | Differs from 4656 in that there are only success events. |
+| 4664 | Attempt To Create Hard Link | 0 | Not Yet | Info | |
+| 4670 | Object Permissions Changed | 0 | Not Yet | Info | |
+| 4985 | State Of A Transaction Changed | 0 | No | Info | Used for Transaction Manager and not relevant for security. |
+| 5051 | A File Was Virtualized | 0 | No | Info | Rarely occurs during LUAFV virtualization. Not relevant for security. |
 
 > **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured separately.** 
 
@@ -581,42 +587,42 @@ Notable Sigma rules:
 
 Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and network connections.
 
-Volume: High.
+Volume: `High`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` if you have enough space and are not monitoring network connections with sysmon. This should cause a high amount of events though.
 
 Notable Sigma rules:
-* `(5156) Enumeration via the Global Catalog`: To detect Bloodhound and similar tools.
-* `(5156) RDP over Reverse SSH Tunnel WFP`
-* `(5156) Remote PowerShell Sessions Network Connections (WinRM)`
-* `(5156) Suspicious Outbound Kerberos Connection`: Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.
+* `(5156) (Med) Enumeration via the Global Catalog)`: To detect Bloodhound and similar tools.
+* `(5156) (High) RDP over Reverse SSH Tunnel WFP`
+* `(5156) (High) Remote PowerShell Sessions Network Connections (WinRM)`
+* `(5156) (High) Suspicious Outbound Kerberos Connection`: Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 5031 | WFP Blocked Incoming Connection | 0 |  |
-| 5150 | WFP Blocked A Packet | 0 | |
-| 5151 | A More Restrictive WFP Filter Blocked A Packet | 0 | |
-| 5154 | Process Listening For Connections | 0 | |
-| 5155 | Process Blocked To Listen For Connections  | 0 | |
-| 5156 | Network Connection | 4 | |
-| 5157 | Network Connection Blocked | 0 | |
-| 5158 | Process Binded To Port | 0 | |
-| 5159 | Process Blocked To Bind To Port | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5031 | WFP Blocked Incoming Connection | 0 | Not Yet | Info | |
+| 5150 | WFP Blocked A Packet | 0 | Not Yet | Info | |
+| 5151 | A More Restrictive WFP Filter Blocked A Packet | 0 | Not Yet | Info | |
+| 5154 | Process Listening For Connections | 0 | Not Yet | Info | |
+| 5155 | Process Blocked To Listen For Connections  | 0 | Not Yet | Info | |
+| 5156 | Network Connection | 4 | Not Yet | Info~High | |
+| 5157 | Network Connection Blocked | 0 | Not Yet | Info | |
+| 5158 | Process Binded To Port | 0 | Not Yet | Info | |
+| 5159 | Process Blocked To Bind To Port | 0 | Not Yet | Info | |
 
 ### Filtering Platform Packet Drop
 
-Volume: High.
+Volume: `High`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` if you have enough space and are not monitoring network connections with sysmon. This should cause a high amount of events though.
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 5152 | WFP Blocked A Packet | 0 |  |
-| 5153 | A More Restrictive WFP Filter Blocked A Packet | 0 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5152 | WFP Blocked A Packet | 0 | Not Yet | Info | |
+| 5153 | A More Restrictive WFP Filter Blocked A Packet | 0 | Not Yet | Info | |
 
 ### Kernel Object
 
@@ -625,22 +631,22 @@ This audits attempts to access the kernel objects, such as mutexes, symbolic lin
 Only kernel objects with SACLs generate security audit events. By default, kernel objects will not have SACLS defined so they will not be audited.
 You can enable auditing of all kernel objects by enabling `Audit the access of global system objects` (GPO: `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit the access of global system objects`) which will define SACLS for all kernel objects, however, it is not recommended as you will probably generate too many unneeded events. On Windows 11, access to the lsass process seems to be enabled by default, which is good to monitor.
 
-Volume: High if auditing access of global object access is enabled.
+Volume: `High if auditing access of global object access is enabled`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` but do not enable `Audit the access of global system objects` as you will generate too many `4663: Object Access` events.
 
 Notable Sigma rules:
-* `(4656) Generic Password Dumper Activity on LSASS`
-* `(4663) Suspicious Multiple File Rename Or Delete Occurred`: Detects multiple file rename or delete events occurrence within a specified period of time by a same user (these events may indicate ransomware activity).
+* `(4656) (High) Generic Password Dumper Activity on LSASS`
+* `(4663) (Med) Suspicious Multiple File Rename Or Delete Occurred`: Detects multiple file rename or delete events occurrence within a specified period of time by a same user (these events may indicate ransomware activity).
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4656 | Object Handle Requested | 4 | You need to enable the `Handle Manipulation` subcategory to record this event. |
-| 4658 | Object Handle Closed | 0 | You need to enable the `Handle Manipulation` subcategory to record this event. |
-| 4660 | Object Deleted | 0 |  |
-| 4663 | Object Access  | 2 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | Object Handle Requested | 4 | Not Yet | Info~High | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4658 | Object Handle Closed | 0 | Not Yet | Info | You need to enable the `Handle Manipulation` subcategory to record this event. |
+| 4660 | Object Deleted | 0 | Not Yet | Info | |
+| 4663 | Object Access  | 2 | Not Yet | Info | |
 
 > **Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured separately.** 
 
@@ -652,64 +658,64 @@ Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure` 
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4690 | An attempt was made to duplicate a handle to an object | 0 | |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4690 | An attempt was made to duplicate a handle to an object | 0 | No | Info | Not relevant for security. |
 
 ### Other Object Access Events
 
 It is important to enable as malware will often abuse tasks for persistence and lateral movement.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
 Notable Sigma rules:
-* `(4698) Rare Schtasks Creations`: Detects rare scheduled tasks creations that only appear a few times per time frame and could reveal password dumpers, backdoor installs or other types of malicious code.
-* `(4699) Scheduled Task Deletion`
+* `(4698) (Low) Rare Schtasks Creations`: Detects rare scheduled tasks creations that only appear a few times per time frame and could reveal password dumpers, backdoor installs or other types of malicious code.
+* `(4699) (Low) Scheduled Task Deletion`
 
-| Event ID | Description | Sigma Rules | Notes |
-| :---: | :---: | :---: | :---: |
-| 4691 | Indirect Access To Object | 0 |  |
-| 4698 | Task Created | 2 | |
-| 4699 | Task Deleted | 1 | |
-| 4700 | Task Enabled | 0 | |
-| 4701 | Task Disabled | 1 | |
-| 4702 | Task Updated | 0 | |
-| 5148 | WFP Detected DoS Attack And Is Blocking Source Packets | 0 |  |
-| 5149 | DoS Attack Has Subsided And Normal Processing Resumed | 0 |  |
-| 5888 | COM+ Catalog Object Modified | 0 |  |
-| 5889 | COM+ Catalog Object Deleted | 0 |  |
-| 5890 | COM+ Catalog Object Added | 0 |  |
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4691 | Indirect Access To Object | 0 | No | Info | Seems to be a rare event. |
+| 4698 | Task Created | 2 | Yes | Info~High | |
+| 4699 | Task Deleted | 1 | Yes | Info~Low | |
+| 4700 | Task Enabled | 0 | Not Yet | Info | |
+| 4701 | Task Disabled | 1 | Not Yet | Info | |
+| 4702 | Task Updated | 0 | Not Yet | Info | |
+| 5148 | WFP Detected DoS Attack And Is Blocking Source Packets | 0 | Not Yet | Info | |
+| 5149 | DoS Attack Has Subsided And Normal Processing Resumed | 0 | Not Yet | Info | |
+| 5888 | COM+ Catalog Object Modified | 0 | Not Yet | Info | |
+| 5889 | COM+ Catalog Object Deleted | 0 | Not Yet | Info | |
+| 5890 | COM+ Catalog Object Added | 0 | Not Yet | Info | |
 
 ### Registry
 
 Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degradation.
 
-Volume: Depends on SACLs.
+Volume: `Depends on SACLs`
 
 Default settings: `No Auditing`
 
-Recommended settings: Set SACLs for only the registry keys that you want to monitor.
+Recommended settings: `Set SACLs for only the registry keys that you want to monitor`
 
 Notable Sigma rules:
-* `(4656) SAM Registry Hive Handle Request`: Attackers will try to access the SAM registry hive to obtain password hashes.
-* `(4656) SCM Database Handle Failure`: Detects non-system users failing to get a handle of the SCM database.
-* `(4657) COMPlus_ETWEnabled Registry Modification`: Potential adversaries stopping ETW providers recording loaded .NET assemblies.
-* `(4657) NetNTLM Downgrade Attack`
-* `(4657) Sysmon Channel Reference Deletion`: Potential threat actor tampering with Sysmon manifest and eventually disabling it.
-* `(4657) Creation of a Local Hidden User Account by Registry`
-* `(4657) UAC Bypass via Sdclt`
-* `(4657) Disable Security Events Logging Adding Reg Key MiniNt`
-* `(4657) PrinterNightmare Mimimkatz Driver Name`
-* `(4657) Security Support Provider (SSP) Added to LSA Configuration`: Detects the addition of a SSP to the registry. Upon a reboot or API call, SSP DLLs gain access to encrypted and plaintext passwords stored in Windows.
-* `(4657) Suspicious Run Key from Download`
-* `(4657) Suspicious Camera and Microphone Access`
-* `(4657) Usage of Sysinternals Tools`
-* `(4657) Common Autorun Keys Modification`
-* `(4657) Disable Sysmon Event Logging Via Registry`
+* `(4656) (High) SAM Registry Hive Handle Request`: Attackers will try to access the SAM registry hive to obtain password hashes.
+* `(4656) (Med) SCM Database Handle Failure`: Detects non-system users failing to get a handle of the SCM database.
+* `(4657) (High) COMPlus_ETWEnabled Registry Modification`: Potential adversaries stopping ETW providers recording loaded .NET assemblies.
+* `(4657) (High) NetNTLM Downgrade Attack`
+* `(4657) (High) Sysmon Channel Reference Deletion`: Potential threat actor tampering with Sysmon manifest and eventually disabling it.
+* `(4657) (High) Creation of a Local Hidden User Account by Registry`
+* `(4657) (High) UAC Bypass via Sdclt`
+* `(4657) (High) Disable Security Events Logging Adding Reg Key MiniNt`
+* `(4657) (Crit) PrinterNightmare Mimimkatz Driver Name`
+* `(4657) (Crit) Security Support Provider (SSP) Added to LSA Configuration`: Detects the addition of a SSP to the registry. Upon a reboot or API call, SSP DLLs gain access to encrypted and plaintext passwords stored in Windows.
+* `(4657) (High) Suspicious Run Key from Download`
+* `(4657) (High) Suspicious Camera and Microphone Access`
+* `(4657) (Low) Usage of Sysinternals Tools`
+* `(4657) (Med) Common Autorun Keys Modification`
+* `(4657) (High) Disable Sysmon Event Logging Via Registry`
 
 | Event ID | Description | Sigma Rules | Notes |
 | :---: | :---: | :---: | :---: |
@@ -727,7 +733,7 @@ Notable Sigma rules:
 This logs all file access to removable storage regardless of SACL settings.
 You may want to enable to track employees exfiltrating data via USB storage.
 
-Volume: Depends on how much removable storage is used.
+Volume: `Depends on how much removable storage is used`
 
 Default settings: `No Auditing`
 
@@ -745,7 +751,7 @@ Recommended settings: `Success and Failure` if you want to monitor external devi
 
 This will log attempts to access Security Account Manager (SAM) objects, such as user and computer accounts, groups, security descriptors, etc...
 
-Volume: High volume of events on Domain Controllers.
+Volume: `High volume of events on Domain Controllers`
 
 Default settings: `No Auditing`
 
@@ -772,7 +778,7 @@ Changes to audit policy that are audited include:
 * Changing audit settings on an object (for example, modifying the system access control list (SACL) for a file or registry key).
 * Changing anything in the Special Groups list.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success`
 
@@ -809,7 +815,7 @@ Changes made to authentication policy include:
 
 This setting is useful for tracking changes in domain-level and forest-level trust and privileges that are granted to user accounts or groups.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success`
 
@@ -840,7 +846,7 @@ Audits assignment and removal of user rights in user right policies, changes in 
 You can get information related to changes in user rights policies, or changes of resource attributes or Central Access Policy applied to file system objects.
 However, if you are using an application or system service that makes changes to system privileges through the AdjustPrivilegesToken API, it is not recommended to enable due to the high volume of events.
 
-Volume: Medium to High.
+Volume: `Medium to High`
 
 Default settings: `No Auditing`
 
@@ -863,7 +869,7 @@ Audit events generated by changes to the Windows Filtering Platform (WFP), such 
 * Changes to Windows Filtering Platform Base Filtering Engine policy settings.
 * Changes to WFP providers and engine.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `No Auditing`
 
@@ -884,7 +890,7 @@ The Microsoft Protection Service, which is used by Windows Firewall, is an integ
 
 Changes to firewall rules are important for understanding the security state of the computer and how well it is protected against network attacks.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `No Auditing`
 
@@ -913,7 +919,7 @@ There are no sigma detection rules for this sub-category at the moment.
 
 Audit Other Policy Change Events contains events about EFS Data Recovery Agent policy changes, changes in Windows Filtering Platform filter, status on Security policy settings updates for local Group Policy settings, Central Access Policy changes, and detailed troubleshooting events for Cryptographic Next Generation (CNG) operations.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `No Auditing`
 
@@ -948,7 +954,7 @@ Audit Non-Sensitive Privilege Use contains events that show usage of non-sensiti
 * Shut down the system
 * Synchronize directory service data
 
-Volume: Very high.
+Volume: `Very high`
 
 Default settings: `No Auditing`
 
@@ -982,11 +988,11 @@ Audit Sensitive Privilege Use contains events that show the usage of sensitive p
 The use of two privileges, “Back up files and directories” and “Restore files and directories,” generate events only if the `Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options > Audit: Audit the access of global system objects` Group Policy setting is enabled.
 However, it is not recommended to enable this Group Policy setting because of the high number of events recorded.
 
-Volume: High.
+Volume: `High`
 
 Default settings: `No Auditing`
 
-Recommended settings: `Success and Failure. However, this may be too noisy.`
+Recommended settings: `Success and Failure` However, this may be too noisy.
 
 Notable Sigma rules:
 * `(4673) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
@@ -1011,7 +1017,7 @@ Audit Other System Events contains Windows Firewall Service and Windows Firewall
 * Cryptography key file and migration operations.
 * BranchCache events.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success and Failure`
 
@@ -1023,7 +1029,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 Audit Security State Change contains Windows startup, recovery, and shutdown events, and information about changes in system time.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Success`
 
@@ -1044,7 +1050,7 @@ This policy setting allows you to audit events related to security system extens
 * A security system extension, such as an authentication, notification, or security package is loaded and is registered with the Local Security Authority (LSA). It is used to authenticate logon attempts, submit logon requests, and any account or password changes. Examples of security system extensions are Kerberos and NTLM.
 * A service is installed and registered with the Service Control Manager. The audit log contains information about the service name, binary, type, start type, and service account.
 
-Volume: Low, but more on DCs.
+Volume: `Low, but more on DCs`
 
 Default settings: `No Auditing`
 
@@ -1079,7 +1085,7 @@ Audit System Integrity determines whether the operating system audits events tha
 
 According to Microsoft, violations of security subsystem integrity are critical and could indicate a potential security attack.
 
-Volume: Low.
+Volume: `Low`
 
 Default settings: `Sucess, Failure`
 
