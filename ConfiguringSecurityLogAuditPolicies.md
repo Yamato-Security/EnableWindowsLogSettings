@@ -67,6 +67,7 @@
     - [Security System Extension](#security-system-extension)
     - [System Integrity](#system-integrity)
   - [Global Object Access Auditing](#global-object-access-auditing)
+  - [Default Logs](#default-logs)
 
 # Notes about configuring Security log auditing
 
@@ -130,7 +131,7 @@ Default settings: `Client OS: No Auditing` | `Server OS: Success`
 
 Recommended settings: `Domain Controllers: Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(4769) (Med) Suspicious Kerberos RC4 Ticket Encryption`: Detects service ticket requests using RC4 encryption. This could be for Kerberoasting (password cracking) or just older systems using legacy encryption.
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
@@ -151,7 +152,7 @@ Default settings: `Client OS: No Auditing` | `Server OS: Success Only`
 
 Recommended settings: `Domain Controllers: Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(4742) (Med) Possible DC Shadow`: Detects DCShadow via create new SPN.
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
@@ -257,20 +258,20 @@ Notable Sigma rules:
 
 This is important if you want to track physical attacks (Rubber Ducky, etc..) or someone exfiltrating data via USB devices.
 
-Volume: Depends but typically low.
+Volume: `Typcially low`
 
 Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(6416) External Disk Drive Or USB Storage Device`
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 6416 | New External Device | 1 | Not Yet | Info~Low | |
 | 6419 | Request To Disable Device | 0 | No | Info | |
-| 6420 | Device Disabled | 0 | | No | Info | |
+| 6420 | Device Disabled | 0 | No | Info | |
 | 6421 | Request To Enable Device | 0 | No | Info | |
 | 6422 | Device Enabled | 0 | No | Info | |
 | 6423 | Device Installation Blocked | 0 | No | Info | |
@@ -282,7 +283,7 @@ Note: A separate setting needs to be enabled to log command line information whi
 
 If you do not have Sysmon installed and configured to monitor Process Creation, then you should enable this as about half of Sigma's detection rules rely on process creation with command line options enabled.
 
-Volume: High.
+Volume: `High`
 
 Default settings: `No Auditing`
 
@@ -317,7 +318,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 5712 | RPC Attempt | 0 | Logged when inbound RPC connection is made. | Not Yet | ? | Seems to be a rare event. | |
+| 5712 | RPC Attempt | 0 | Not Yet | ? | Logged when inbound RPC connection is made. Seems to be a rare event. | |
 
 ### Token Right Adjusted Events
 
@@ -391,7 +392,7 @@ Currently there is no sigma rule for account lockout.
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4625 | Logon Failed Due To Lockout | 0 | Yes | Med | Substatus: `0xC0000234` |
+| 4625 | Logon Failed Due To Lockout | 0 | Yes | Med | Substatus: `0xC0000234`. Seems to be a rare event. |
 
 ### Group Membership
 
@@ -543,7 +544,7 @@ Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(5140) (Low) Access to ADMIN$ Share`
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
@@ -784,7 +785,7 @@ Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(4719) (High) Disabling Windows Event Auditing`: Detects anti-forensics via local GPO policy.
  
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
@@ -821,7 +822,7 @@ Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(4706) (Med) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
  
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
@@ -1035,7 +1036,7 @@ Default settings: `Success`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(4616) (Low) Unauthorized System Time Modification`: Detect scenarios where a potentially unauthorized application or user is modifying the system time.
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
@@ -1056,7 +1057,7 @@ Default settings: `No Auditing`
 
 Recommended settings: `Success and Failure`
 
-Notable Sigma rule:
+Notable Sigma rules:
 * `(4611) (High) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
 * `(4697) (High) Invoke-Obfuscation Obfuscated IEX Invocation`
 * `(4697) (High) Invoke-Obfuscation Via Use Rundll32`
@@ -1112,3 +1113,15 @@ Currently, there are no sigma rules for this sub-category.
 
 You can configure all `File system` and `Registry` access to be recorded here but it is not recommended for production due to the very high amount of logs you will generate.
 It is recommended to turn on when simulating attacks to find out what registry and files are changed in order to write detection rules.
+
+## Default Logs
+
+Event IDs that are enabled by default that should be monitored will be listed below.
+
+| Event ID | Description | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: |
+| 1100 | Event Log Service Shutdown | Not Yet | Info | Seems to be a rare event. |
+| 1101 | Logs Dropped | Not Yet | Med | Seems to be a rare event. |
+| 1102 | Sec Log Cleared | Yes | High | |
+| 1104 | Sec Log Full | Not Yet | High | Seems to be a rare event. |
+| 1108 | Event Log Service Error | Not Yet | Med | Seems to be a rare event. |
