@@ -82,7 +82,8 @@ If you find any of this useful, please give a star on GitHub as it will probably
 
 # Contributors
 
-* DustInDark: Japanese translation fixes.
+* DustInDark (hitenkoku): Japanese translation fixes.
+* Fukusuke Takahashi (fukusuket): Japanese translations and fixes.
 * LasseKrache: Pointing out a bug in the batch script.
 
 # Acknowledgements
@@ -279,7 +280,7 @@ File: `Application.evtx`
 Default settings: `Enabled. 20 MB`
 
 This log is mostly noise but you may be able to find some important evidence here.
-One thing to be careful about is that different vendors will use the same event IDs for different events so you should also filter on not just Event IDs but Provider Names as well.
+One thing to be careful about with the Application log is that different vendors will use the same event IDs for different events so you should also filter on not just Event IDs but Provider Names as well.
 
 ## Windows Defender Operational log (10 sigma rules)
  

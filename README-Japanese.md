@@ -85,6 +85,8 @@ PRは歓迎され、喜んでコントリビューターとして追加させて
 # コントリビュータ
 
 * DustInDark: 日本語版の修正。
+* Fukusuke Takahashi (fukusuket): 和訳と修正。
+* LasseKrache: Batchスクリプトのバグの指摘。
 
 # Acknowledgements
 
