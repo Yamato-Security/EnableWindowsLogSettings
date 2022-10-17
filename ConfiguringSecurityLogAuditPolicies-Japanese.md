@@ -7,10 +7,10 @@
  </h1>
  [<a href="ConfiguringSecurityLogAuditPolicies.md">English</a>] | [<b>日本語</b>]
 </div>
-<p>
 
 # 目次
 
+- [目次](#目次)
 - [セキュリティログ監査の設定に関する注意事項](#セキュリティログ監査の設定に関する注意事項)
 - [SecurityイベントログのカテゴリとイベントID](#securityイベントログのカテゴリとイベントid)
   - [アカウントログオン](#アカウントログオン)
@@ -67,6 +67,7 @@
     - [セキュリティシステムの拡張](#セキュリティシステムの拡張)
     - [システムの整合性](#システムの整合性)
   - [グローバルオブジェクトアクセス](#グローバルオブジェクトアクセス)
+  - [デフォルト設定のログ](#デフォルト設定のログ)
 
 # セキュリティログ監査の設定に関する注意事項
 
@@ -82,11 +83,11 @@
 
 ### 資格情報の確認
 
-ボリューム: NTLMの使用による。ドメインコントローラでは高。
+ボリューム: `NTLMの使用による。ドメインコントローラでは高`
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功`
 
-推奨設定: `成功と失敗`
+推奨設定: `クライアントOSとサーバOS: 成功と失敗`
 
 Sigmaルールの例:
 * `Metasploit SMB Authentication`: MetasploitのSMB攻撃の検知
@@ -94,167 +95,162 @@ Sigmaルールの例:
 * `Invalid Users Failing To Authenticate From Single Source Using NTLM`: ユーザ名の推測
 * `Failed Logins with Different Accounts from Single Source System`: パスワードスプレー攻撃
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4776 | ローカルユーザアカウントのNTLM認証 | 5 | 元のイベントメッセージにはDCのみと書かれているが、このイベントはクライアントOSのローカル認証でもログに記録される。 | 
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4776 | ローカルユーザアカウントのNTLM認証 | 5 | あり | Info~High | 元のイベントメッセージにはDCのみと書かれているが、このイベントはクライアントOSのローカル認証でもログに記録される。 | 
 
 ### Kerberos認証サービス
 
 **注意：ドメインコントローラのみ有効**
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功`
 
 推奨設定: `クライアントOS: 監査なし` | `サーバOS: 成功と失敗`
 
 Sigmaルールの例:
-* `(4768) PetitPotam Suspicious Kerberos TGT Request`
-* `(4768) Disabled Users Failing To Authenticate From Source Using Kerberos`
-* `(4768) Invalid Users Failing To Authenticate From Source Using Kerberos`: ユーザ名の推測
-* `(4771) Valid Users Failing to Authenticate From Single Source Using Kerberos`: パスワード推測攻撃
+* `(4768) (High) PetitPotam Suspicious Kerberos TGT Request`
+* `(4768) (Med) Disabled Users Failing To Authenticate From Source Using Kerberos`
+* `(4768) (Med) Invalid Users Failing To Authenticate From Source Using Kerberos`: ユーザ名の推測
+* `(4771) (Med) Valid Users Failing to Authenticate From Single Source Using Kerberos`: パスワード推測攻撃
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4768 | TGTが要求された | 3 | |
-| 4771 | 事前認証に失敗した | 1 | |
-| 4772 | Kerberos認証チケット要求が失敗した | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4768 | TGTが要求された | 3 | あり | Info~High | |
+| 4771 | 事前認証に失敗した | 1 | 現在はなし | Info~Med | |
+| 4772 | Kerberos認証チケット要求が失敗した | 0 | なし | None | 実際は使われていない。代わりにイベントID 4768の失敗イベントが使われている。 |
 
 ### Kerberosサービスチケット操作
 
 **注意：ドメインコントローラのみ有効**
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功`
 
 推奨設定: `クライアントOS: 監査なし` | `サーバOS: 成功と失敗`
 
 Sigmaルールの例:
-* `(4769) Suspicious Kerberos RC4 Ticket Encryption`: RC4暗号化を用いたサービスチケットリクエストの検知。 これはレガシーな暗号化を利用した古いシステムもしくはKerberoasting(パスワードクラッキング)の可能性がある
+* `(4769) (Med) Suspicious Kerberos RC4 Ticket Encryption`: RC4暗号化を用いたサービスチケットリクエストの検知。 これはレガシーな暗号化を利用した古いシステムもしくはKerberoasting(パスワードクラッキング)の可能性がある
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4769 | Kerberosサービスチケットが要求された | 1 | |
-| 4770 | Kerberosサービスチケットが更新された | 0 | 実はTGT更新 |
-| 4773 | Kerberosサービスチケット要求が失敗した | 0 | 実際は使われていない。代わりに4769が使われている。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4769 | Kerberosサービスチケットが要求された | 1 | あり | Info~Med | |
+| 4770 | Kerberosサービスチケットが更新された | 0 | 現在はなし | Info | |
+| 4773 | Kerberosサービスチケット要求が失敗した | 0 | なし | None | 実際は使われていない。代わりに4769が使われている。 |
 
 ## アカウントの管理
 
 ### コンピュータアカウントの管理
 
-ボリューム: ドメインコントローラでは低い
+> **注意: 以下のイベントは、ドメインコントローラのみで生成される**
+
+ボリューム: `低`
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功のみ`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Possible DC Shadow`: 新規SPNによるDCShadow攻撃の検知
+* `(4742) (Med) Possible DC Shadow`: 新規SPNによるDCShadow攻撃の検知
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4741 | コンピュータアカウントが作成された | 0 | |
-| 4742 | コンピューターアカウントが変更された | 1 | |
-| 4743 | コンピューターアカウントが削除された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4741 | コンピュータアカウントが作成された | 0 | 現在はなし | Info | おそらく稀なイベント。 |
+| 4742 | コンピュータアカウントが変更された | 1 | 現在はなし | Info~Med | |
+| 4743 | コンピュータアカウントが削除された | 0 | 現在はなし | Info | おそらく稀なイベント。 |
 
 ### その他のアカウント管理イベント
 
-ボリューム: 一般的に低い
+ボリューム: `低`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4782 | アカウントのパスワードハッシュがアクセスされた | 0 | AD Migration Toolkitを使用したアカウントのパスワード移行時、または攻撃者がパスワードハッシュにアクセスしようとした際にDC上で生成される。 |
-| 4793 | パスワードポリシーチェックAPIが呼び出された | 0 | パスワードリセット時や攻撃者がパスワードポリシーをチェックする際に生成される。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4782 | アカウントのパスワードハッシュがアクセスされた | 0 | 現在はなし | Info | AD Migration Toolkitを使用したアカウントのパスワード移行時、または攻撃者がパスワードハッシュにアクセスしようとした際にDC上で生成される。おそらく稀なイベント。 |
+| 4793 | パスワードポリシーチェックAPIが呼び出された | 0 | 現在はなし | Low | パスワードリセット時や攻撃者がパスワードポリシーをチェックする際に生成される。おそらく稀なイベント。 |
 
 ### セキュリティグループの管理
 
-「セキュリティが有効なグループ」とはアクセス権(ACL)を付与することができるグループのことです。
-「セキュリティが無効なグループ」はアクセス権を割り当てられない「ディストリビューショングループ」です。
-セキュリティが有効なグループが最も一般的であるため、ここでは単に「グループ」と呼ぶことにします。
-例えば、「セキュリティが有効なローカルグループが作成された」の代わりに、「ローカルグループが作成された」というイベントタイトルにしました。
+「セキュリティが有効なグループ」とはアクセス権(ACL)を付与することができるグループのことです。「セキュリティが無効なグループ」はアクセス権を割り当てられない「ディストリビューショングループ」です。セキュリティが有効なグループが最も一般的であるため、ここでは単に「グループ」と呼ぶことにします。例えば、「セキュリティが有効なローカルグループが作成された」の代わりに、「ローカルグループが作成された」というイベントタイトルにしました。
 
-ドメインローカルグループは、ユニバーサルグループ、グローバルグループ、自ドメインの他のドメインローカルグループ、およびフォレスト内の任意のドメインのアカウントを含むことができるセキュリティまたは配布グループです。
-ドメインローカルセキュリティグループには、ドメインローカルグループが配置されている同じドメイン内にのみ存在するリソースに対するアクセス許可と権限を与えることができます。
+ドメインローカルグループは、ユニバーサルグループ、グローバルグループ、自ドメインの他のドメインローカルグループ、およびフォレスト内の任意のドメインのアカウントを含むことができるセキュリティまたは配布グループです。ドメインローカルセキュリティグループには、ドメインローカルグループが配置されている同じドメイン内にのみ存在するリソースに対するアクセス許可と権限を与えることができます。
 
-グローバルグループは、自身のドメイン、ドメインのサーバと端末、および信頼するドメインで使用することができるグループです。
-それらのすべての場所で、グローバルグループに権限を与え、グローバルグループはローカルグループのメンバーになることができます。
-ただし、グローバルグループには、そのドメインに所属するユーザアカウントのみを含めることができます。
+グローバルグループは、自身のドメイン、ドメインのサーバと端末、および信頼するドメインで使用することができるグループです。それらのすべての場所で、グローバルグループに権限を与え、グローバルグループはローカルグループのメンバーになることができます。ただし、グローバルグループには、そのドメインに所属するユーザアカウントのみを含めることができます。
 
-ユニバーサルグループは、そのフォレスト内の任意のドメインのユーザ、グループ、および端末をメンバーとして含むセキュリティまたは配布グループです。
-ユニバーサルセキュリティグループには、フォレスト内のどのドメイン内のリソースに対してもアクセス許可と権限を与えることができます。
+ユニバーサルグループは、そのフォレスト内の任意のドメインのユーザ、グループ、および端末をメンバーとして含むセキュリティまたは配布グループです。ユニバーサルセキュリティグループには、フォレスト内のどのドメイン内のリソースに対してもアクセス許可と権限を与えることができます。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `User Added to Local Administrators`
-* `Operation Wocao Activity`: 中国政府によるスパイ活動の検知
+* `(4732) (Med) User Added to Local Administrators`
+* `(4799) (High) Operation Wocao Activity`: 中国政府によるスパイ活動の検知
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4731 | ローカルグループが作成された | 0 | |
-| 4732 | ローカルグループにメンバーが追加された | 1 | |
-| 4733 | ローカルグループからメンバーが削除された | 0 | |
-| 4734 | ローカルグループが削除された | 0 | |
-| 4764 | グループの種類が変更された | 0 | |
-| 4799 | ローカルグループメンバーシップが列挙された | 1 | |
-| 4727 | グローバルグループが作成された | 0 | |
-| 4737 | グローバルグループが変更された | 0 | |
-| 4728 | グローバルグループにメンバーが追加された | 0 | |
-| 4729 | グローバルグループからメンバーが削除された | 0 | |
-| 4730 | グローバルグループが削除された | 0 | |
-| 4754 | ユニバーサルグループが作成された | 0 | |
-| 4755 | ユニバーサルグループが変更された | 0 | |
-| 4756 | ユニバーサルグループにメンバーが追加された | 0 | |
-| 4757 | ユニバーサルグループからメンバーが削除された | 0 | |
-| 4758 | ユニバーサルグループが削除された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4727 | グローバルグループが作成された | 0 | 現在はなし | Info | |
+| 4728 | グローバルグループにメンバーが追加された | 0 | あり | Info | |
+| 4729 | グローバルグループからメンバーが削除された | 0 | 現在はなし | Info | |
+| 4730 | グローバルグループが削除された | 0 | 現在はなし | Info |
+| 4731 | ローカルグループが作成された | 0 | 現在はなし | Info | |
+| 4732 | ローカルグループにメンバーが追加された | 1 | あり | Info~Med | |
+| 4733 | ローカルグループからメンバーが削除された | 0 | 現在はなし | Info | |
+| 4734 | ローカルグループが削除された | 0 | 現在はなし | Info | |
+| 4737 | グローバルグループが変更された | 0 | 現在はなし | Info | |
+| 4754 | ユニバーサルグループが作成された | 0 | 現在はなし | Info |
+| 4755 | ユニバーサルグループが変更された | 0 | 現在はなし | Info |
+| 4756 | ユニバーサルグループにメンバーが追加された | 0 | 現在はなし | Info |
+| 4757 | ユニバーサルグループからメンバーが削除された | 0 | 現在はなし | Info |
+| 4758 | ユニバーサルグループが削除された | 0 | 現在はなし | Info |
+| 4764 | グループの種類が変更された | 0 | 現在はなし | Info | |
+| 4799 | ローカルグループメンバーシップが列挙された | 1 | 現在はなし | Info~High | これは、多くの誤検知を生む「4672」管理者ログオンイベントとおそらくほぼ同じくらいノイズの多い。 |
 
 ### ユーザーアカウントの管理
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Hidden Local User Creation`: バックドアアカウントとして使用されている可能性が高い隠しユーザアカウントを検出した
-* `Suspicious Windows ANONYMOUS LOGON Local Account Created`
-* `Local User Creation`
-* `Active Directory User Backdoors`
-* `Weak Encryption Enabled and Kerberoast`
-* `Addition of SID History to Active Directory Object`: 攻撃者が追加の権限を得るためにSID履歴を用いた可能性がある
-* `Possible Remote Password Change Through SAMR`: SAMR APIのSamiChangePasswordUser() または SamSetInformationUser()を通して、NTLMハッシュの変更が遠隔で行われた可能性がある
-* `Suspicious Computer Account Name Change CVE-2021-42287`: CVE-2021-42287に対しての攻撃に見られる$シンボルが含まれていない既存コンピュータアカウントの変更を検知する
-* `Password Change on Directory Service Restore Mode (DSRM) Account`: ドメインコントローラにおいてディレクトリサービス復元モード(DSRM) アカウントがローカル管理者アカウントとして存在している。攻撃者が永続化を行うためにパスワードを変更した可能性がある
+* `(4720) (High) Hidden Local User Creation`: バックドアアカウントとして使用されている可能性が高い隠しユーザアカウントを検出した
+* `(4720) (High) Suspicious Windows ANONYMOUS LOGON Local Account Created`
+* `(4720) (Low) Local User Creation`
+* `(4738) (High) Active Directory User Backdoors`
+* `(4738) (High) Weak Encryption Enabled and Kerberoast`
+* `(4765, 4766, 4738) (Med) Addition of SID History to Active Directory Object`: 攻撃者が追加の権限を得るためにSID履歴を用いた可能性がある
+* `(5145, 4738) (Med) Possible Remote Password Change Through SAMR`: SAMR APIのSamiChangePasswordUser() または SamSetInformationUser()を通して、NTLMハッシュの変更が遠隔で行われた可能性がある
+* `(4781) (High) Suspicious Computer Account Name Change CVE-2021-42287`: CVE-2021-42287に対しての攻撃に見られる$シンボルが含まれていない既存コンピュータアカウントの変更を検知する
+* `(4794) (High) Password Change on Directory Service Restore Mode (DSRM) Account`: ドメインコントローラにおいてディレクトリサービス復元モード(DSRM) アカウントがローカル管理者アカウントとして存在している。攻撃者が永続化を行うためにパスワードを変更した可能性がある
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4720 | ユーザアカウントが作成された | 3 | |
-| 4722 | ユーザアカウントが有効になった | 0 | |
-| 4723 | パスワードを変更しようとした | 0 | |
-| 4724 | パスワードのリセットが試行された | 0 | |
-| 4725 | ユーザアカウントが無効になった | 0 | |
-| 4726 | ユーザアカウントが削除された | 0 | |
-| 4738 | ユーザアカウントが変更された | 4 | |
-| 4740 | ユーザアカウントがロックアウトされた | 0 | |
-| 4765 | SID履歴がアカウントに追加された | 0 | |
-| 4766 | アカウントにSID履歴を追加する試みは失敗した | 0 | |
-| 4767 | ユーザアカウントのロックが解除された | 0 | |
-| 4780 | 管理者グループのメンバーであるアカウントにACLが設定された | 0 | |
-| 4781 | アカウントの名前が変更された | 1 | |
-| 4794 | DSRM管理者のパスワード設定 | 1 | |
-| 4798 | ユーザーローカルグループメンバーシップが列挙された | 0 | |
-| 5376 | 資格情報マネージャの資格情報がバックアップされた | 0 | |
-| 5377 | 資格情報マネージャの資格情報がバックアップから復元された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4720 | ユーザアカウントが作成された | 3 | あり | Info~High | |
+| 4722 | ユーザアカウントが有効になった | 0 | 現在はなし | Info |
+| 4723 | パスワードを変更しようとした | 0 | 現在はなし | Info |
+| 4724 | パスワードのリセットが試行された | 0 | 現在はなし | Info |
+| 4725 | ユーザアカウントが無効になった | 0 | 現在はなし | Info |
+| 4726 | ユーザアカウントが削除された | 0 | 現在はなし | Info |
+| 4738 | ユーザアカウントが変更された | 4 | 現在はなし | Info~High | |
+| 4740 | ユーザアカウントがロックアウトされた | 0 | 現在はなし | Med | おそらく稀なイベント。 |
+| 4765 | SID履歴がアカウントに追加された | 1 | 現在はなし | Info~Med | |
+| 4766 | アカウントにSID履歴を追加する試みは失敗した | 0 | 現在はなし | Info~Med | |
+| 4767 | ユーザアカウントのロックが解除された | 0 | 現在はなし | Info |
+| 4780 | 管理者グループのメンバーであるアカウントにACLが設定された | 0 | 現在はなし | Info | |
+| 4781 | アカウントの名前が変更された | 1 | 現在はなし | Info |
+| 4794 | DSRM管理者のパスワード設定 | 1 | 現在はなし | Info~High | |
+| 4798 | ユーザローカルグループメンバーシップが列挙された | 0 | 現在はなし | Info |
+| 5376 | 資格情報マネージャの資格情報がバックアップされた | 0 | 現在はなし | Info |
+| 5377 | 資格情報マネージャの資格情報がバックアップから復元された | 0 | 現在はなし | Info |
 
 ## 詳細追跡
 
@@ -262,7 +258,7 @@ Sigmaルールの例:
 
 物理的な攻撃（Rubber Ducky攻撃など）や、誰かがUSBデバイスを介してデータを流出させたことを追跡したい場合に重要です。
 
-ボリューム: 通常、低い
+ボリューム: `通常、低い`
 
 デフォルトの設定: `監査なし`
 
@@ -271,15 +267,15 @@ Sigmaルールの例:
 Sigmaルールの例:
 * `(6416) External Disk Drive Or USB Storage Device`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 6416 | 新規外部デバイスが認識された | 1 | |
-| 6419 | デバイスを無効にする要求 | 0 | |
-| 6420 | デバイスが無効にされた | 0 | |
-| 6421 | デバイスを有効にする要求 | 0 | |
-| 6422 | デバイスが有効にされた | 0 | |
-| 6423 | デバイスのインストールが拒否された | 0 | |
-| 6424 | 以前拒否されたデバイスのインストールが許可された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 6416 | 新規外部デバイスが認識された | 1 | 現在はなし | Info~Low | |
+| 6419 | デバイスを無効にする要求 | 0 | なし | Info | |
+| 6420 | デバイスが無効にされた | 0 | なし | Info | |
+| 6421 | デバイスを有効にする要求 | 0 | なし | Info | |
+| 6422 | デバイスが有効にされた | 0 | なし | Info | |
+| 6423 | デバイスのインストールが拒否された | 0 | なし | Info | |
+| 6424 | 以前拒否されたデバイスのインストールが許可された | 0 | なし | Info | |
 
 ### プロセス作成
 
@@ -287,54 +283,54 @@ Sigmaルールの例:
 
 Sigmaルールの約半分は、コマンドラインオプションを有効にしたプロセス作成に依存しています。Sysmonをインストールし、プロセス作成を監視するように設定していない場合は、Securityログでプロセス作成イベントを有効にした方が良いです。
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: Sysmonがインストールされていない場合は`成功と失敗`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4688 | プロセス作成 | 902 | |
-| 4696 | プライマリトークンがプロセスに割り当てされた | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4688 | プロセス作成 | 902 | あり | Info~Crit | |
+| 4696 | プライマリトークンがプロセスに割り当てされた | 0 | なし | Info | Win 7/2008 R2 からこのイベントは非推奨になっている。そのため、Vista/2008 でのみ生成される。|
 
 ### プロセス終了
 
 ファイル容量を節約するために、無効にしておくと良いでしょう。
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: プロセスのライフスパンを追跡したいのでなければ`監査なし`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4689 | プロセス終了 | 1 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4689 | プロセス終了 | 1 | 現在はなし | Info | |
 
 ### RPCイベント
 
-ボリューム: RPCサーバでは高い
+ボリューム: `RPCサーバでは高い` (Microsoftによると)
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `不明。テストが必要。`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 5712 | RPCの試行 | 0 | RPC要求の受信が行われたときに記録される。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5712 | RPCの試行 | 0 | 現在はなし | ? | RPC要求の受信が行われたときに記録される。 |
 
 ### トークン権限の調整
 
-ボリューム: 高
+ボリューム: `不明`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `不明。テストが必要。`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4703 | ユーザ権利の調整 | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4703 | ユーザ権利の調整 | 0 | 現在はなし | Info | おそらく稀なイベント。 |
 
 ## DS(ディレクトリサービス)アクセス
 
@@ -342,151 +338,156 @@ Sigmaルールの約半分は、コマンドラインオプションを有効に
 
 ### ディレクトリサービスアクセス
 
-ボリューム: AD DSロールサービスを実行しているサーバーでは高。
+ボリューム: `高`
 
 デフォルトの設定: `クライアントOS: 監査なし` | `サーバOS: 成功`
 
 推奨設定: `クライアントOS: 監査なし` | `ADDS Server: 成功と失敗`
 
 Sigmaルールの例:
-* `AD Object WriteDAC Access`
-* `Active Directory Replication from Non Machine Account`
-* `AD User Enumeration`: マシンアカウントでないアカウントからドメインユーザに対してのアクセスを検知する("Everyone"プリンシパルに対するユーザオブジェクトで「すべてのプロパティの読み取り」権限が必要)
-* `DPAPI Domain Backup Key Extraction`: ドメインコントローラからLSAシークレットDPAPIドメインバックアップキーがツールによって取り出されたことを検知する
-* `WMI Persistence`: WMIを通じたautostartsマルウェアを検知する
+* `(4662) (Crit) AD Object WriteDAC Access`
+* `(4662) (Crit) Active Directory Replication from Non Machine Account`
+* `(4662) (Med) AD User Enumeration`: マシンアカウントでないアカウントからドメインユーザに対してのアクセスを検知する("Everyone"プリンシパルに対するユーザオブジェクトで「すべてのプロパティの読み取り」権限が必要)
+* `(4662) (High) DPAPI Domain Backup Key Extraction`: ドメインコントローラからLSAシークレットDPAPIドメインバックアップキーがツールによって取り出されたことを検知する
+* `(4662) (Med) WMI Persistence`: WMIを通じたautostartsマルウェアを検知する
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4661 | オブジェクトハンドル要求 | 2 | |
-| 4662 | オブジェクトに対する操作 | 6 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4661 | オブジェクトハンドル要求 | 2 | 現在はなし | Info~Crit | |
+| 4662 | オブジェクトに対する操作 | 6 | 現在はなし | Info~Crit | |
 
 ### ディレクトリサービスの変更
 
-ボリューム: ドメインコントローラでは高。
+ボリューム: `高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `クライアントOS: 監査なし` | `ADDS Server: 成功と失敗`
 
 Sigmaルールの例:
-* `Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
-* `Active Directory User Backdoors`: Detects scenarios where one can control another users or computers account without having to use their credentials.
-* `Possible DC Shadow`
-* `Suspicious LDAP-Attributes Used`: Detects LDAPFragger, a C2 tool that lets attackers route Cobalt Strike beacon data over LDAP attributes.
+* `(5136) (High) Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
+* `(5136) (High) Active Directory User Backdoors`: Detects scenarios where one can control another users or computers account without having to use their credentials.
+* `(5136) (Med) Possible DC Shadow`
+* `(5136) (High) Suspicious LDAP-Attributes Used`: Detects LDAPFragger, a C2 tool that lets attackers route Cobalt Strike beacon data over LDAP attributes.
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 5136 | ディレクトリサービスオブジェクトの変更 | 6 | |
-| 5137 | ディレクトリサービスオブジェクトの作成 | 0 | |
-| 5138 | ディレクトリサービスオブジェクトの復元 | 0 | |
-| 5139 | ディレクトリサービスオブジェクトの移動 | 0 | |
-| 5141 | ディレクトリサービスオブジェクトの削除 | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5136 | ディレクトリサービスオブジェクトの変更 | 6 | 現在はなし | Info~Crit | |
+| 5137 | ディレクトリサービスオブジェクトの作成 | 0 | 現在はなし | Info | |
+| 5138 | ディレクトリサービスオブジェクトの復元 | 0 | 現在はなし | Info | |
+| 5139 | ディレクトリサービスオブジェクトの移動 | 0 | 現在はなし | Info | |
+| 5141 | ディレクトリサービスオブジェクトの削除 | 0 | 現在はなし | Info | |
 
 ## ログオン/ログオフ
 
 ### アカウントロックアウト
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功と失敗`
 
-Sigmaルールの例:
-* `Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: BlueKeep脆弱性を検出するスキャンを検出する
-* `Failed Logon From Public IP`
-* `Multiple Users Failing to Authenticate from Single Process`
-* `Multiple Users Remotely Failing To Authenticate From Single Source`
+現在、アカウントロックアウトのSigmaルールはありません。
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4625 | ロックアウトによるログオンに失敗 | 4 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4625 | ロックアウトによるログオンに失敗 | 0 | あり | Med | Substatus: `0xC0000234`. おそらく稀なイベント。 |
 
 ### グループメンバーシップ
 
-ボリューム: ログオンがある度に、ユーザのグループメンバーシップについてのログが記録される。
+ユーザがログインしたときにどのグループに属しているかを記録します。
+ACSCのガイドでは、`成功失敗`が推奨されているが、ユーザがどのグループに属しているか簡単に調べられる場合はおそらく`監査なし`でも良いです。
+
+ボリューム: `ログオンがある度に、ユーザのグループメンバーシップについてのログが記録される`
 
 デフォルトの設定: `監査なし`
 
-推奨設定: ACSCのガイドでは、`成功失敗`が推奨されているが、ユーザがどのグループに属しているか簡単に調べられる場合はおそらく`監査なし`でも良い。
+推奨設定: `監査なし`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4627 | グループメンバーシップ情報 | 0 | ユーザがログインした時に、どのグループに属しているかが記録される。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4627 | グループメンバーシップ情報 | 0 | 現在はなし | Info | |
 
 ### ログオフ
 
-ボリューム: 高
+注意: 残念ながら、Windows はログオフ時にログオフ イベントを記録しないことがあります。
+
+ボリューム: `高`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4634 | ログオフ | 0 | |
-| 4647 | ユーザがログオフした | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4634 | ログオフ | 0 | あり | Info | |
+| 4647 | ユーザがログオフした | 0 | あり | Info | |
 
 ### ログオン
 
-ボリューム: クライアントOSでは低。ドメインコントローラやネットワークサーバでは中。
+ボリューム: `クライアントOSでは低。ドメインコントローラやネットワークサーバでは中`
 
 デフォルトの設定: `クライアントOS: 成功` | `サーバOS: 成功と失敗`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `Admin User Remote Logon`
-* `Successful Overpass the Hash Attempt`
-* `Pass the Hash Activity`
-* `RDP Login from Localhost`
-* `Login with WMI`
-* `KrbRelayUp Attack Pattern`
-* `RottenPotato Like Attack Pattern`
-* `Failed Logon From Public IP`
-* `Suspicious Remote Logon with Explicit Credentials`
+* `(4624) (Low) Admin User Remote Logon`
+* `(4624) (High) Successful Overpass the Hash Attempt`
+* `(4624) (Med) Pass the Hash Activity`
+* `(4624) (Med) RDP Login from Localhost`
+* `(4624) (Low) Login with WMI`
+* `(4624) (High) KrbRelayUp Attack Pattern`
+* `(4624) (High) RottenPotato Like Attack Pattern`
+* `(4625) (Med) Failed Logon From Public IP`
+* `(4648) (Med) Suspicious Remote Logon with Explicit Credentials`
+* `(4624) (High) Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: Detects scans for the BlueKeep vulnerability.
+* `(4625) (Med) Failed Logon From Public IP`
+* `(4625) (Med) Multiple Users Failing to Authenticate from Single Process`
+* `(4625) (Med) Multiple Users Remotely Failing To Authenticate From Single Source`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4624 | ログオン | 11 | |
-| 4625 | ログオンに失敗 | 4 | |
-| 4648 | 明示的なログオン | 2 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4624 | ログオン | 11 | あり | Info~High | |
+| 4625 | ログオンに失敗 | 4 | あり | Info~Med | |
+| 4648 | 明示的なログオン | 2 | あり | Info~Med | 発信元のホストに記録されます。 |
 
 ### その他のログオン/ログオフイベント
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4649 | Kerberos再生攻撃が検出された | 0 | |
-| 4778 | セッションがウィンドウステーションに再接続された | 0 | RDPもしくはユーザーの簡易切り替えのログが送信元の端末に記録される。 |
-| 4779 | セッションがウィンドウステーションから切断された | 0 | RDPもしくはユーザーの簡易切り替えのログが送信元の端末に記録される。 |
-| 4800 | 端末がロックされた | 0 | |
-| 4801 | 端末のロックが解除された | 0 | |
-| 4802 | スクリーンセーバーが開始された | 0 | |
-| 4803 | スクリーンセーバーが停止された | 0 | |
-| 5378 | 要求された資格情報の委任は、ポリシーによって許可されない | 0 | 通常、WinRMダブルホップセッションのCredSSP委任が正しく設定されていない場合に発生する。 |
-| 5632 | 無線ネットワークへの802.1x認証 | 0 | |
-| 5633 | 有線ネットワークへの802.1x認証 | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4649 | Kerberos再生攻撃が検出された | 0 | 現在はなし | Med | おそらく稀なイベント。 |
+| 4778 | セッションがウィンドウステーションに再接続された | 0 | あり | Info | RDPもしくはユーザの簡易切り替えのログが送信元の端末に記録される。 |
+| 4779 | セッションがウィンドウステーションから切断された | 0 | あり | Info | RDPもしくはユーザの簡易切り替えのログが送信元の端末に記録される。 |
+| 4800 | 端末がロックされた | 0 | 現在はなし | Info | |
+| 4801 | 端末のロックが解除された | 0 | 現在はなし | Info | |
+| 4802 | スクリーンセーバーが開始された | 0 | 現在はなし | Info | |
+| 4803 | スクリーンセーバーが停止された | 0 | 現在はなし | Info | |
+| 5378 | 要求された資格情報の委任は、ポリシーによって許可されない | 0 | なし | Info | 通常、WinRMダブルホップセッションのCredSSP委任が正しく設定されていない場合に発生する。 |
+| 5632 | 無線ネットワークへの802.1x認証 | 0 | 現在はなし | Info | |
+| 5633 | 有線ネットワークへの802.1x認証 | 0 | 現在はなし | Info | |
 
 ### 特殊なログオン
 
 「特別なグループ」と「特別な権限」は、「管理者グループ」と「管理者権限」と考えて良いです。
 
-ボリューム: クライアントOSでは低。DCやネットワークサーバでは中。
+ボリューム: `クライアントOSでは低。DCやネットワークサーバでは中`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功と失敗`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4672 | 管理者ログオン | 0 | |
-| 4964 | 管理者グループからのログオン | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4672 | 管理者ログオン | 0 | あり | Info | |
+| 4964 | 管理者グループからのログオン | 0 | 現在はなし | Info | おそらく稀なイベント。 |
 
 ## オブジェクトアクセス
 
@@ -494,19 +495,20 @@ Sigmaルールの例:
 
 > **注意: AD CSロールサービスを提供するサーバに対してのみ有効にします。**
 
-ボリューム: 低〜中
+ボリューム: `低〜中`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: ADCSロールのサーバでは`成功と失敗`
 
 Sigmaルールの例:
-* `ADCS Certificate Template Configuration Vulnerability with Risky EKU`
-* `ADCS Certificate Template Configuration Vulnerability`
+* `(4898, 4899) (High) ADCS Certificate Template Configuration Vulnerability with Risky EKU`
+* `(4898, 4899) (High) ADCS Certificate Template Configuration Vulnerability`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4898 | 証明書サービスがテンプレートをロードした | 2 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4898 | 証明書サービスがテンプレートをロードした | 2 | 現在はなし | Info~High | |
+| 4899 | 証明書サービスがテンプレートの更新 | 2 | 現在はなし | Info~High | |
 
 > **注意: 多くのイベントIDが有効になります。SigmaルールがあるイベントIDだけ上記で記載されています。**
 
@@ -521,37 +523,37 @@ Sigmaルールの例:
 推奨設定:  ノイズが多いため`監査なし`。可能であれば、有効にした方が良い。
 
 Sigmaルールの例:
-* `Remote Task Creation via ATSVC Named Pipe`
-* `Persistence and Execution at Scale via GPO Scheduled Task`
-* `Impacket PsExec Execution`
-* `Possible Impacket SecretDump Remote Activity`
-* `First Time Seen Remote Named Pipe`
-* `Possible PetitPotam Coerce Authentication Attempt`
-* `Suspicious Access to Sensitive File Extensions`
-* `Transferring Files with Credential Data via Network Shares`
+* `(5145) (Med) Remote Task Creation via ATSVC Named Pipe`
+* `(5145) (High) Persistence and Execution at Scale via GPO Scheduled Task`
+* `(5145) (High) Impacket PsExec Execution`
+* `(5145) (High) Possible Impacket SecretDump Remote Activity`
+* `(5145) (High) First Time Seen Remote Named Pipe`
+* `(5145) (High) Possible PetitPotam Coerce Authentication Attempt`
+* `(5145) (Med) Suspicious Access to Sensitive File Extensions`
+* `(5145) (Med) Transferring Files with Credential Data via Network Shares`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 5145 | ネットワーク共有へのファイルアクセス | 17 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5145 | ネットワーク共有へのファイルアクセス | 17 | あり | Info~High | |
 
 ### ファイル共有
 
-ボリューム: ファイルサーバやドメインコントローラでは高。
+ボリューム: `ファイルサーバやドメインコントローラでは高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(5140) Access to ADMIN$ Share`
+* `(5140) (Low) Access to ADMIN$ Share`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 5140 | ネットワーク共有への接続 | 1 | ファイルシステム監査と組み合わせることで、どのファイルがアクセスされたかを追跡できる。 |
-| 5142 | ネットワーク共有が作成された | 0 | |
-| 5143 | ネットワーク共有が変更された | 0 | |
-| 5144 | ネットワーク共有が削除された | 0 | |
-| 5168 | SMB/SMB2のSPNチェックに失敗 | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5140 | ネットワーク共有への接続 | 1 | あり | Info~High | ファイルシステム監査と組み合わせることで、どのファイルがアクセスされたかを追跡できる。 |
+| 5142 | ネットワーク共有が作成された | 0 | 現在はなし | Info | |
+| 5143 | ネットワーク共有が変更された | 0 | 現在はなし | Info | |
+| 5144 | ネットワーク共有が削除された | 0 | 現在はなし | Info | |
+| 5168 | SMB/SMB2のSPNチェックに失敗 | 0 | 現在はなし | Info | おそらく稀なイベント。 |
 
 ### ファイルシステム
 
@@ -559,26 +561,26 @@ Sigmaルールの例:
 例えば、右クリックで「プロパティ」→「セキュリティ」タブ→「詳細設定」→「監査」タブを開き、プリンシパルと監視する権限を追加することで記録できます。
 多くのファイルをログに記録するとノイズが多くなるため、機密ファイルへのアクセスを監視する場合にのみ使用することをお勧めします。
 
-ボリューム: SACL設定による
+ボリューム: `SACL設定による`
 
 デフォルトの設定: `監査なし`
 
-推奨設定: センシティブなファイルにSACLを設定すること
+推奨設定: `センシティブなファイルにSACLを設定すること`
 
 Sigmaルールの例:
-* `(4663) ISO Image Mount`
-* `(4663) Suspicious Teams Application Related ObjectAcess Event`: MS Teamsの認証トークンへのアクセスを検知する
+* `(4663) (Med) ISO Image Mount`
+* `(4663) (High) Suspicious Teams Application Related ObjectAcess Event`: MS Teamsの認証トークンへのアクセスを検知する
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 0 | プロセスに適切な権限がない場合、失敗する。 |
-| 4658 | オブジェクトハンドルが閉じられた | 0 | |
-| 4660 | オブジェクト削除 | 0 | |
-| 4663 | オブジェクトアクセス | 2 |　4656と異なって、成功イベントしか記録されない。 |
-| 4664 | ハードリンク作成の試行 | 0 | |
-| 4670 | オブジェクト権限の変更 | 0 | |
-| 4985 | トランザクション状態の変更 | 0 | トランザクションマネージャに使用され、セキュリティには関係ない。 |
-| 5051 | ファイルが仮想化された | 0 | LUAFVの仮想化時にまれに発生する。セキュリティには関係ない。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | オブジェクトハンドル要求 | 0 | 現在はなし | Info | プロセスに適切な権限がない場合、失敗する。これらのイベントを記録するために、`ハンドル操作` サブカテゴリを有効化する必要がある。 |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | 現在はなし | Info | これらのイベントを記録するために、`ハンドル操作` サブカテゴリを有効化する必要がある。|
+| 4660 | オブジェクト削除 | 0 | 現在はなし | Info | |
+| 4663 | オブジェクトアクセス | 2 | 現在はなし | Info~High | 4656と異なって、成功イベントしか記録されない。 |
+| 4664 | ハードリンク作成の試行 | 0 | 現在はなし | Info | おそらく稀なイベント。 |
+| 4670 | オブジェクト権限の変更 | 0 | 現在はなし | Info | |
+| 4985 | トランザクション状態の変更 | 0 | なし | Info | トランザクションマネージャに使用され、セキュリティには関係ない。 |
+| 5051 | ファイルが仮想化された | 0 | なし | Info | LUAFVの仮想化時にまれに発生する。セキュリティには関係ない。おそらく稀なイベント。  |
 
 > **注意: イベントID 4656、4658、4660、4663は、レジストリ、ファイルシステムオブジェクトへのアクセス、リムーバブルストレージへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
@@ -586,151 +588,144 @@ Sigmaルールの例:
 
 WFP（Windows Filtering Platform）がポートバインディングやネットワーク接続を許可または遮断したときのログが記録されます。
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: 十分な容量があり、sysmonでネットワーク接続を監視していない場合は、`成功失敗`を推奨する。ただ、イベントが多発してしまう可能性が高い。
 
 Sigmaルールの例:
-* `(5156) Enumeration via the Global Catalog`: Bloodhound等のツールを検知する。
-* `(5156) RDP over Reverse SSH Tunnel WFP`
-* `(5156) Remote PowerShell Sessions Network Connections (WinRM)`
-* `(5156) Suspicious Outbound Kerberos Connection`: Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.
+* `(5156) (Med) Enumeration via the Global Catalog`: Bloodhound等のツールを検知する。
+* `(5156) (High) RDP over Reverse SSH Tunnel WFP`
+* `(5156) (High) Remote PowerShell Sessions Network Connections (WinRM)`
+* `(5156) (High) Suspicious Outbound Kerberos Connection`: Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 5031 | WFPが受信接続を遮断した | 0 |  |
-| 5150 | WFPがパケットを遮断した | 0 | |
-| 5151 | より限定的なWFPフィルターがパケットを遮断した | 0 | |
-| 5154 | プロセスが通信を待ち受けている | 0 | |
-| 5155 | プロセスの通信待受が拒否された  | 0 | |
-| 5156 | ネットワーク接続 | 4 | |
-| 5157 | ネットワーク接続がブロックされた | 0 | |
-| 5158 | プロセスがポートにバインドした | 0 | |
-| 5159 | プロセスのポートバインドが拒否された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5031 | WFPが受信接続を遮断した | 0 | 現在はなし | Info | |
+| 5150 | WFPがパケットを遮断した | 0 | 現在はなし | Info | |
+| 5151 | より限定的なWFPフィルターがパケットを遮断した | 0 | 現在はなし | Info | |
+| 5154 | プロセスが通信を待ち受けている | 0 | 現在はなし | Info | |
+| 5155 | プロセスの通信待受が拒否された  | 0 | 現在はなし | Info | |
+| 5156 | ネットワーク接続 | 4 | 現在はなし | Info~High | |
+| 5157 | ネットワーク接続がブロックされた | 0 | 現在はなし | Info | |
+| 5158 | プロセスがポートにバインドした | 0 | 現在はなし | Info | |
+| 5159 | プロセスのポートバインドが拒否された | 0 | 現在はなし | Info | |
 
 ### フィルタリングプラットフォームパケットの破棄
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: 十分な容量があり、sysmonでネットワーク接続を監視していない場合は、`成功失敗`を推奨する。ただ、イベントが多発してしまう可能性が高い。
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 5152 | WFPがパケットを遮断した | 0 |  |
-| 5153 | より限定的なWFPフィルターがパケットを遮断した | 0 |  |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 5152 | WFPがパケットを遮断した | 0 | 現在はなし | Info | |
+| 5153 | より限定的なWFPフィルターがパケットを遮断した | 0 | 現在はなし | Info | |
 
 ### カーネルオブジェクト
 
 この機能は、主にカーネル開発者向けです。
 ミューテックス、シンボリックリンク、名前付きパイプ等々のカーネルオブジェクトにアクセスしようとするイベントが記録されます。
 SACLを持つカーネル・オブジェクトだけが、セキュリティ監査イベントを生成します。
-デフォルトでは、カーネルオブジェクトにSACLが設定されていないため、監査されません。
-`グローバルシステムオブジェクトのアクセスを監査する` (GPO: `コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション > 監査: グローバルシステムオブジェクトのアクセスを監査する`)を有効にすると、すべてのカーネルオブジェクトに対してSACLが設定され、すべてのカーネルオブジェクトへのアクセスが記録されます。
-しかし、不要なイベントを大量に発生させる可能性があるため、推奨できません。
-Windows 11では、監視すべきlsassプロセスへのアクセスはデフォルトで有効になっているようです。
+デフォルトでは、カーネルオブジェクトにSACLが設定されていないため、監査されません。`グローバルシステムオブジェクトのアクセスを監査する` (GPO: `コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション > 監査: グローバルシステムオブジェクトのアクセスを監査する`)を有効にすると、すべてのカーネルオブジェクトに対してSACLが設定され、すべてのカーネルオブジェクトへのアクセスが記録されます。しかし、不要なイベントを大量に発生させる可能性があるため、推奨できません。Windows 11では、監視すべきlsassプロセスへのアクセスはデフォルトで有効になっているようです。
 
-ボリューム: `グローバルシステムオブジェクトのアクセスを監査する`が有効の場合、高。
+ボリューム: `グローバルシステムオブジェクトのアクセスを監査するが有効の場合、高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`。ただし、`4663: オブジェクトアクセス`イベントが大量に生成されるため、`グローバルシステムオブジェクトのアクセスを監査する`の有効化を推奨しない。
 
 Sigmaルールの例:
-* `(4656) Generic Password Dumper Activity on LSASS`
-* `(4663) Suspicious Multiple File Rename Or Delete Occurred`: Detects multiple file rename or delete events occurrence within a specified period of time by a same user (these events may indicate ransomware activity).
+* `(4656) (High) Generic Password Dumper Activity on LSASS`
+* `(4663) (Med) Suspicious Multiple File Rename Or Delete Occurred`: Detects multiple file rename or delete events occurrence within a specified period of time by a same user (these events may indicate ransomware activity).
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 4 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
-| 4658 | オブジェクトハンドルが閉じられた | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
-| 4660 | オブジェクト削除 | 0 |  |
-| 4663 | オブジェクトアクセス  | 2 |  |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | オブジェクトハンドル要求 | 4 | 現在はなし | Info~High | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | 現在はなし | Info | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4660 | オブジェクト削除 | 0 | 現在はなし | Info | |
+| 4663 | オブジェクトアクセス  | 2 | 現在はなし | Info | |
 
 > **注意: イベントID 4656、4658、4660、4663は、レジストリ、ファイルシステムオブジェクトへのアクセス、リムーバブルストレージへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
 ### ハンドル操作
 
-このサブカテゴリを有効にすると、他のサブカテゴリの`4656`、`4658`、`4661`のイベントが有効になります。
-また、追加のイベント`4690`も有効になりますが、このイベントは調査には役立ちません。
-他のサブカテゴリでより有用なイベントを有効にするために、このサブカテゴリを有効にすることが推奨されます。
-
-ボリューム: SACLの設定による
+このサブカテゴリを有効にすると、他のサブカテゴリの`4656`、`4658`、`4661`のイベントが有効になります。また、追加のイベント`4690`も有効になりますが、このイベントは調査には役立ちません。他のサブカテゴリでより有用なイベントを有効にするために、このサブカテゴリを有効にすることが推奨されます。
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4690 | ハンドルをオブジェクトに複製しようとした | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4690 | ハンドルをオブジェクトに複製しようとした | 0 | なし | Info | セキュリティには関係しない。|
 
 ### その他のオブジェクトアクセスイベント
 
 マルウェアは、しばしば永続性と横展開のためにタスクを悪用するので、有効にすることが重要です。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4698) Rare Schtasks Creations`: Detects rare scheduled tasks creations that only appear a few times per time frame and could reveal password dumpers, backdoor installs or other types of malicious code.
-* `(4699) Scheduled Task Deletion`
+* `(4698) (Low) Rare Schtasks Creations`: Detects rare scheduled tasks creations that only appear a few times per time frame and could reveal password dumpers, backdoor installs or other types of malicious code.
+* `(4699) (Low) Scheduled Task Deletion`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4691 | オブジェクトへの間接アクセス | 0 |  |
-| 4698 | タスク作成 | 2 | |
-| 4699 | タスク削除 | 1 | |
-| 4700 | タスクの有効化 | 0 | |
-| 4701 | タスクの無効化 | 1 | |
-| 4702 | タスク更新 | 0 | |
-| 5148 | WFPがDoS攻撃を検知し、ソースパケットを遮断している | 0 |  |
-| 5149 | DoS攻撃は沈静化し、通常の処理が再開された | 0 |  |
-| 5888 | COM+カタログオブジェクト変更 | 0 |  |
-| 5889 | COM+カタログオブジェクト削除 | 0 |  |
-| 5890 | COM+カタログオブジェクト作成 | 0 |  |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4691 | オブジェクトへの間接アクセス | 0 | なし | Info | おそらく稀なイベント。 |
+| 4698 | タスク作成 | 2 | あり | Info~High | |
+| 4699 | タスク削除 | 1 | あり | Info~Low | |
+| 4700 | タスクの有効化 | 0 | 現在はなし | Info | |
+| 4701 | タスクの無効化 | 1 | 現在はなし | Info | |
+| 4702 | タスク更新 | 0 | 現在はなし | Info | |
+| 5148 | WFPがDoS攻撃を検知し、ソースパケットを遮断している | 0 | 現在はなし | Info | |
+| 5149 | DoS攻撃は沈静化し、通常の処理が再開された | 0 | 現在はなし | Info | |
+| 5888 | COM+カタログオブジェクト変更 | 0 | 現在はなし | Info | |
+| 5889 | COM+カタログオブジェクト削除 | 0 | 現在はなし | Info | |
+| 5890 | COM+カタログオブジェクト作成 | 0 | 現在はなし | Info | |
 
 ### レジストリ
 
 多くの攻撃やマルウェアはレジストリを悪用するため、レジストリに証拠がよく残されますが、検知に必要なものだけをログに残すことは難しく、グローバルにすべてのレジストリへのアクセスを有効にすると、イベントの量が極端に増え、パフォーマンスが低下するリスクもあります。
 
-ボリューム: SACLの設定による
+ボリューム: `SACLの設定による`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: 監視したいレジストリキーのみSACLを設定すること
 
 Sigmaルールの例:
-* `(4656) SAM Registry Hive Handle Request`: Attackers will try to access the SAM registry hive to obtain password hashes.
-* `(4656) SCM Database Handle Failure`: Detects non-system users failing to get a handle of the SCM database.
-* `(4657) COMPlus_ETWEnabled Registry Modification`: Potential adversaries stopping ETW providers recording loaded .NET assemblies.
-* `(4657) NetNTLM Downgrade Attack`
-* `(4657) Sysmon Channel Reference Deletion`: Potential threat actor tampering with Sysmon manifest and eventually disabling it.
-* `(4657) Creation of a Local Hidden User Account by Registry`
-* `(4657) UAC Bypass via Sdclt`
-* `(4657) Disable Security Events Logging Adding Reg Key MiniNt`
-* `(4657) PrinterNightmare Mimimkatz Driver Name`
-* `(4657) Security Support Provider (SSP) Added to LSA Configuration`: Detects the addition of a SSP to the registry. Upon a reboot or API call, SSP DLLs gain access to encrypted and plaintext passwords stored in Windows.
-* `(4657) Suspicious Run Key from Download`
-* `(4657) Suspicious Camera and Microphone Access`
-* `(4657) Usage of Sysinternals Tools`
-* `(4657) Common Autorun Keys Modification`
-* `(4657) Disable Sysmon Event Logging Via Registry`
+* `(4656) (High) SAM Registry Hive Handle Request`: Attackers will try to access the SAM registry hive to obtain password hashes.
+* `(4656) (Med) SCM Database Handle Failure`: Detects non-system users failing to get a handle of the SCM database.
+* `(4657) (High) COMPlus_ETWEnabled Registry Modification`: Potential adversaries stopping ETW providers recording loaded .NET assemblies.
+* `(4657) (High) NetNTLM Downgrade Attack`
+* `(4657) (High) Sysmon Channel Reference Deletion`: Potential threat actor tampering with Sysmon manifest and eventually disabling it.
+* `(4657) (High) Creation of a Local Hidden User Account by Registry`
+* `(4657) (High) UAC Bypass via Sdclt`
+* `(4657) (High) Disable Security Events Logging Adding Reg Key MiniNt`
+* `(4657) (Crit) PrinterNightmare Mimimkatz Driver Name`
+* `(4657) (Crit) Security Support Provider (SSP) Added to LSA Configuration`: Detects the addition of a SSP to the registry. Upon a reboot or API call, SSP DLLs gain access to encrypted and plaintext passwords stored in Windows.
+* `(4657) (High) Suspicious Run Key from Download`
+* `(4657) (High) Suspicious Camera and Microphone Access`
+* `(4657) (Low) Usage of Sysinternals Tools`
+* `(4657) (Med) Common Autorun Keys Modification`
+* `(4657) (High) Disable Sysmon Event Logging Via Registry`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 2 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
-| 4657 | レジストリ値の変更 | 182 |  |
-| 4658 | オブジェクトハンドルが閉じられた | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
-| 4660 | オブジェクト削除  | 0 |  |
-| 4663 | オブジェクトアクセス | 0 |  |
-| 4670 | オブジェクト権限の変更 | 0 |  |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | オブジェクトハンドル要求 | 2 | 現在はなし | Info~High | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4657 | レジストリ値の変更 | 182 | 現在はなし | Info~High | |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | なし | Info | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4660 | オブジェクト削除  | 0 | 現在はなし | Info | |
+| 4663 | オブジェクトアクセス | 0 |  Not Yet | Info~? | |
+| 4670 | オブジェクト権限の変更 | 0 | 現在はなし | Info~? | |
 
 > **注意: イベントID 4656、4658、4660、4663、4670は、カーネル、ファイルシステムオブジェクトへのアクセス、リムーバブルストレージへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
@@ -739,17 +734,17 @@ Sigmaルールの例:
 SACLの設定に関係なく、リムーバブルストレージへのすべてのファイルアクセスがログに記録されます。
 USBストレージ経由でデータを流出させる従業員などを追跡したい場合は有効にすると良いでしょう。
 
-ボリューム: リムーバブルストレージの使用量に依存する。
+ボリューム: `リムーバブルストレージの使用量に依存する`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: 外付けデバイスの使用を監視したい場合は`成功と失敗`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4656 | オブジェクトハンドル要求 | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
-| 4658 | オブジェクトハンドルが閉じられた | 0 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
-| 4663 | オブジェクトアクセス | 0 |  |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4656 | オブジェクトハンドル要求 | 0 | 現在はなし | Info | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4658 | オブジェクトハンドルが閉じられた | 0 | 現在はなし | Info | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| 4663 | オブジェクトアクセス | 0 | 現在はなし | Info | 
 
 **注意: イベントID 4656、4658、4663は、レジストリ、カーネル、ファイルシステムオブジェクトへのアクセスにも使用されていますが、個別に設定する必要があります。** 
 
@@ -757,19 +752,19 @@ USBストレージ経由でデータを流出させる従業員などを追跡�
 
 これは、ユーザおよびコンピュータアカウント、グループ、セキュリティ記述子などのSecurity Account Manager（SAMオブジェクトにアクセスしようとする試みを記録します。
 
-ボリューム: ドメインコントローラでは高。
+ボリューム: `ドメインコントローラでは高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: 可能であれば、`成功失敗`だが、ノイズが大きくなりすぎる可能性があるので、事前にテストしておく必要がある。
 
 Sigmaルールの例:
-* `(4661) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
-* `(4661) AD Privileged Users or Groups Reconnaissance`: Detect privileged users or groups recon based on 4661 eventid and known privileged users or groups SIDs.
+* `(4661) (High) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
+* `(4661) (High) AD Privileged Users or Groups Reconnaissance`: Detect privileged users or groups recon based on 4661 eventid and known privileged users or groups SIDs.
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4661 | オブジェクトハンドル要求 | 2 | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4661 | オブジェクトハンドル要求 | 2 | 現在はなし | Info~High | このイベントを記録するには、`ハンドルの操作`サブカテゴリを有効にする必要がある。 |
 
 ## ポリシーの変更
 
@@ -784,34 +779,34 @@ Sigmaルールの例:
 * オブジェクトの監査設定の変更 (例: ファイルまたはレジストリキーのシステムアクセス制御リスト(SACL)の変更)
 * 特別なグループリスト内の変更
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4719) Disabling Windows Event Auditing`: ローカルGPOポリシーによるアンチフォレンジックの検知。
+* `(4719) (High) Disabling Windows Event Auditing`: ローカルGPOポリシーによるアンチフォレンジックの検知。
  
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4715 | オブジェクトの監査ポリシー(SACL)が変更された | 0 | 監査ポリシーの変更の設定に関係なくログが記録される。 |
-| 4719 | システム監査ポリシーが変更された | 1 | 監査ポリシーの変更の設定に関係なくログが記録される。 |
-| 4817 | オブジェクトの監査設定が変更された | 0 | 監査ポリシーの変更の設定に関係なくログが記録される。 |
-| 4902 | ユーザごとの監査ポリシーテーブルが作成された | 0 | |
-| 4904 | セキュリティイベントソースの登録が試行された | 0 | |
-| 4905 | セキュリティイベントソース登録の解除が試行された | 0 | |
-| 4906 | CrashOnAuditFailの値が変更された | 0 | 監査ポリシーの変更の設定に関係なくログが記録される。 |
-| 4907 | オブジェクトの監査設定が変更された | 0 | |
-| 4908 | 特別なグループログオンテーブルが変更された | 0 | 監査ポリシーの変更の設定に関係なくログが記録される。 |
-| 4912 | ユーザごとの監査ポリシーが変更された | 0 | 監査ポリシーの変更の設定に関係なくログが記録される。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4715 | オブジェクトの監査ポリシー(SACL)が変更された | 0 | 現在はなし | Info | 監査ポリシーの変更の設定に関係なくログが記録される。 |
+| 4719 | システム監査ポリシーが変更された | 1 | 現在はなし | Info~High | 監査ポリシーの変更の設定に関係なくログが記録される。 |
+| 4817 | オブジェクトの監査設定が変更された | 0 | 現在はなし | Info | 監査ポリシーの変更の設定に関係なくログが記録される。 |
+| 4902 | ユーザごとの監査ポリシーテーブルが作成された | 0 | 現在はなし | Info | おそらく稀なイベント。 |
+| 4904 | セキュリティイベントソースの登録が試行された | 0 | 現在はなし | Info | |
+| 4905 | セキュリティイベントソース登録の解除が試行された | 0 | 現在はなし | Info | |
+| 4906 | CrashOnAuditFailの値が変更された | 0 | なし | Info | 監査ポリシーの変更の設定に関係なくログが記録される。 |
+| 4907 | オブジェクトの監査設定が変更された | 0 | 現在はなし | Info | おそらく稀なイベント。 |
+| 4908 | 特別なグループログオンテーブルが変更された | 0 | 現在はなし | Low | 監査ポリシーの変更の設定に関係なくログが記録される。 |
+| 4912 | ユーザごとの監査ポリシーが変更された | 0 | 現在はなし | Low | 監査ポリシーの変更の設定に関係なくログが記録される。 |
 
 ### 認証ポリシーの変更
 
 認証ポリシーに加えた変更は次のとおり:
 * フォレストとドメインの信頼の作成、変更、および削除。
 * `コンピューターの構成 > Windows設定 > アカウントポリシー > Kerberosポリシー`のKerberosポリシー設定に対する変更。
-* ユーザーまたはグループに次のユーザー ログオン権限が付与されている場合。
+* ユーザまたはグループに次のユーザ ログオン権限が付与されている場合。
   * ネットワークからこのコンピューターにアクセスする
   * ローカルでのログオンを許可する
   * リモートデスクトップ経由のログオンを許可する
@@ -821,29 +816,29 @@ Sigmaルールの例:
 
 この設定は、ドメインレベルおよびフォレストレベルの信頼と、ユーザアカウントまたはグループに付与される特権の変化を追跡するのに便利です。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4706) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
+* `(4706) (Med) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
  
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4670 | オブジェクト権限の変更  | 0 | |
-| 4706 | ドメインに新しい信頼が作成された | 1 | |
-| 4707 | ドメインへの信頼が削除された | 0 | |
-| 4713 | Kerberosポリシーが変更された | 0 | |
-| 4716 | 信頼できるドメイン情報が変更された | 0 | |
-| 4717 | システムセキュリティアクセスがアカウントに付与された | 0 | |
-| 4718 | システムセキュリティアクセスがアカウントから削除された | 0 | |
-| 4739 | ドメイン ポリシーが変更された | 0 | |
-| 4864 | 名前空間の競合が検出された | 0 | |
-| 4865 | 信頼できるフォレスト情報エントリが追加された | 0 | |
-| 4866 | 信頼できるフォレスト情報エントリが削除された | 0 | |
-| 4867 | 信頼できるフォレスト情報エントリが変更された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4670 | オブジェクト権限の変更  | 0 | 現在はなし | Info | |
+| 4706 | ドメインに新しい信頼が作成された | 1 | 現在はなし | Info~Med | |
+| 4707 | ドメインへの信頼が削除された | 0 | 現在はなし | Med | |
+| 4713 | Kerberosポリシーが変更された | 0 | 現在はなし | Info | |
+| 4716 | 信頼できるドメイン情報が変更された | 0 | 現在はなし | Med | |
+| 4717 | システムセキュリティアクセスがアカウントに付与された | 0 | 現在はなし | Info | |
+| 4718 | システムセキュリティアクセスがアカウントから削除された | 0 | 現在はなし | Info | |
+| 4739 | ドメイン ポリシーが変更された | 0 | 現在はなし | Med | |
+| 4864 | 名前空間の競合が検出された | 0 | 現在はなし | Info | |
+| 4865 | 信頼できるフォレスト情報エントリが追加された | 0 | 現在はなし | Info | |
+| 4866 | 信頼できるフォレスト情報エントリが削除された | 0 | 現在はなし | Info | |
+| 4867 | 信頼できるフォレスト情報エントリが変更された | 0 | 現在はなし | Info | |
 
 ### 承認ポリシーの変更
 
@@ -851,20 +846,20 @@ Sigmaルールの例:
 ユーザ権限ポリシーの変更、またはファイルシステムオブジェクトに適用されるリソース属性やセントラルアクセスポリシーの変更に関連する情報を取得することができます。
 ただし、AdjustPrivilegesToken APIを通じてシステム権限の変更を行うアプリケーションやシステムサービスを使用している場合は、イベントが大量に発生するため、有効にすることは推奨されません。
 
-ボリューム: 中〜高
+ボリューム: `中〜高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `不明。テストが必要。`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4703 | ユーザ権利の調整 | 0 | Windows 10では、このイベントは、トークン権限を動的に調整するアプリケーションやサービスによって生成されます。例えば、Microsoft Endpoint Configuration Managerは、定期的にWMIクエリーを実行し、svchost.exeプロセスから大量のイベントを発生させます。 |
-| 4704 | ユーザ権限の割り当て | 0 | |
-| 4705 | ユーザ権限の削除 | 0 | |
-| 4670 | オブジェクト権限の変更 | 0 | |
-| 4911 | オブジェクトのリソース属性が変更された | 0 | |
-| 4913 | オブジェクトの中央アクセスポリシーが変更された | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4703 | ユーザ権利の調整 | 0 | | | Windows 10では、このイベントは、トークン権限を動的に調整するアプリケーションやサービスによって生成されます。例えば、Microsoft Endpoint Configuration Managerは、定期的にWMIクエリーを実行し、svchost.exeプロセスから大量のイベントを発生させます。 |
+| 4704 | ユーザ権限の割り当て | 0 | | | |
+| 4705 | ユーザ権限の削除 | 0 | | | |
+| 4670 | オブジェクト権限の変更 | 0 | | | |
+| 4911 | オブジェクトのリソース属性が変更された | 0 | | | |
+| 4913 | オブジェクトの中央アクセスポリシーが変更された | 0 | | | |
 
 ### フィルタリングプラットフォームポリシーの変更
 
@@ -874,7 +869,7 @@ Windows Filtering Platform（WFP）の変更によって発生する以下のよ
 * フィルタープラットフォームベースWindowsポリシー設定に対する変更点。
 * WFPプロバイダーとエンジンに対する変更。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `監査なし`
 
@@ -896,28 +891,28 @@ Windowsファイアウォールで使用されるMicrosoft Protection Serviceは
 
 FWルールの変更は、端末のセキュリティ状態を把握し、ネットワーク攻撃からどの程度保護されているかを知るために重要です。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `不明。テストが必要。`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4944 | FW起動時のポリシー | 0 | |
-| 4945 | FW起動時のルール一覧表示 | 0 | |
-| 4946 | FW例外リストにルールが追加された | 0 | |
-| 4947 | FW例外リストのルールが変更された | 0 | |
-| 4948 | FW例外リストのルールが削除された | 0 | |
-| 4949 | FWが既定値に復元された | 0 | |
-| 4950 | FW設定が変更された | 0 | |
-| 4951 | FWルールはメジャーバージョン番号を認識できないため、無視された | 0 | |
-| 4952 | マイナーバージョン番号を認識できないため、FWルールの一部が無視された | 0 | |
-| 4953 | FWルールをパースできなかった | 0 | |
-| 4954 | GPOによるFWルールの変更　 | 0 | |
-| 4956 | FWのアクティブプロファイルが変更された | 0 | |
-| 4957 | FWルールが適用されなかった | 0 | |
-| 4958 | ルールが端末に設定されていない項目を参照しているため、FWはルールを適用しなかった | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4944 | FW起動時のポリシー | 0 | 現在はなし | Info | |
+| 4945 | FW起動時のルール一覧表示 | 0 | 現在はなし | Info | |
+| 4946 | FW例外リストにルールが追加された | 0 | 現在はなし | Info | |
+| 4947 | FW例外リストのルールが変更された | 0 | 現在はなし | Info | |
+| 4948 | FW例外リストのルールが削除された | 0 | 現在はなし | Info | |
+| 4949 | FWが既定値に復元された | 0 | 現在はなし | Info | |
+| 4950 | FW設定が変更された | 0 | 現在はなし | Info | |
+| 4951 | FWルールはメジャーバージョン番号を認識できないため、無視された | 0 | 現在はなし | Info | |
+| 4952 | マイナーバージョン番号を認識できないため、FWルールの一部が無視された | 0 | 現在はなし | Info | |
+| 4953 | FWルールをパースできなかった | 0 | 現在はなし | Info | |
+| 4954 | GPOによるFWルールの変更　 | 0 | 現在はなし | Info | |
+| 4956 | FWのアクティブプロファイルが変更された | 0 | 現在はなし | Info | |
+| 4957 | FWルールが適用されなかった | 0 | 現在はなし | Info | |
+| 4958 | ルールが端末に設定されていない項目を参照しているため、FWはルールを適用しなかった | 0 | 現在はなし | Info | |
 
 現在、このサブカテゴリーにはSigmaルールはありません。
 
@@ -925,7 +920,7 @@ FWルールの変更は、端末のセキュリティ状態を把握し、ネッ
 
 「その他のポリシー変更イベント」には、EFSデータ回復エージェントのポリシー変更、Windows Filtering Platformフィルタの変更、ローカルグループポリシー設定のセキュリティポリシー設定の更新状況、中央アクセスポリシーの変更、Cryptographic Next Generation（CNG）操作の詳細トラブルシューティングイベントについてのイベントが含まれています。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `監査なし`
 
@@ -960,17 +955,17 @@ FWルールの変更は、端末のセキュリティ状態を把握し、ネッ
 * システムのシャットダウン
 * ディレクトリサービスデータの同期化
 
-ボリューム: とても高い
+ボリューム: `とても高い`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `監査なし`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4673 | 特権サービスが呼び出された | 0 | |
-| 4674 | 特権オブジェクトに対する操作の試行 | 0 | |
-| 4985 | トランザクション状態の変更 | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4673 | 特権サービスが呼び出された | 0 | | | | 
+| 4674 | 特権オブジェクトに対する操作の試行 | 0 | | | | 
+| 4985 | トランザクション状態の変更 | 0 | | | | 
 
 > **注意: 重要でない特権の使用イベントと重要な特権の使用イベントは同じイベントIDを使用します。**
 
@@ -991,24 +986,25 @@ FWルールの変更は、端末のセキュリティ状態を把握し、ネッ
 * プロセスレベルのトークンを置き換える
 * ファイルとその他のオブジェクトの所有権の取得
  
-「ファイルとディレクトリのバックアップ」と「ファイルとディレクトリの復元」の2つイベントを記録するのに、`コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション > 監査: グローバルシステムオブジェクトのアクセスを監査する`の設定を有効にする必要がありますが、イベントが大量に生成されるので、お勧めしません。
+「ファイルとディレクトリのバックアップ」と「ファイルとディレクトリの復元」の2つイベントを記録するのに、`コンピューターの構成 > Windowsの設定 > セキュリティの設定 > ローカルポリシー > セキュリティオプション > 監査: グローバルシステムオブジェクトのアクセスを監査する`のグループポリシー設定を有効にする必要があります。
+しかし、イベントが大量に生成されるので、グループポリシー設定を有効化することはお勧めしません。
 
-ボリューム: 高
+ボリューム: `高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`だが、ノイズが多すぎる可能性がある
 
 Sigmaルールの例:
-* `(4673) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
-* `(4673) Suspicious Driver Loaded By User`: Detects the loading of drivers via 'SeLoadDriverPrivilege' required to load or unload a device driver. With this privilege, the user can dynamically load and unload device drivers or other code in to kernel mode. This user right does not apply to Plug and Play device drivers. If you exclude privileged users/admins and processes, which are allowed to do so, you are maybe left with bad programs trying to load malicious kernel drivers. This will detect Ghost-In-The-Logs (https://github.com/bats3c/Ghost-In-The-Logs) and the usage of Sysinternals and various other tools. So you have to work with a whitelist to find the bad stuff.
-* `(4674) SCM Database Privileged Operation`: Detects non-system users performing privileged operation os the SCM database.
+* `(4673) (High) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
+* `(4673) (Med) Suspicious Driver Loaded By User`: Detects the loading of drivers via 'SeLoadDriverPrivilege' required to load or unload a device driver. With this privilege, the user can dynamically load and unload device drivers or other code in to kernel mode. This user right does not apply to Plug and Play device drivers. If you exclude privileged users/admins and processes, which are allowed to do so, you are maybe left with bad programs trying to load malicious kernel drivers. This will detect Ghost-In-The-Logs (https://github.com/bats3c/Ghost-In-The-Logs) and the usage of Sysinternals and various other tools. So you have to work with a whitelist to find the bad stuff.
+* `(4674) (Med) SCM Database Privileged Operation`: Detects non-system users performing privileged operation os the SCM database.
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4673 | 特権サービスが呼び出された | 2 | |
-| 4674 | 特権オブジェクトに対する操作の試行 | 1 | |
-| 4985 | トランザクション状態の変更 | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4673 | 特権サービスが呼び出された | 2 | 現在はなし | Info~High | |
+| 4674 | 特権オブジェクトに対する操作の試行 | 1 | 現在はなし | Info~Med | |
+| 4985 | トランザクション状態の変更 | 0 | 現在はなし | Info | |
 
 > **注意: 重要でない特権の使用イベントと重要な特権の使用イベントは同じイベントIDを使用します。**
 
@@ -1022,7 +1018,7 @@ Sigmaルールの例:
 * 暗号化キーファイルと移行操作
 * BranchCacheイベント
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功と失敗`
 
@@ -1034,7 +1030,7 @@ Sigmaルールの例:
 
 セキュリティ状態の変更には、端末起動、回復、シャットダウンの各イベント、システム時間の変更に関する情報が含まれています。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功`
 
@@ -1043,11 +1039,11 @@ Sigmaルールの例:
 Sigmaルールの例:
 * `(4616) Unauthorized System Time Modification`: システム時刻改ざんの検知。
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4608 | 端末起動 | 0 | |
-| 4616 | システム時刻の変更 | 1 | |
-| 4621 | 管理者がCrashOnAuditFailからシステムを回復した | 0 | |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4608 | 端末起動 | 0 | 現在はなし | Info | おそらく生成されないイベント。 |
+| 4616 | システム時刻の変更 | 1 | 現在はなし | Low | |
+| 4621 | 管理者がCrashOnAuditFailからシステムを回復した | 0 | なし | Info | おそらく稀なイベント。 |
 
 ### セキュリティシステムの拡張
 
@@ -1055,29 +1051,29 @@ Sigmaルールの例:
 * セキュリティ拡張機能コードが読み込まれます (認証、通知、セキュリティ パッケージなど)。セキュリティ拡張機能コードはLSAに登録され、ログオン試行の認証、ログオン要求の送信、アカウントまたはパスワードの変更の通知を受け取る際に使用され、信頼されます。この拡張コードの例は、KerberosやNTLMなどのセキュリティサポートプロバイダーです。
 * サービスがインストールされています。サービスがサービスコントロールマネージャーに登録されると、監査ログが生成されます。監査ログには、サービス名、バイナリ、種類、開始の種類、およびサービスアカウントに関する情報が含まれます。
 
-ボリューム: 低。ドメインコントローラでは高？
+ボリューム: `低。ドメインコントローラでは高`
 
 デフォルトの設定: `監査なし`
 
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4611) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
-* `(4697) Invoke-Obfuscation Obfuscated IEX Invocation`
-* `(4697) Invoke-Obfuscation Via Use Rundll32`
-* `(4697) Invoke-Obfuscation Via Use MSHTA`
-* `(4697) CobaltStrike Service Installations`
-* `(4697) Credential Dumping Tools Service Execution`
-* `(4697) Malicious Service Installations`
-* `(4697) Meterpreter or Cobalt Strike Getsystem Service Installation`
+* `(4611) (High) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
+* `(4697) (High) Invoke-Obfuscation Obfuscated IEX Invocation`
+* `(4697) (High) Invoke-Obfuscation Via Use Rundll32`
+* `(4697) (High) Invoke-Obfuscation Via Use MSHTA`
+* `(4697) (High) CobaltStrike Service Installations`
+* `(4697) (High) Credential Dumping Tools Service Execution`
+* `(4697) (Crit) Malicious Service Installations`
+* `(4697) (Crit) Meterpreter or Cobalt Strike Getsystem Service Installation`
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4610 | LSAが認証パッケージを読み込んだ | 0 | 許可リストで監視すべき。 |
-| 4611 | 信頼できるログオンプロセスがLSAに登録された | 1 | `Subject`フィールドが`SYSTEM`になっているはず。 |
-| 4614 | SAMが通知パッケージを読み込んだ | 0 | |
-| 4622 | LSAがセキュリティパッケージを読み込んだ | 0 | |
-| 4697 | サービスインストール | 20 | このサブカテゴリでは最も重要なイベント。Win 10/2016以上が必要。 |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4610 | LSAが認証パッケージを読み込んだ | 0 | なし | ? | 許可リストで監視すべき。 |
+| 4611 | 信頼できるログオンプロセスがLSAに登録された | 1 | 現在はなし | Low~High | `Subject`フィールドが`SYSTEM`になっているはず。 |
+| 4614 | SAMが通知パッケージを読み込んだ | 0 | なし | ? | おそらく稀なイベント。 |
+| 4622 | LSAがセキュリティパッケージを読み込んだ | 0 | なし | ? | おそらく稀なイベント。 |
+| 4697 | サービスインストール | 20 | あり | Info~High | このサブカテゴリでは最も重要なイベント。Win 10/2016以上が必要。 |
 
 ### システムの整合性
 
@@ -1090,7 +1086,7 @@ Sigmaルールの例:
 
 マイクロソフトによると、セキュリティサブシステムの整合性の違反は重大であり、潜在的なセキュリティ攻撃を示している可能性があります。
 
-ボリューム: 低
+ボリューム: `低`
 
 デフォルトの設定: `成功と失敗`
 
@@ -1098,22 +1094,34 @@ Sigmaルールの例:
 
 現在、このサブカテゴリーにはSigmaルールはありません。
 
-| イベントID | タイトル | Sigmaルール数 | 備考欄 |
-| :---: | :---: | :---: | :---: |
-| 4612 | リソース切れで一部のログが失われた可能性がある | 0 | 監視すべき。 |
-| 4615 | LPCポートの使用が無効 | 0 |  |
-| 4618 | 監視対象のセキュリティイベントパターンが発生した | 0 | このイベントは手動で呼び出された時だけ記録される。 |
-| 4816 | RPCが受信メッセージの復号中に整合性違反が起こった | 0 |  |
-| 5038 | コード整合性エラー: イメージのハッシュ値が不正 | 0 | 元のイベントタイトル: `コードの整合性により、ファイルのイメージ ハッシュが無効であると判断されました。 不正な変更が原因でファイルが破損している可能性があります。無効なハッシュは、ディスク デバイス エラーの可能性があることを示している可能性があります。`  |
-| 5056 | 暗号化の自己テストの実行 | 0 |  |
-| 5057 | 暗号化プリミティブ操作の失敗 | 0 |  |
-| 5060 | 検証操作の失敗 | 0 |  |
-| 5061 | 暗号化操作 | 0 |  |
-| 5062 | カーネルモードの暗号化セルフテストの実行 | 0 |  |
-| 6281 | コード整合性エラー: イメージのページハッシュ値が不正 | 0 | 元のイベントタイトル: `コード整合性により、イメージファイルのページハッシュが無効であると判断されました。ページハッシュなしでファイルに正しく署名されていないか、不正な変更が原因で破損している可能性があります。無効なハッシュは、潜在的なディスクデバイスエラーを示している可能性があります。` |
-| 6410 | コード整合性エラー: 要件を満たしていない | 0 | 元のイベントタイトル: `コードの整合性により、ファイルがプロセスに読み込むセキュリティ要件を満たしていないと判断されました。` |
+| イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4612 | リソース切れで一部のログが失われた可能性がある | 0 | 現在はなし | Med | 監視すべき。 |
+| 4615 | LPCポートの使用が無効 | 0 | なし | Info | おそらく稀なイベント。  |
+| 4618 | 監視対象のセキュリティイベントパターンが発生した | 0 | なし | None | このイベントは手動で呼び出された時だけ記録される。 |
+| 4816 | RPCが受信メッセージの復号中に整合性違反が起こった | 0 | 現在はなし | Low | 
+| 5038 | コード整合性エラー: イメージのハッシュ値が不正 | 0 | あり | Low | 元のイベントタイトル: `コードの整合性により、ファイルのイメージ ハッシュが無効であると判断されました。 不正な変更が原因でファイルが破損している可能性があります。無効なハッシュは、ディスク デバイス エラーの可能性があることを示している可能性があります。`  |
+| 5056 | 暗号化の自己テストの実行 | 0 | なし | None | おそらく稀なイベント。  |
+| 5057 | 暗号化プリミティブ操作の失敗 | 0 | なし | Info | おそらく稀なイベント。 |
+| 5060 | 検証操作の失敗 | 0 | なし | Info | おそらく稀なイベント。 |
+| 5061 | 暗号化操作 | 0 | なし | Info | おそらく稀なイベント。 |
+| 5062 | カーネルモードの暗号化セルフテストの実行 | 0 | なし | Info | おそらく稀なイベント。 |
+| 6281 | コード整合性エラー: イメージのページハッシュ値が不正 | 0 | あり | Low | 元のイベントタイトル: `コード整合性により、イメージファイルのページハッシュが無効であると判断されました。ページハッシュなしでファイルに正しく署名されていないか、不正な変更が原因で破損している可能性があります。無効なハッシュは、潜在的なディスクデバイスエラーを示している可能性があります。` |
+| 6410 | コード整合性エラー: 要件を満たしていない | 0 | あり | Low | 元のイベントタイトル: `コードの整合性により、ファイルがプロセスに読み込むセキュリティ要件を満たしていないと判断されました。` |
 
 ## グローバルオブジェクトアクセス
 
 ここですべての`ファイルシステム`と`レジストリ`アクセスを記録するように設定できますが、非常に多くのログが生成されるため、実運用ではお勧めしません。
 検出ルールを作成するときには、どのレジストリキーとファイルが変更されたかを調べるために、攻撃のシミュレーションを行う際に有効にすることが推奨されます。
+
+## デフォルト設定のログ
+
+デフォルト設定で有効になっている監視対象とすべきイベントを以下に示します。
+
+| イベントID | タイトル | Hayabusaルールの有無 | レベル | 備考欄 |
+| :---: | :---: | :---: | :---: | :---: | 
+| 1100 | イベントログサービスがシャットダウンされた | 現在はなし | Info | おそらく稀なイベント。 |
+| 1101 | ログが中断された | 現在はなし | Med | おそらく稀なイベント。 |
+| 1102 | 監査ログがクリアされた | あり | High | |
+| 1104 | セキュリティログがいっぱいになった | 現在はなし | High | おそらく稀なイベント。 |
+| 1108 | イベントログサービスのエラー | 現在はなし | Med | おそらく稀なイベント。 |
