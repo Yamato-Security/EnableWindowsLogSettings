@@ -270,8 +270,28 @@ File: `System.evtx`
 
 Default settings: `Enabled. 20 MB`
 
+Recommended settings: `Enabled. 128 MB+`
+
 Malware will often install services for persistence, local privilege esclation, etc... which can be found in this log.
 It is also possible to detect various vulnerabilities being exploited here.
+
+> **Note: One thing to watch out specific to the System log is that parameters in fields are sometimes translated to the local language so signatures that use only English may not detect on non-English systems. For example, on an English system in the parameters for EID 7045, it will record `Enabled` while in Japanese it might record `有効`.**
+
+Important Event IDs:
+
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 16 | Registry Hive Access History Cleared | 2 | Not Yet. | High~Crit | Password dumpers may clear access history after dumping passwords hashes from the SAM registry key. |
+| 55 | NTFS Filesystem Corrupted | 1 | No | High | Can detect attacks against NTFS vulnerabilities. |
+| 104 | System Event Log Cleared | 1 | Yes | Med | |
+| 6005 | Event Log Service Started | 0 | Yes | Info | |
+| 6006 | Event Log Service Stopped | 0 | Yes | Info | |
+| 6038 | NTLMv1 Was Used | 1 | No | Low | |
+| 7031 | Service Crashed | 0 | Yes | Low | |
+| 7034 | Service Crashed | 0 | Yes | Low | |
+| 7036 | Service Started/Stopped | 2 | Yes | Info~High | Can be used to detect someone stopping Defender, etc... |
+| 7040 | Service Startup Type Changed | 0 | Yes | Info | Can indicate an attacker disabled a service. |
+| 7045 | Service Installation | 37 | Yes | Info~Crit | |
 
 ## Application log (16 sigma rules)
 
