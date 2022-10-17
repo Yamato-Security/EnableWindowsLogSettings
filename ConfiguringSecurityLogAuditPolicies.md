@@ -198,20 +198,20 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4727 | Global Group Created | 0 | Not Yet | Info | |
 | 4728 | Member Added To Global Group | 0 | Yes | Info | |
+| 4729 | Member Removed From Global Group | 0 | Not Yet | Info | |
+| 4730 | Global Group Deleted | 0 | Not Yet | Info | |
 | 4731 | Local Group Created | 0 | Not Yet | Info | |
 | 4732 | Member Added To Local Group | 1 | Yes | Info~Med | |
 | 4733 | Member Removed From Local Group | 0 | Not Yet | Info | |
 | 4734 | Local Group Deleted | 0 | Not Yet | Info | |
-| 4764 | Group Type Changed | 0 | Not Yet | Info | |
-| 4799 | Local Group Membership Enumerated | 1 | Not Yet | Info~High | This is a pretty noisy event that is generated almost as often as `4672` Admin Logon events that will probably generate many false positives. |
 | 4737 | Global Group Changed | 0 | Not Yet | Info | |
-| 4729 | Member Removed From Global Group | 0 | Not Yet | Info | |
-| 4730 | Global Group Deleted | 0 | Not Yet | Info | |
 | 4754 | Universal Group Created | 0 | Not Yet | Info |
 | 4755 | Universal Group Changed | 0 | Not Yet | Info |
 | 4756 | Member Added To Universal Group | 0 | Not Yet | Info |
 | 4757 | Member Removed From Universal Group | 0 | Not Yet | Info |
 | 4758 | Universal Group Deleted | 0 | Not Yet | Info |
+| 4764 | Group Type Changed | 0 | Not Yet | Info | |
+| 4799 | Local Group Membership Enumerated | 1 | Not Yet | Info~High | This is a pretty noisy event that is generated almost as often as `4672` Admin Logon events that will probably generate many false positives. |
 
 ### User Account Management
 
@@ -396,7 +396,7 @@ Currently there is no sigma rule for account lockout.
 
 ### Group Membership
 
-Shows what group a user belongs to when they log in.
+Records what group a user belongs to when they log in.
 ACSC recommends `Success and Failure` but this is probably not needed if you can easily lookup what groups a user belongs to.
 
 Volume: Adds an extra `4627` event to every logon.
