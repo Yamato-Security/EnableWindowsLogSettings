@@ -19,9 +19,18 @@ This is yet another guide on properly configuring and monitoring Windows event l
     - **Warning: make sure you customize the script to your needs and test before using in production!**
 * Install [sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) to get full coverage. (**Highly recommended!**)
 
+# Companion Projects
+
+* [Hayabusa](https://github.com/Yamato-Security/hayabusa) - sigma-based threat hunting and fast forensics timeline generator for Windows event logs.
+* [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules) - detection rules for hayabusa.
+* [Hayabusa Sample EVTXs](https://github.com/Yamato-Security/hayabusa-sample-evtx) - Sample evtx files to use for testing hayabusa/sigma detection rules.
+* [Takajo](https://github.com/Yamato-Security/takajo) - Analyzer for hayabusa results.
+* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA) - An analyzer for Windows event logs written in PowerShell.
+
 # Table of Contents
 
 - [TLDR](#tldr)
+- [Companion Projects](#companion-projects)
 - [Table of Contents](#table-of-contents)
 - [Author](#author)
 - [Contributors](#contributors)
