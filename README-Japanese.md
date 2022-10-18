@@ -21,11 +21,11 @@ Windowsのイベントログの設定と監視に関するガイドで、Sigma�
 
 # 関連プロジェクト
 
-* [Hayabusa](https://github.com/Yamato-Security/hayabusa) - Sigmaベースの脅威ハンティングと、Windowsイベントログのファストフォレンジックタイムライン生成ツール。
-* [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules) - Hayabusaのための検知ルール。
+* [Hayabusa](https://github.com/Yamato-Security/hayabusa/blob/main/README-Japanese.md) - Sigmaベースの脅威ハンティングと、Windowsイベントログのファストフォレンジックタイムライン生成ツール。
+* [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules/blob/main/README-Japanese.md) - Hayabusaのための検知ルール。
 * [Hayabusa Sample EVTXs](https://github.com/Yamato-Security/hayabusa-sample-evtx) - Hayabusa/Sigma検出ルールをテストするためのサンプルevtxファイル。
-* [Takajo](https://github.com/Yamato-Security/takajo) - Hayabusa結果の解析ツール。
-* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA) - PowerShellで書かれたWindowsイベントログの解析ツール。
+* [Takajo](https://github.com/Yamato-Security/takajo/blob/main/README-Japanese.md) - Hayabusa結果の解析ツール。
+* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA/blob/main/README-Japanese.md) - PowerShellで書かれたWindowsイベントログの解析ツール。
 
 ## 目次
 
