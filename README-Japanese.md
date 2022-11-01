@@ -40,7 +40,7 @@ Windowsのイベントログの設定と監視に関するガイドで、Sigma�
 - [重要な Windowsイベントログ](#重要な-windowsイベントログ)
   - [Sigmaのトップログソース](#sigmaのトップログソース)
     - [上位のSigmaログソース](#上位のsigmaログソース)
-    - [上位のSecurityイベンドID](#上位のsecurityイベンドid)
+    - [上位のSecurityイベントID](#上位のsecurityイベントid)
 - [最大ファイル サイズの増加](#最大ファイル-サイズの増加)
   - [オプション 1: イベントビューアー(手動)](#オプション-1-イベントビューアー手動)
   - [オプション 2: Windowsビルトインツール](#オプション-2-windowsビルトインツール)
@@ -143,7 +143,7 @@ Windowsのデフォルトのイベントログ設定を改善することを強�
 
 ![SigmaTopLogSources](SigmaTopLogSources.png)
 
-### 上位のSecurityイベンドID
+### 上位のSecurityイベントID
 
 ![TopSecurityEventIDs](TopSecurityEventIDs.png)
 
