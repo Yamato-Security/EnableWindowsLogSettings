@@ -103,7 +103,7 @@ auditpol /set /subcategory:{0CCE923C-69AE-11D9-BED3-505054503030} /success:enabl
 :::: Account Lockout
 auditpol /set /subcategory:{0CCE9217-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Group Membership (disabled due to noise)
-:: auditpol /set /subcategory:{0CCE9249-69AE-11D9-BED3-505054503030} /success:enable /failure:disable
+:: auditpol /set /subcategory:{0CCE9249-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Logoff
 auditpol /set /subcategory:{0CCE9216-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Logon
@@ -121,7 +121,7 @@ auditpol /set /subcategory:{0CCE921B-69AE-11D9-BED3-505054503030} /success:enabl
 :::: Certification Services (disable for client OSes)
 auditpol /set /subcategory:{0CCE9221-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Detailed File Share (disabled due to noise)
-auditpol /set /subcategory:{0CCE9244-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+:: auditpol /set /subcategory:{0CCE9244-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: File Share (disable if too noisy)
 auditpol /set /subcategory:{0CCE9224-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: File System (disabled due to noise)
@@ -129,13 +129,13 @@ auditpol /set /subcategory:{0CCE9224-69AE-11D9-BED3-505054503030} /success:enabl
 :::: Filtering Platform Connection (diable if too noisy)
 auditpol /set /subcategory:{0CCE9226-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Filtering Platform Packet Drop (disabled due to noise)
-auditpol /set /subcategory:{0CCE9225-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+:: auditpol /set /subcategory:{0CCE9225-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Kernel Object (disabled due to noise)
 :: auditpol /set /subcategory:{0CCE921F-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Other Object Access Events
 auditpol /set /subcategory:{0CCE9227-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Registry (currently disabled due to noise)
-auditpol /set /subcategory:{0CCE921E-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+:: auditpol /set /subcategory:{0CCE921E-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Removable Storage
 auditpol /set /subcategory:{0CCE9245-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: SAM
@@ -151,7 +151,7 @@ auditpol /set /subcategory:{0CCE9230-69AE-11D9-BED3-505054503030} /success:enabl
 :::: Filtering Platform Policy Change (currently disabled while testing)
 :: auditpol /set /subcategory:{0CCE9233-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: MPSSVC Rule-Level Policy Change (currently disabled while testing)
-auditpol /set /subcategory:{0CCE9232-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
+:: auditpol /set /subcategory:{0CCE9232-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Other Policy Change Events
 auditpol /set /subcategory:{0CCE9234-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 
