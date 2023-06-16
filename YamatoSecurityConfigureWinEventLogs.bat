@@ -128,7 +128,7 @@ auditpol /set /subcategory:{0CCE9221-69AE-11D9-BED3-505054503030} /success:enabl
 auditpol /set /subcategory:{0CCE9224-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: File System (disabled due to noise)
 :: auditpol /set /subcategory:{0CCE921D-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
-:::: Filtering Platform Connection (diable if too noisy)
+:::: Filtering Platform Connection (disable if too noisy)
 auditpol /set /subcategory:{0CCE9226-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Filtering Platform Packet Drop (disabled due to noise)
 :: auditpol /set /subcategory:{0CCE9225-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
