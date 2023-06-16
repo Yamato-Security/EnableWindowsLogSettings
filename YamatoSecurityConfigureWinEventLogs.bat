@@ -16,10 +16,12 @@
 :: 256 MB: 268435456
 :: 128 MB: 134217728
 
-:: Set Security and PowerShell log maximum file size to 1 GB
-:: Note: you should also increase the max. size of the Sysmon log to 1 GB if you use sysmon.
+:: Set Security and PowerShell-related logs' maximum file size to 1 GB
+:: Note: you should also increase the max. size of the Sysmon log to 1 GB if you use Sysmon.
 wevtutil sl Security /ms:1073741824
 wevtutil sl Microsoft-Windows-PowerShell/Operational /ms:1073741824
+wevtutil sl "Windows PowerShell" /ms:1073741824
+wevtutil sl PowerShellCore/Operational /ms:1073741824
 ::wevtutil sl Microsoft-Windows-Sysmon/Operational /ms:1073741824
 
 :: Set all other important logs to 128 MB. Increase or decrease to fit your environment.
