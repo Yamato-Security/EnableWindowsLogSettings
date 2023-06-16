@@ -16,10 +16,12 @@
 :: 256 MB: 268435456
 :: 128 MB: 134217728
 
-:: Set Security and PowerShell log maximum file size to 1 GB
-:: Note: you should also increase the max. size of the Sysmon log to 1 GB if you use sysmon.
+:: Set Security and PowerShell-related logs' maximum file size to 1 GB
+:: Note: you should also increase the max. size of the Sysmon log to 1 GB if you use Sysmon.
 wevtutil sl Security /ms:1073741824
 wevtutil sl Microsoft-Windows-PowerShell/Operational /ms:1073741824
+wevtutil sl "Windows PowerShell" /ms:1073741824
+wevtutil sl PowerShellCore/Operational /ms:1073741824
 ::wevtutil sl Microsoft-Windows-Sysmon/Operational /ms:1073741824
 
 :: Set all other important logs to 128 MB. Increase or decrease to fit your environment.
@@ -126,7 +128,7 @@ auditpol /set /subcategory:{0CCE9221-69AE-11D9-BED3-505054503030} /success:enabl
 auditpol /set /subcategory:{0CCE9224-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: File System (disabled due to noise)
 :: auditpol /set /subcategory:{0CCE921D-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
-:::: Filtering Platform Connection (diable if too noisy)
+:::: Filtering Platform Connection (disable if too noisy)
 auditpol /set /subcategory:{0CCE9226-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
 :::: Filtering Platform Packet Drop (disabled due to noise)
 :: auditpol /set /subcategory:{0CCE9225-69AE-11D9-BED3-505054503030} /success:enable /failure:enable
