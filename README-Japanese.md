@@ -117,7 +117,7 @@ Windowsのデフォルトのイベントログ設定を改善することを強�
 
 [Hayabusa](https://github.com/Yamato-Security/hayabusa)のイベントID集計機能を使用して、evtxファイル内のイベントIDの総数と割合を確認できます。
 
-例：`hayabusa.exe -M -f path/to/Security.evtx`
+例：`hayabusa.exe metrics -f path/to/Security.evtx`
 
 # 重要な Windowsイベントログ
 

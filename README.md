@@ -113,7 +113,7 @@ I recommend turning on as much logging as possible on test machines that mimic y
 
 You can view the total number and percent of Event IDs in an `evtx` file with [Hayabusa](https://github.com/Yamato-Security/hayabusa)'s event ID metrics command.
 
-Example: `hayabusa.exe -M -f path/to/Security.evtx`
+Example: `hayabusa.exe metrics -f path/to/Security.evtx`
 
 # Important Windows event logs
 
