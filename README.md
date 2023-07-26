@@ -2,7 +2,7 @@
  <h1>
     <img alt="Yamato Security Logo" src="YamatoSecurityLogo.png" width="80%">
  </h1>
- <h1>Yamato Security's Ultimate Windows Event Log Configuration Guide For DFIR And Threat Hunting</h1>
+ <h1>Yamato Security's Windows Event Log Configuration Guide For DFIR And Threat Hunting</h1>
  [ <b>English</b> ] | [<a href="README-Japanese.md">日本語</a>]
 </div>
 <p>
@@ -84,8 +84,8 @@ This is yet another guide on properly configuring and monitoring Windows event l
   - [TaskScheduler Operational log  (1 sigma rule)](#taskscheduler-operational-log--1-sigma-rule)
 
 # Author
- 
-Zach Mathis (Zaku / ([@yamatosecurity](https://twitter.com/yamatosecurity))). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor. If you find any errors in this documentation, please let me know and I will fix them as soon as possible.
+
+Zach Mathis ([@yamatosecurity](https://twitter.com/yamatosecurity)). As I do more research and testing, I plan on periodically updating this as there is much room for improvement (both in the documentation as well as in creating more detection rules.) PRs are welcome and will gladly add you as a contributor. If you find any errors in this documentation, please let me know and I will fix them as soon as possible.
 
 If you find any of this useful, please give a star on GitHub as it will probably help motivate me to continue updating this.
 
@@ -200,11 +200,11 @@ File: `Microsoft-Windows-PowerShell%4Operational.evtx`
 
 ### Module logging (30 sigma rules)
 
-Turning on module logging will enable event ID `4103`. 
+Turning on module logging will enable event ID `4103`.
 Module logging has the advantage that it can run on older OSes and versions of PowerShell: PowerShell 3.0 (Win 7+).
 Another benefit is that it logs both the PowerShell command executed as well as the results.
 The disadvantage is that it will create an extremely high number of events.
-For example, if an attacker runs Mimikatz, it will create 7 MB of logs with over 2000 events! 
+For example, if an attacker runs Mimikatz, it will create 7 MB of logs with over 2000 events!
 
 #### Enabling module logging
 
@@ -248,7 +248,7 @@ In the Group Policy editor, open `Computer Configuration > Administrative Templa
 Default settings: `No Auditing`
 
 It is possible to also save PowerShell logs to text files on the local computer with transcription logs.
-While an attacker can usually easily delete the transcription logs for anti-forensics, there may be scenarios where the attacker clears all of the event logs but does not search for transcription logs to delete. 
+While an attacker can usually easily delete the transcription logs for anti-forensics, there may be scenarios where the attacker clears all of the event logs but does not search for transcription logs to delete.
 Therefore, it is recommended to also enable transcription logs if possible.
 By default, they are saved to the user's documents folder.
 Ideally transcript logs should be saved to a write-only network file share, however, this may be difficult to implement in practice.
@@ -336,7 +336,7 @@ Important Event IDs:
 
 
 ## Windows Defender Operational log (10 sigma rules)
- 
+
 File: `Microsoft-Windows-Windows Defender%4Operational.evtx`
 
 Default settings: `Enabled. 1 MB`
@@ -346,7 +346,7 @@ Recommended settings: `Enabled. 128 MB+`
 You can detect not only Windows Defender alerts (which are important to monitor), but also exclusions being added, tamper protection being disabled, history deleted, etc...
 
 ## Bits-Client Operational log (6 sigma rules)
- 
+
 File: `Microsoft-Windows-Bits-Client%4Operational.evtx`
 
 Default settings: `Enabled. 1 MB`
@@ -373,7 +373,7 @@ File: `Microsoft-Windows-NTLM%4Operational.evtx`
 
 Default settings: `Enabled but Auditing is disabled. 1 MB`
 
-This log is recommended to enable if you want to disable NTLM authentication. 
+This log is recommended to enable if you want to disable NTLM authentication.
 Disabling NTLM will most likely break some communication, so you can monitor this log on the DCs and other servers to see who is still using NTLM and disable NTLM gradually starting with those users before disabling it globally.
 It is possible to detect NTLM being used for incoming connections in logon events such as 4624 but you need to enable this log if you want to monitor who is making outgoing NTLM connections.
 
@@ -381,7 +381,7 @@ To enable auditing, in Group Policy open `Computer Configuration > Policies > Wi
 
 Reference: [Farewell NTLM](https://www.scip.ch/en/?labs.20210909)
 
-## Security-Mitigations KernelMode and UserMode logs  (2 sigma rules) 
+## Security-Mitigations KernelMode and UserMode logs  (2 sigma rules)
 
 Files: `Microsoft-Windows-Security-Mitigations%4KernelMode.evtx`, `Microsoft-Windows-Security-Mitigations%4UserMode.evtx`
 
@@ -389,7 +389,7 @@ Default settings: `Enabled. 1 MB`
 
 Recommended settings: `Enabled. 128 MB+`
 
-At the moment there are only 2 sigma rules for these logs but you should probably be collecting and monitoring all of the Exploit Protection, Network Protection, Controlled Folder Access and Attack Surface Reduction logs (About 40+ Event IDs). 
+At the moment there are only 2 sigma rules for these logs but you should probably be collecting and monitoring all of the Exploit Protection, Network Protection, Controlled Folder Access and Attack Surface Reduction logs (About 40+ Event IDs).
 
 Unfortunately the Attack Surface Reduction logs (previously WDEG(Windows Defender Exploit Guard) and EMET) are spread across multiple logs and require complex XML queries to search them.
 
@@ -415,7 +415,7 @@ Default settings: `Disabled. 1 MB`
 
 Recommended settings: `Enabled. 128 MB+`
 
-## SMBClient Security log (2 sigma rules) 
+## SMBClient Security log (2 sigma rules)
 
 File: `Microsoft-Windows-SmbClient%4Security.evtx`
 
@@ -425,7 +425,7 @@ Recommended settings: `Enabled. 128 MB+`
 
 Used to attempt to detect PrintNightmare (Suspicious Rejected SMB Guest Logon From IP) and users mounting hidden shares.
 
-## AppLocker logs (1 sigma rule) 
+## AppLocker logs (1 sigma rule)
 
 Files: `Microsoft-Windows-AppLocker%4MSI and Script.evtx`, `Microsoft-Windows-AppLocker%4EXE and DLL.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Deployment.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Execution.evtx`
 
@@ -445,7 +445,7 @@ Recommended settings: `Enabled. 128 MB+`
 
 Check this log to detect driver load events that get blocked by Windows code integrity checks, which may indicate a malicious driver that faild to load.
 
-## Diagnosis-Scripted Operational log (1 sigma rule) 
+## Diagnosis-Scripted Operational log (1 sigma rule)
 
 File: `Microsoft-Windows-Diagnosis-Scripted%4Operational.evtx`
 
@@ -455,7 +455,7 @@ Recommended settings: `Enabled. 128 MB+`
 
 Evidence of diagcab packages being used for exploitation may be found here.
 
-## DriverFrameworks-UserMode Operational log  (1 sigma rule) 
+## DriverFrameworks-UserMode Operational log  (1 sigma rule)
 
 Files: `Microsoft-Windows-DriverFrameworks-UserMode%4Operational.evtx`
 
@@ -465,7 +465,7 @@ Recommended settings: `Enabled. 128 MB+`
 
 Detects plugged in USB devices.
 
-## WMI-Activity Operational log  (1 sigma rule) 
+## WMI-Activity Operational log  (1 sigma rule)
 
 File: `Microsoft-Windows-WMI-Activity%4Operational.evtx`
 
@@ -475,7 +475,7 @@ Recommended settings: `Enabled. 128 MB+`
 
 This is important to monitor as attackers will often exploit WMI for persistence and lateral movement.
 
-## TerminalServices-LocalSessionManager Operational log  (1 sigma rule) 
+## TerminalServices-LocalSessionManager Operational log  (1 sigma rule)
 
 File: `Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx`
 
@@ -487,7 +487,7 @@ Detects when ngrok, a reverse proxy tool, forwards traffic to the local RDP port
 
 Link: [Bypassing Network Restrictions Through RDP Tunneling](https://www.mandiant.com/resources/blog/bypassing-network-restrictions-through-rdp-tunneling)
 
-## TaskScheduler Operational log  (1 sigma rule) 
+## TaskScheduler Operational log  (1 sigma rule)
 
 File: `Microsoft-Windows-TaskScheduler%4Operational.evtx`
 

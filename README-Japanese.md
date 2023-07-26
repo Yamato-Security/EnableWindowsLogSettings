@@ -3,7 +3,7 @@
     <img alt="Yamato Security Logo" src="YamatoSecurityLogo.png" width="80%">
  </h1>
  <h1>
-    大和セキュリティによる、DFIRと脅威ハンティングのためのWindowsイベントログ設定の究極ガイド
+    大和セキュリティによる、DFIRと脅威ハンティングのためのWindowsイベントログ設定のガイド
  </h1>
  [<a href="README.md">English</a>] | [<b>日本語</b>]
 </div>
@@ -84,7 +84,7 @@ Windowsのイベントログの設定と監視に関するガイドで、Sigma�
   - [TaskScheduler Operationalログ (Sigmaルール 1件)](#taskscheduler-operationalログ-sigmaルール-1件)
 
 # 作者
- 
+
 田中ザック (Zaku / [@yamatosecurity](https://twitter.com/yamatosecurity))。
 より多くの研究とテストを行い、(検知ルールとドキュメンテーションの)改善の余地があるため、定期的に更新していく予定です。
 PRは歓迎され、喜んでコントリビューターとして追加させていただきます。
@@ -123,7 +123,7 @@ Windowsのデフォルトのイベントログ設定を改善することを強�
 
 1. 有効にするべき最も重要なイベントログは、おそらく`Process Creation`(プロセス作成)のイベントで、システムで実行されているプロセスを追跡するものです。
  現在、Sigmaルールの約半分がこのイベントに依存しています。
- Sysmonをインストールして、イベントID`1`を有効にするか、ビルトインログ (SecurityイベントID`4688`)を有効にすることで記録できます。  
+ Sysmonをインストールして、イベントID`1`を有効にするか、ビルトインログ (SecurityイベントID`4688`)を有効にすることで記録できます。
  `Sysmon 1`に、実行ファイルのハッシュ値やメタデータなどの詳細情報も記録されるので理想的ですが、Sysmonをインストールできない場合は、Windowsのビルトインログの`Security 4688`が使えます。
  ただし、多くの検知ルールがコマンドライン情報にあるシグネチャを探すため、コマンドライン情報も記録されるように設定すべきです。
  残念ながら`Security 4688`は、Sysmonプロセス作成ログほど詳細な情報は記録されないので、`Security 4688`に対応していない`Process Creation`検知ルールもあります。
@@ -305,7 +305,7 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription �
 注意点としては、異なるベンダーが異なるイベントに同じイベントIDを使用するため、イベントIDだけでなくプロバイダ名でもフィルタリングする必要があることです。
 
 ## Windows Defender Operationalログ (Sigmaルール 10件)
- 
+
 ファイル: `Microsoft-Windows-Windows Defender%4Operational.evtx`
 
 デフォルトの設定: `有効。1 MB`
@@ -313,7 +313,7 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription �
 （重要な監視項目の）Windows Defenderのアラートだけでなく、除外項目が追加された、改ざん防止機能が無効になった、履歴が削除された、などのイベントも検出できます。
 
 ## Bits-Client Operationalログ (Sigmaルール 6件)
- 
+
 ファイル: `Microsoft-Windows-Bits-Client%4Operational.evtx`
 
 デフォルトの設定: `有効。1 MB`
@@ -345,7 +345,7 @@ NTLMを無効にすると、ほとんどの場合、一部の端末が接続で�
 
 参考記事: [Farewell NTLM](https://www.scip.ch/en/?labs.20210909)
 
-## Security-Mitigations KernelModeとUserModeログ (Sigmaルール 2件) 
+## Security-Mitigations KernelModeとUserModeログ (Sigmaルール 2件)
 
 ファイル: `Microsoft-Windows-Security-Mitigations%4KernelMode.evtx`, `Microsoft-Windows-Security-Mitigations%4UserMode.evtx`
 
@@ -372,7 +372,7 @@ NTLMを無効にすると、ほとんどの場合、一部の端末が接続で�
 
 デフォルトの設定: `無効。1 MB`
 
-## SMBClient Securityログ (Sigmaルール 2件) 
+## SMBClient Securityログ (Sigmaルール 2件)
 
 ファイル: `Microsoft-Windows-SmbClient%4Security.evtx`
 
@@ -380,7 +380,7 @@ NTLMを無効にすると、ほとんどの場合、一部の端末が接続で�
 
 PrintNightmare攻撃 (ルール: `Suspicious Rejected SMB Guest Logon From IP`)や隠し共有をマウントするユーザを検出できます。
 
-## AppLockerログ (Sigmaルール 1件) 
+## AppLockerログ (Sigmaルール 1件)
 
 ファイル: `Microsoft-Windows-AppLocker%4MSI and Script.evtx`, `Microsoft-Windows-AppLocker%4EXE and DLL.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Deployment.evtx`, `Microsoft-Windows-AppLocker%4Packaged app-Execution.evtx`
 
@@ -396,7 +396,7 @@ AppLockerを使用している場合、有効になっているか確認し、�
 
 このログを確認すると、Windowsのコード整合性チェックでブロックされたドライバーのロードイベントを検出することができます。そのため、ロードに失敗した悪意のあるドライバーを示すことがあります。
 
-## Diagnosis-Scripted Operationalログ (Sigmaルール 1件) 
+## Diagnosis-Scripted Operationalログ (Sigmaルール 1件)
 
 ファイル: `Microsoft-Windows-Diagnosis-Scripted%4Operational.evtx`
 
@@ -404,7 +404,7 @@ AppLockerを使用している場合、有効になっているか確認し、�
 
 diagcabパッケージが悪用された証拠は、こちらで確認できます。
 
-## DriverFrameworks-UserMode Operationalログ (Sigmaルール 1件) 
+## DriverFrameworks-UserMode Operationalログ (Sigmaルール 1件)
 
 ファイル: `Microsoft-Windows-DriverFrameworks-UserMode%4Operational.evtx`
 
@@ -412,7 +412,7 @@ diagcabパッケージが悪用された証拠は、こちらで確認できま�
 
 接続されたUSBデバイスの痕跡がここで記録されます。
 
-## WMI-Activity Operationalログ (Sigmaルール 1件) 
+## WMI-Activity Operationalログ (Sigmaルール 1件)
 
 ファイル: `Microsoft-Windows-WMI-Activity%4Operational.evtx`
 
@@ -420,7 +420,7 @@ diagcabパッケージが悪用された証拠は、こちらで確認できま�
 
 攻撃者はしばしばWMIを悪用して永続化や横展開するので、このログを監視することは重要です。
 
-## TerminalServices-LocalSessionManager Operationalログ (Sigmaルール 1件) 
+## TerminalServices-LocalSessionManager Operationalログ (Sigmaルール 1件)
 
 ファイル: `Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx`
 
@@ -430,7 +430,7 @@ diagcabパッケージが悪用された証拠は、こちらで確認できま�
 
 リンク: [Bypassing Network Restrictions Through RDP Tunneling](https://www.mandiant.com/resources/blog/bypassing-network-restrictions-through-rdp-tunneling)
 
-## TaskScheduler Operationalログ (Sigmaルール 1件) 
+## TaskScheduler Operationalログ (Sigmaルール 1件)
 
 ファイル: `Microsoft-Windows-TaskScheduler%4Operational.evtx`
 
