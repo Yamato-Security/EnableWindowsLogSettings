@@ -117,7 +117,7 @@ Windowsのデフォルトのイベントログ設定を改善することを強�
 
 [Hayabusa](https://github.com/Yamato-Security/hayabusa)のイベントID集計機能を使用して、evtxファイル内のイベントIDの総数と割合を確認できます。
 
-例：`hayabusa.exe metrics -f path/to/Security.evtx`
+例：`hayabusa.exe eid-metrics -f path/to/Security.evtx`
 
 # 重要な Windowsイベントログ
 
@@ -240,7 +240,7 @@ HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\Mo
 スクリプトブロックログを有効にすると、イベントID`4104`が記録されます。`スクリプトブロックの呼び出し開始/停止イベントをログに記録する`も有効にすると イベントID`4105`と`4106`も有効になりますが、ノイズが増えるだけなので推奨されません。
 PowerShell 5.0+ (Win 10+)ではデフォルトでサポートされていますが、.NET 4.5とWMF 4.0+をインストールすれば、古いOS (Win 7+)でも有効にすることができます。
 残念ながら、1つのWindowsイベントログの最大サイズは32KBなので、これより大きいPowerShellスクリプトは32KBサイズのブロックに分割されます。
-もし、元々のPowerShell Operational`.evtx`ファイルがあれば、[block-parser](https://github.com/matthewdunwoody/block-parser)ツールを使って、これらのログを読みやすい一つのテキストファイルにもとめることができます。
+もし、元々の`PowerShell Operational.evtx`ファイルがあれば、[block-parser](https://github.com/matthewdunwoody/block-parser)ツールを使って、これらのログを読みやすい一つのテキストファイルにもとめることができます。
 スクリプトブロックログの良い点は、悪意のあるスクリプトがXOR、Base 64、ROT13などで難読化されていても、解読されたスクリプトが記録されるため、解析が非常に容易になる点です。
 攻撃者がMimikatzを実行した場合、7MBで2000以上のイベントが発生するのに比べ、5MBで約100件のイベントが発生するだけなので、モジュールログよりも解析しやすいです。
 ただし、スクリプトブロックログでは、コマンドの出力は記録されません。

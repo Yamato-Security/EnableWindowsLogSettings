@@ -113,7 +113,7 @@ I recommend turning on as much logging as possible on test machines that mimic y
 
 You can view the total number and percent of Event IDs in an `evtx` file with [Hayabusa](https://github.com/Yamato-Security/hayabusa)'s event ID metrics command.
 
-Example: `hayabusa.exe metrics -f path/to/Security.evtx`
+Example: `hayabusa.exe eid-metrics -f path/to/Security.evtx`
 
 # Important Windows event logs
 
@@ -228,7 +228,7 @@ Default settings: `On Win 10/2016+, if a PowerShell script is flagged as suspici
 Turning on Script Block logging will enable event ID `4104`. If you enable `Log script block invocation start / stop events`, EID `4105` and `4106` will also be enabled, however, this is not recommended as it will just create noise.
 Script Block logging is supported by default in PowerShell 5.0+ (Win 10+), however you can enable this on older OSes (Win 7+) if you install .NET 4.5 and WMF 4.0+.
 Unfortunately, the maximum size of a single Windows event log is 32 KB so any PowerShell scripts greater than this will be fragmented in 32 KB sized blocks.
-If you have the original PowerShell Operational `.evtx` file, you can use the [block-parser](https://github.com/matthewdunwoody/block-parser) tool to un-fragment these logs into a single easily readable text file.
+If you have the original `PowerShell Operational.evtx` file, you can use the [block-parser](https://github.com/matthewdunwoody/block-parser) tool to un-fragment these logs into a single easily readable text file.
 One good thing about Script Block logging is that even if a malicious script is obfuscated with XOR, Base 64, ROT13, etc... the decoded script will be logged making analysis much easier.
 The logs are more reasonable to work with than module logging as if an attacker runs Mimikatz, only 5 MB and 100 events will generated compared to the 7 MB and over 2000 events.
 However, the output of the commands are not recorded with Script Block logging.
