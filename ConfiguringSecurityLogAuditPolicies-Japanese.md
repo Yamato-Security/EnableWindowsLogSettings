@@ -365,10 +365,10 @@ Sigmaルールの例:
 推奨設定: `クライアントOS: 監査なし` | `ADDS Server: 成功と失敗`
 
 Sigmaルールの例:
-* `(5136) (High) Powerview Add-DomainObjectAcl DCSync AD Extend Right`: Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account.
-* `(5136) (High) Active Directory User Backdoors`: Detects scenarios where one can control another users or computers account without having to use their credentials.
+* `(5136) (High) Powerview Add-DomainObjectAcl DCSync AD Extend Right`: DCSyncに関連付けられた権限を通常のユーザーまたはマシンアカウントに付与するバックドアドメインオブジェクト
+* `(5136) (High) Active Directory User Backdoors`: 資格情報を使用せずに別のユーザーまたはコンピュータのアカウントを制御できるシナリオを検出する
 * `(5136) (Med) Possible DC Shadow`
-* `(5136) (High) Suspicious LDAP-Attributes Used`: Detects LDAPFragger, a C2 tool that lets attackers route Cobalt Strike beacon data over LDAP attributes.
+* `(5136) (High) Suspicious LDAP-Attributes Used`: 攻撃者がLDAP属性を介してCobalt Strike ビーコンデータをルーティング可能にするC2ツール、LDAPFraggerを検出する
 
 | イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -442,7 +442,7 @@ Sigmaルールの例:
 * `(4624) (High) RottenPotato Like Attack Pattern`
 * `(4625) (Med) Failed Logon From Public IP`
 * `(4648) (Med) Suspicious Remote Logon with Explicit Credentials`
-* `(4624) (High) Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: Detects scans for the BlueKeep vulnerability.
+* `(4624) (High) Scanner PoC for CVE-2019-0708 RDP RCE Vuln`: 脆弱性BlueKeepのスキャンを検出する
 * `(4625) (Med) Failed Logon From Public IP`
 * `(4625) (Med) Multiple Users Failing to Authenticate from Single Process`
 * `(4625) (Med) Multiple Users Remotely Failing To Authenticate From Single Source`
@@ -595,10 +595,10 @@ WFP（Windows Filtering Platform）がポートバインディングやネット
 推奨設定: 十分な容量があり、sysmonでネットワーク接続を監視していない場合は、`成功失敗`を推奨する。ただ、イベントが多発してしまう可能性が高い。
 
 Sigmaルールの例:
-* `(5156) (Med) Enumeration via the Global Catalog`: Bloodhound等のツールを検知する。
+* `(5156) (Med) Enumeration via the Global Catalog`: Bloodhound等のツールを検知する
 * `(5156) (High) RDP over Reverse SSH Tunnel WFP`
 * `(5156) (High) Remote PowerShell Sessions Network Connections (WinRM)`
-* `(5156) (High) Suspicious Outbound Kerberos Connection`: Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.
+* `(5156) (High) Suspicious Outbound Kerberos Connection`: Kerberosのデフォルトポートを介して、ラテラルムーブメントの可能性を示す不審なアウトバウンド通信、または委任を介した最初の段階のPrivEscを検出する
 
 | イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -674,7 +674,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4698) (Low) Rare Schtasks Creations`: Detects rare scheduled tasks creations that only appear a few times per time frame and could reveal password dumpers, backdoor installs or other types of malicious code.
+* `(4698) (Low) Rare Schtasks Creations`: パスワードダンパー、バックドアのインストール、その他の悪意のあるコード実行の可能性がある、タイムフレーム中に数回しか実行されないスケジュールタスクの作成を検出する
 * `(4699) (Low) Scheduled Task Deletion`
 
 | イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
@@ -702,16 +702,16 @@ Sigmaルールの例:
 推奨設定: 監視したいレジストリキーのみSACLを設定すること
 
 Sigmaルールの例:
-* `(4656) (High) SAM Registry Hive Handle Request`: Attackers will try to access the SAM registry hive to obtain password hashes.
-* `(4656) (Med) SCM Database Handle Failure`: Detects non-system users failing to get a handle of the SCM database.
-* `(4657) (High) COMPlus_ETWEnabled Registry Modification`: Potential adversaries stopping ETW providers recording loaded .NET assemblies.
+* `(4656) (High) SAM Registry Hive Handle Request`: 攻撃者がSAMレジストリハイブにアクセスしてパスワードハッシュ取得を試行した
+* `(4656) (Med) SCM Database Handle Failure`: SCM データベースのハンドルを取得できない非システム ユーザーを検出する
+* `(4657) (High) COMPlus_ETWEnabled Registry Modification`: 攻撃者の可能性のあるユーザによる、ロードされた.NETアセンブリを記録するETW プロバイダーの停止
 * `(4657) (High) NetNTLM Downgrade Attack`
-* `(4657) (High) Sysmon Channel Reference Deletion`: Potential threat actor tampering with Sysmon manifest and eventually disabling it.
+* `(4657) (High) Sysmon Channel Reference Deletion`: 脅威アクターの可能性のあるユーザによる、Sysmonマニフェスト改ざん、無効化
 * `(4657) (High) Creation of a Local Hidden User Account by Registry`
 * `(4657) (High) UAC Bypass via Sdclt`
 * `(4657) (High) Disable Security Events Logging Adding Reg Key MiniNt`
 * `(4657) (Crit) PrinterNightmare Mimimkatz Driver Name`
-* `(4657) (Crit) Security Support Provider (SSP) Added to LSA Configuration`: Detects the addition of a SSP to the registry. Upon a reboot or API call, SSP DLLs gain access to encrypted and plaintext passwords stored in Windows.
+* `(4657) (Crit) Security Support Provider (SSP) Added to LSA Configuration`: レジストリへのSSP追加を検出する。再起動またはAPI呼び出し時に、SSP DLLがWindowsに保存されている暗号化されたパスワードと平文のパスワードにアクセス可能になる
 * `(4657) (High) Suspicious Run Key from Download`
 * `(4657) (High) Suspicious Camera and Microphone Access`
 * `(4657) (Low) Usage of Sysinternals Tools`
@@ -759,8 +759,8 @@ USBストレージ経由でデータを流出させる従業員などを追跡�
 推奨設定: 可能であれば、`成功失敗`だが、ノイズが大きくなりすぎる可能性があるので、事前にテストしておく必要がある。
 
 Sigmaルールの例:
-* `(4661) (High) Reconnaissance Activity`: Detects activity such as "net user administrator /domain" and "net group domain admins /domain".
-* `(4661) (High) AD Privileged Users or Groups Reconnaissance`: Detect privileged users or groups recon based on 4661 eventid and known privileged users or groups SIDs.
+* `(4661) (High) Reconnaissance Activity`: "net user administrator /domain" や "net group domain admins /domain"の検出
+* `(4661) (High) AD Privileged Users or Groups Reconnaissance`:　イベントID 4661に基づき、特権ユーザーまたはグループの偵察を検出。
 
 | イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -823,7 +823,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4706) (Med) Addition of Domain Trusts`: Addition of domains is seldom and should be verified for legitimacy.
+* `(4706) (Med) Addition of Domain Trusts`: ドメイン追加は通常は行われないため、正当性を確認する必要がある
  
 | イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -996,9 +996,9 @@ FWルールの変更は、端末のセキュリティ状態を把握し、ネッ
 推奨設定: `成功と失敗`だが、ノイズが多すぎる可能性がある
 
 Sigmaルールの例:
-* `(4673) (High) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.
-* `(4673) (Med) Suspicious Driver Loaded By User`: Detects the loading of drivers via 'SeLoadDriverPrivilege' required to load or unload a device driver. With this privilege, the user can dynamically load and unload device drivers or other code in to kernel mode. This user right does not apply to Plug and Play device drivers. If you exclude privileged users/admins and processes, which are allowed to do so, you are maybe left with bad programs trying to load malicious kernel drivers. This will detect Ghost-In-The-Logs (https://github.com/bats3c/Ghost-In-The-Logs) and the usage of Sysinternals and various other tools. So you have to work with a whitelist to find the bad stuff.
-* `(4674) (Med) SCM Database Privileged Operation`: Detects non-system users performing privileged operation os the SCM database.
+* `(4673) (High) User Couldn't Call a Privileged Service 'LsaRegisterLogonProcess'`: 「LsaRegisterLogonProcess」関数は、アプリケーションが SeTcbPrivilege 権限セットを持っているかどうかを確認することで、ログオン プロセスであることを検証する。RubeusによるLSAハンドル取得試行の可能性
+* `(4673) (Med) Suspicious Driver Loaded By User`: デバイスドライバーのロードまたはアンロードに必要な「SeLoadDriverPrivilege」を介してドライバーのロードを検出する。この権限により、ユーザーはデバイスドライバーまたはその他のコードをカーネルモードに動的にロードおよびアンロードできる。このユーザー権限は、プラグアンドプレイデバイスドライバーには適用されない。許可されている特権ユーザー/管理者とプロセスを除外すると、悪意のあるカーネル ドライバーをロードしようとする不正なプログラムが残る可能性がある。これにより、[Ghost-In-The-Logs](https://github.com/bats3c/Ghost-In-The-Logs)、Sysinternalsやその他のさまざまなツールの使用が検出される。ホワイトリストを使用し悪意のあるツールを見つける必要がある
+* `(4674) (Med) SCM Database Privileged Operation`: SCMデータベースに対して、特権操作を実行している非システムユーザーを検出する
 
 | イベントID | タイトル | Sigmaルール数 | Hayabusaルールの有無 | レベル | 備考欄 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -1058,7 +1058,7 @@ Sigmaルールの例:
 推奨設定: `成功と失敗`
 
 Sigmaルールの例:
-* `(4611) (High) Register new Logon Process by Rubeus`: Detects potential use of Rubeus via registered new trusted logon process.
+* `(4611) (High) Register new Logon Process by Rubeus`: 新しい信頼できるログオンプロセスを介したRubeusツール使用の可能性の検出
 * `(4697) (High) Invoke-Obfuscation Obfuscated IEX Invocation`
 * `(4697) (High) Invoke-Obfuscation Via Use Rundll32`
 * `(4697) (High) Invoke-Obfuscation Via Use MSHTA`
