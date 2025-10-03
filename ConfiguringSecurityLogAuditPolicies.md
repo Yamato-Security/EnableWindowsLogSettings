@@ -13,60 +13,60 @@
 - [Table of Contents](#table-of-contents)
 - [Notes about configuring Security log auditing](#notes-about-configuring-security-log-auditing)
 - [Security Event Log Categories and Event IDs](#security-event-log-categories-and-event-ids)
-  - [Account Logon](#account-logon)
-    - [Credential Validation](#credential-validation)
-    - [Kerberos Authentication Service](#kerberos-authentication-service)
-    - [Kerberos Service Ticket Operations](#kerberos-service-ticket-operations)
-  - [Account Management](#account-management)
-    - [Computer Account Management](#computer-account-management)
-    - [Other Account Management Events](#other-account-management-events)
-    - [Security Group Management](#security-group-management)
-    - [User Account Management](#user-account-management)
-  - [Detailed Tracking](#detailed-tracking)
-    - [Plug and Play Events](#plug-and-play-events)
-    - [Process Creation](#process-creation)
-    - [Process Termination](#process-termination)
-    - [RPC (Remote Procedure Call) Events](#rpc-remote-procedure-call-events)
-    - [Token Right Adjusted Events](#token-right-adjusted-events)
-  - [DS (Directory Service) Access](#ds-directory-service-access)
-    - [Directory Service Access](#directory-service-access)
-    - [Directory Service Changes](#directory-service-changes)
-  - [Logon/Logoff](#logonlogoff)
-    - [Account Lockout](#account-lockout)
-    - [Group Membership](#group-membership)
-    - [Logoff](#logoff)
-    - [Logon](#logon)
-    - [Other Logon/Logoff Events](#other-logonlogoff-events)
-    - [Special Logon](#special-logon)
-  - [Object Access](#object-access)
-    - [Certification Services](#certification-services)
-    - [Detailed File Share](#detailed-file-share)
-    - [File Share](#file-share)
-    - [File System](#file-system)
-    - [Filtering Platform Connection](#filtering-platform-connection)
-    - [Filtering Platform Packet Drop](#filtering-platform-packet-drop)
-    - [Kernel Object](#kernel-object)
-    - [Handle Manipulation](#handle-manipulation)
-    - [Other Object Access Events](#other-object-access-events)
-    - [Registry](#registry)
-    - [Removable Storage](#removable-storage)
-    - [SAM](#sam)
-  - [Policy Change](#policy-change)
-    - [Audit Policy Change](#audit-policy-change)
-    - [Authentication Policy Change](#authentication-policy-change)
-    - [Authorization Policy Change](#authorization-policy-change)
-    - [Filtering Platform Policy Change](#filtering-platform-policy-change)
-    - [MPSSVC Rule-Level Policy Change](#mpssvc-rule-level-policy-change)
-    - [Other Policy Change Events](#other-policy-change-events)
-  - [Privilege Use](#privilege-use)
-    - [Non Sensitive Use Events](#non-sensitive-use-events)
-    - [Sensitive Privilege Use](#sensitive-privilege-use)
-  - [System](#system)
-    - [Other System Events](#other-system-events)
-    - [Security State Change](#security-state-change)
-    - [Security System Extension](#security-system-extension)
-    - [System Integrity](#system-integrity)
-  - [Global Object Access Auditing](#global-object-access-auditing)
+  - [1. Account Logon](#1-account-logon)
+    - [1.1 Credential Validation](#11-credential-validation)
+    - [1.2 Kerberos Authentication Service](#12-kerberos-authentication-service)
+    - [1.3 Kerberos Service Ticket Operations](#13-kerberos-service-ticket-operations)
+  - [2. Account Management](#2-account-management)
+    - [2.1 Computer Account Management](#21-computer-account-management)
+    - [2.2 Other Account Management Events](#22-other-account-management-events)
+    - [2.3 Security Group Management](#23-security-group-management)
+    - [2.4 User Account Management](#24-user-account-management)
+  - [3. Detailed Tracking](#3-detailed-tracking)
+    - [3.1 Plug and Play Events](#31-plug-and-play-events)
+    - [3.2 Process Creation](#32-process-creation)
+    - [3.3 Process Termination](#33-process-termination)
+    - [3.4 RPC (Remote Procedure Call) Events](#34-rpc-remote-procedure-call-events)
+    - [3.5 Token Right Adjusted Events](#35-token-right-adjusted-events)
+  - [4. DS (Directory Service) Access](#4-ds-directory-service-access)
+    - [4.1 Directory Service Access](#41-directory-service-access)
+    - [4.2 Directory Service Changes](#42-directory-service-changes)
+  - [5. Logon/Logoff](#5-logonlogoff)
+    - [5.1 Account Lockout](#51-account-lockout)
+    - [5.2 Group Membership](#52-group-membership)
+    - [5.3 Logoff](#53-logoff)
+    - [5.4 Logon](#54-logon)
+    - [5.5 Other Logon/Logoff Events](#55-other-logonlogoff-events)
+    - [5.6 Special Logon](#56-special-logon)
+  - [6. Object Access](#6-object-access)
+    - [6.1 Certification Services](#61-certification-services)
+    - [6.2 Detailed File Share](#62-detailed-file-share)
+    - [6.3 File Share](#63-file-share)
+    - [6.4 File System](#64-file-system)
+    - [6.5 Filtering Platform Connection](#65-filtering-platform-connection)
+    - [6.6 Filtering Platform Packet Drop](#66-filtering-platform-packet-drop)
+    - [6.7 Handle Manipulation](#67-handle-manipulation)
+    - [6.8 Kernel Object](#68-kernel-object)
+    - [6.9 Other Object Access Events](#69-other-object-access-events)
+    - [6.10 Registry](#610-registry)
+    - [6.11 Removable Storage](#611-removable-storage)
+    - [6.12 SAM (Security Account Manager)](#612-sam-security-account-manager)
+  - [7. Policy Change](#7-policy-change)
+    - [7.1 Audit Policy Change](#71-audit-policy-change)
+    - [7.2 Authentication Policy Change](#72-authentication-policy-change)
+    - [7.3 Authorization Policy Change](#73-authorization-policy-change)
+    - [7.4 Filtering Platform Policy Change](#74-filtering-platform-policy-change)
+    - [7.5 MPSSVC Rule-Level Policy Change](#75-mpssvc-rule-level-policy-change)
+    - [7.6 Other Policy Change Events](#76-other-policy-change-events)
+  - [8. Privilege Use](#8-privilege-use)
+    - [8.1 Non-Sensitive Use Events](#81-non-sensitive-use-events)
+    - [8.2 Sensitive Privilege Use](#82-sensitive-privilege-use)
+  - [9. System](#9-system)
+    - [9.1 Other System Events](#91-other-system-events)
+    - [9.2 Security State Change](#92-security-state-change)
+    - [9.3 Security System Extension](#93-security-system-extension)
+    - [9.4 System Integrity](#94-system-integrity)
+  - [10. Global Object Access Auditing](#10-global-object-access-auditing)
   - [Default Logs](#default-logs)
 
 # Notes about configuring Security log auditing
@@ -79,9 +79,9 @@
 
 # Security Event Log Categories and Event IDs
 
-## Account Logon
+## 1. Account Logon
 
-### Credential Validation
+### 1.1 Credential Validation
 
 Volume: `Depends on NTLM usage. Could be high on DCs and low on clients and servers.`
 
@@ -99,7 +99,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4776 | NTLM Authentication | 5 | Yes | Info~High | The original event messages says it is for DCs only but this event gets logged for client OS local authentication as well. | 
 
-### Kerberos Authentication Service
+### 1.2 Kerberos Authentication Service
 
 > **Note: These events are only generated on domain controllers**
 
@@ -121,7 +121,7 @@ Notable Sigma rules:
 | 4771 | Kerberos Pre-Auth Failed | 1 | Not Yet | Info~Med | |
 | 4772 | Kerberos Authentication Ticket Request Failed | 0 | No | None | This log is not in use. EID 4768 failure events are used instead. |
 
-### Kerberos Service Ticket Operations
+### 1.3 Kerberos Service Ticket Operations
 
 > **Note: These events are only generated on domain controllers**
 
@@ -140,9 +140,9 @@ Notable Sigma rules:
 | 4770 | Kerberos Service Ticket Renewel | 0 | Not Yet | Info | |
 | 4773 | Kerberos Service Ticket Request Failed | 0 | No | None | This log is not in use. EID 4769 is used instead. |
 
-## Account Management
+## 2. Account Management
 
-### Computer Account Management
+### 2.1 Computer Account Management
 
 > **Note: These events are only generated on domain controllers**
  
@@ -157,11 +157,11 @@ Notable Sigma rules:
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4741 | Computer Account Created | 0 | Not Yet | Info | Seems to be a rare event.  |
-| 4742 | Computer Account Changed | 1 | Not Yet | Info~Med | |
-| 4743 | Computer Account Deleted | 0 | Not Yet | Info | Seems to be a rare event. |
+| 4741 | Computer Account Created | 0 | 1 | Info |  |
+| 4742 | Computer Account Changed | 2 | Not Yet | Info~Med | |
+| 4743 | Computer Account Deleted | 0 | Not Yet | Info | |
 
-### Other Account Management Events
+### 2.2 Other Account Management Events
 
 Volume: `Low`
 
@@ -174,7 +174,7 @@ Recommended settings: `Success and Failure`
 | 4782 | Account Pasword Hash Was Accessed | 0 | Not Yet | Info | Generated on a DC during password migration of an account using the AD Migration Toolkit or attackers trying to access password hashes. Seems to be a rare event. |
 | 4793 | Password Policy Checking API Was Called | 0 | Not Yet | Low | Generated during password resets or attackers checking the password policy. Seems to be a rare event. |
 
-### Security Group Management
+### 2.3 Security Group Management
 
 A "security-enabled" group is a group that you can assign access permissions (ACLs). The other type is a Distribution Group, which is "security-disabled" and cannot be assigned access permissions. Since security-enabled groups are most common, we will refer to them simply as "groups". For example, `Local Group Created`, instead of `A security-enabled local group was created.`.
 
@@ -213,7 +213,7 @@ Notable Sigma rules:
 | 4764 | Group Type Changed | 0 | Not Yet | Info | |
 | 4799 | Local Group Membership Enumerated | 1 | Not Yet | Info~High | This is a pretty noisy event that is generated almost as often as `4672` Admin Logon events that will probably generate many false positives. |
 
-### User Account Management
+### 2.4 User Account Management
 
 Volume: `Low`
 
@@ -252,9 +252,9 @@ Notable Sigma rules:
 | 5376 | Credential Manager Credentials Backup | 0 | Not Yet | Info | |
 | 5377 | Credential Manager Credentials Restored | 0 | Not Yet | Info | |
 
-## Detailed Tracking
+## 3. Detailed Tracking
 
-### Plug and Play Events
+### 3.1 Plug and Play Events
 
 This is important if you want to track physical attacks (Rubber Ducky, etc..) or someone exfiltrating data via USB devices.
 
@@ -277,7 +277,7 @@ Notable Sigma rules:
 | 6423 | Device Installation Blocked | 0 | No | Info | |
 | 6424 | Device Installation Allowed After Being Blocked | 0 | No | Info | |
 
-### Process Creation
+### 3.2 Process Creation
 
 Note: A separate setting needs to be enabled to log command line information which is extremely important. `Computer Configuration > Windows Settings > Administrative Templates > System > Audit Process Creation > Include command line in process creation events` in Group Policy.
 
@@ -291,10 +291,10 @@ Recommended settings: `Success and Failure` if sysmon is not configured.
 
 | Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4688 | Process Creation | 902 | Yes | Info~Crit | |
+| 4688 | Process Creation | 1000+ | Yes | Info~Crit | |
 | 4696 | Primary Token Assigned To Process | 0 | No | Info | Event is deprecated since Win 7/2008 R2 so may only been generated on Vista/2008. |
 
-### Process Termination
+### 3.3 Process Termination
 
 You may want to keep this disabled to save file space.
 
@@ -308,7 +308,7 @@ Recommended settings: `No Auditing` unless you want to track the lifespan of pro
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4689 | Process Exited | 1 | Not Yet | Info | |
 
-### RPC (Remote Procedure Call) Events
+### 3.4 RPC (Remote Procedure Call) Events
 
 Volume: `High on RPC servers` (According to Microsoft)
 
@@ -320,7 +320,7 @@ Recommended settings: `Unknown. Needs testing.`
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 5712 | RPC Attempt | 0 | Not Yet | ? | Logged when inbound RPC connection is made. Seems to be a rare event. | |
 
-### Token Right Adjusted Events
+### 3.5 Token Right Adjusted Events
 
 Volume: `Unknown`
 
@@ -332,11 +332,11 @@ Recommended settings: `Unknown. Needs testing.`
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4703 | User's Token Changed | 0 | Not Yet | Info | Seems to be a rare event. |
 
-## DS (Directory Service) Access
+## 4. DS (Directory Service) Access
 
 > **Note: Enable only for Domain Controllers**
 
-### Directory Service Access
+### 4.1 Directory Service Access
 
 Volume: `High`
 
@@ -356,7 +356,7 @@ Notable Sigma rules:
 | 4661 | Handle To Object Requested | 2 | Not Yet | Info~Crit | |
 | 4662 | Operation Performed On Object | 6 | Not Yet | Info~Crit | |
 
-### Directory Service Changes
+### 4.2 Directory Service Changes
 
 Volume: `High`
 
@@ -378,9 +378,9 @@ Notable Sigma rules:
 | 5139 | Directory Service Object Moved | 0 | Not Yet | Info | |
 | 5141 | Directory Service Object Deleted | 0 | Not Yet | Info | |
 
-## Logon/Logoff
+## 5. Logon/Logoff
 
-### Account Lockout
+### 5.1 Account Lockout
 
 Volume: `Low`
 
@@ -394,10 +394,11 @@ Currently there is no sigma rule for account lockout.
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4625 | Logon Failed Due To Lockout | 0 | Yes | Med | Substatus: `0xC0000234`. Seems to be a rare event. |
 
-### Group Membership
+### 5.2 Group Membership
 
 Records what group a user belongs to when they log in.
 ACSC recommends `Success and Failure` but this is probably not needed if you can easily lookup what groups a user belongs to.
+You can also check if a user has administrator privileges with the `4672` Admin Logon event.
 
 Volume: Adds an extra `4627` event to every logon.
 
@@ -409,9 +410,10 @@ Recommended settings: `No Auditing`
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4627 | Group Membership Information | 0 | Not Yet | Info | |
 
-### Logoff
+### 5.3 Logoff
 
-Note: Unfortunately, Windows will sometimes not record any logoff event when logging off.
+You can think of the `4634` Logoff event as the logon session ending.
+If the user did not initiate the logoff, for example if they just closed their RDP client, was logged off by an Administrator or the session timed out, then the `4647` User Initiated Logoff event will not be recorded.
 
 Volume: `High`
 
@@ -424,7 +426,7 @@ Recommended settings: `Success`
 | 4634 | Logoff | 0 | Yes | Info | |
 | 4647 | User Initiated Logoff | 0 | Yes | Info | |
 
-### Logon
+### 5.4 Logon
 
 Volume: `Low on clients, medium on DCs or network servers`
 
@@ -453,7 +455,7 @@ Notable Sigma rules:
 | 4625 | Logon Failed | 4 | Yes | Info~Med | |
 | 4648 | Explicit Logon | 2 | Yes | Info~Med | Will be logged on the source host. |
 
-### Other Logon/Logoff Events
+### 5.5 Other Logon/Logoff Events
 
 Volume: `Low`
 
@@ -474,7 +476,7 @@ Recommended settings: `Success and Failure`
 | 5632 | 802.1x Authentication To Wireless Network | 0 | Not Yet | Info | |
 | 5633 | 802.1x Authentication To Wired Network | 0 | Not Yet | Info | |
 
-### Special Logon
+### 5.6 Special Logon
 
 "Special groups" and "Special Privileges" can be thought of as Administrator groups or privileges.
 
@@ -489,9 +491,9 @@ Recommended settings: `Success and Failure`
 | 4672 | Admin Logon | 0 | Yes | Info | |
 | 4964 | Logon From Admin Group | 0 | Not Yet | Info | Seems to be a rare event. |
 
-## Object Access
+## 6. Object Access
 
-### Certification Services
+### 6.1 Certification Services
 
 > **Note: Enable only for servers providing AD CS role services.**
 
@@ -512,7 +514,7 @@ Notable Sigma rules:
 
 > **Note: Many event IDs are enabled. Only the ones with sigma rules are shown above.**
 
-### Detailed File Share
+### 6.2 Detailed File Share
 
 Volume: `Very high for file servers and DCs, however, may be necessary if you want to track who is accessing what files as well as detect various lateral movement.`
 
@@ -536,7 +538,7 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 5145 | Network Share File Access | 17 | Yes | Info~High | |
 
-### File Share
+### 6.3 File Share
 
 Volume: `High for file servers and DCs.`
 
@@ -555,7 +557,7 @@ Notable Sigma rules:
 | 5144 | Network Share Deleted | 0 | Not Yet | Info | |
 | 5168 | SPN Check For SMB/SMB2 Failed | 0 | Not Yet | Info | Seems to be a rare event. |
 
-### File System
+### 6.4 File System
 
 You need to separately configure audit permissions on files and/or folders in order for access to be logged. 
 For example, by right-clicking, opening Properties, Security tab, Advanced, Auditing tab and then adding a Principal and what permissions to monitor.
@@ -584,7 +586,7 @@ Notable Sigma rules:
 
 > **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to registry and kernel objects as well as removable storage access but need to be configured separately.** 
 
-### Filtering Platform Connection
+### 6.5 Filtering Platform Connection
 
 Logs when WFP (Windows Filtering Platform) allows or blocks port bindings and network connections.
 
@@ -612,7 +614,7 @@ Notable Sigma rules:
 | 5158 | Process Binded To Port | 0 | Not Yet | Info | |
 | 5159 | Process Blocked To Bind To Port | 0 | Not Yet | Info | |
 
-### Filtering Platform Packet Drop
+### 6.6 Filtering Platform Packet Drop
 
 Volume: `High`
 
@@ -625,7 +627,19 @@ Recommended settings: `Success and Failure` if you have enough space and are not
 | 5152 | WFP Blocked A Packet | 0 | Not Yet | Info | |
 | 5153 | A More Restrictive WFP Filter Blocked A Packet | 0 | Not Yet | Info | |
 
-### Kernel Object
+### 6.7 Handle Manipulation
+
+This subcategory needs to be enabled to enable events like `4656`, `4658` and `4661` in other subcategories. It also enables an additional event `4690`, however, this event not useful for investigations. It is recommended to enable this subcategory in order to enable more useful events in other subcategories.
+
+Default settings: `No Auditing`
+
+Recommended settings: `Success and Failure` 
+
+| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4690 | An attempt was made to duplicate a handle to an object | 0 | No | Info | Not relevant for security. |
+
+### 6.8 Kernel Object
 
 This feature is mainly for kernel developers.
 This audits attempts to access the kernel objects, such as mutexes, symbolic links, named pipes, etc... 
@@ -651,19 +665,7 @@ Notable Sigma rules:
 
 > **Note: EID 4656, 4658, 4660, 4663 are also used for access to registry and file system objects as well as removable storage access but need to be configured separately.** 
 
-### Handle Manipulation
-
-This subcategory needs to be enabled to enable events like `4656`, `4658` and `4661` in other subcategories. It also enables an additional event `4690`, however, this event not useful for investigations. It is recommended to enable this subcategory in order to enable more useful events in other subcategories.
-
-Default settings: `No Auditing`
-
-Recommended settings: `Success and Failure` 
-
-| Event ID | Description | Sigma Rules | Hayabusa Rules | Level | Notes |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| 4690 | An attempt was made to duplicate a handle to an object | 0 | No | Info | Not relevant for security. |
-
-### Other Object Access Events
+### 6.9 Other Object Access Events
 
 It is important to enable as malware will often abuse tasks for persistence and lateral movement.
 
@@ -691,7 +693,7 @@ Notable Sigma rules:
 | 5889 | COM+ Catalog Object Deleted | 0 | Not Yet | Info | |
 | 5890 | COM+ Catalog Object Added | 0 | Not Yet | Info | |
 
-### Registry
+### 6.10 Registry
 
 Many attacks and malware use the registry so it is a great place for evidence, however, it is difficult to only log only what is needed for detection and if you enable all registry access globally, there will be extreme volume of events and possible performance degradation.
 
@@ -729,7 +731,7 @@ Notable Sigma rules:
 
 > **Note: EID 4656, 4658, 4660, 4663, 4670 are also used for access to kernel and file system objects as well as removable storage access but need to be configured separately.** 
 
-### Removable Storage
+### 6.11 Removable Storage
 
 This logs all file access to removable storage regardless of SACL settings.
 You may want to enable to track employees exfiltrating data via USB storage.
@@ -748,7 +750,7 @@ Recommended settings: `Success and Failure` if you want to monitor external devi
 
 > **Note: EID 4656, 4658, 4663 are also used for access to registry, kernel and file system objects but need to be configured separately.** 
 
-### SAM
+### 6.12 SAM (Security Account Manager)
 
 This will log attempts to access Security Account Manager (SAM) objects, such as user and computer accounts, groups, security descriptors, etc...
 
@@ -766,9 +768,9 @@ Notable Sigma rules:
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4661 | Object Handle Requested | 2 | Not Yet | Info~High | You need to enable the `Handle Manipulation` subcategory to record this event. |
 
-## Policy Change
+## 7. Policy Change
 
-### Audit Policy Change
+### 7.1 Audit Policy Change
 
 Changes to audit policy that are audited include:
 * Changing permissions and audit settings on the audit policy object (by using “auditpol /set /sd” command).
@@ -801,7 +803,7 @@ Notable Sigma rules:
 | 4908 | Special Groups Logon table modified | 0 | Not Yet | Low | Logged regardless of Audit Policy Change settings. Seems to be a rare event. |
 | 4912 | Per User Audit Policy was changed | 0 | Not Yet | Low | Logged regardless of Audit Policy Change settings. Seems to be a rare event. |
 
-### Authentication Policy Change
+### 7.2 Authentication Policy Change
 
 Changes made to authentication policy include:
 * Creation, modification, and removal of forest and domain trusts.
@@ -840,7 +842,7 @@ Notable Sigma rules:
 | 4866 | A trusted forest information entry was removed. | 0 | Not Yet | Info | |
 | 4867 | A trusted forest information entry was modified. | 0 | Not Yet | Info | |
 
-### Authorization Policy Change
+### 7.3 Authorization Policy Change
 
 Audits assignment and removal of user rights in user right policies, changes in security token object permission, resource attributes changes and Central Access Policy changes for file system objects.
 
@@ -862,7 +864,7 @@ Recommended settings: `Unknown. Needs testing.`
 | 4911 | Resource attributes of the object were changed. | 0 | |
 | 4913 | Central Access Policy on the object was changed. | 0 | |
 
-### Filtering Platform Policy Change
+### 7.4 Filtering Platform Policy Change
 
 Audit events generated by changes to the Windows Filtering Platform (WFP), such as the following:
 * IPsec services status.
@@ -878,7 +880,7 @@ Recommended settings: `Unknown, Needs testing.`
 
 > There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
-### MPSSVC Rule-Level Policy Change
+### 7.5 MPSSVC Rule-Level Policy Change
 
 Audit MPSSVC Rule-Level Policy Change determines whether the operating system generates audit events when changes are made to policy rules for the Microsoft Protection Service (MPSSVC.exe).
 The Microsoft Protection Service, which is used by Windows Firewall, is an integral part of the computer’s threat protection against malware. The tracked activities include:
@@ -916,7 +918,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 There are no sigma or hayabusa rules for this sub-category at the moment.
 
-### Other Policy Change Events
+### 7.6 Other Policy Change Events
 
 Audit Other Policy Change Events contains events about EFS Data Recovery Agent policy changes, changes in Windows Filtering Platform filter, status on Security policy settings updates for local Group Policy settings, Central Access Policy changes, and detailed troubleshooting events for Cryptographic Next Generation (CNG) operations.
 
@@ -928,9 +930,9 @@ Recommended settings: `No Auditing` (Note: ACSC recommends `Success and Failure`
 
 > There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
-## Privilege Use
+## 8. Privilege Use
 
-### Non Sensitive Use Events
+### 8.1 Non-Sensitive Use Events
 
 Audit Non-Sensitive Privilege Use contains events that show usage of non-sensitive privileges:
 * Access Credential Manager as a trusted caller
@@ -969,7 +971,7 @@ Recommended settings: `No Auditing`
 
 > **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
-### Sensitive Privilege Use
+### 8.2 Sensitive Privilege Use
 
 Audit Sensitive Privilege Use contains events that show the usage of sensitive privileges:
 * Act as part of the operating system
@@ -1008,9 +1010,9 @@ Notable Sigma rules:
 
 > **Note: Non-sensitive and sensitive privilege use events use the same event ID.**
 
-## System
+## 9. System
 
-### Other System Events
+### 9.1 Other System Events
 
 Audit Other System Events contains Windows Firewall Service and Windows Firewall driver start and stop events, failure events for these services and Windows Firewall Service policy processing failures:
 * Startup and shutdown of the Windows Firewall service and driver.
@@ -1026,7 +1028,7 @@ Recommended settings: `Unknown. Needs testing.`
 
 > There are too many events that are enabled with this sub-category to list up and no sigma detection rules that use these event IDs at the moment.
 
-### Security State Change
+### 9.2 Security State Change
 
 Audit Security State Change contains Windows startup, recovery, and shutdown events, and information about changes in system time.
 
@@ -1045,7 +1047,7 @@ Notable Sigma rules:
 | 4616 | The system time was changed. | 1 | Not Yet | Low | |
 | 4621 | Administrator recovered system from CrashOnAuditFail. | 0 | No | Info | Seems to be a rare event. |
 
-### Security System Extension
+### 9.3 Security System Extension
 
 This policy setting allows you to audit events related to security system extensions or services such as the following:
 * A security system extension, such as an authentication, notification, or security package is loaded and is registered with the Local Security Authority (LSA). It is used to authenticate logon attempts, submit logon requests, and any account or password changes. Examples of security system extensions are Kerberos and NTLM.
@@ -1075,7 +1077,7 @@ Notable Sigma rules:
 | 4622 | A security package has been loaded by the Local Security Authority. | 0 | No | ? | Seems to be a rare event. |
 | 4697 | A service was installed in the system. | 20 | Yes | Info~High | This is the most important event in this sub-category.　Requires Win 10/2016+. |
 
-### System Integrity
+### 9.4 System Integrity
 
 Audit System Integrity determines whether the operating system audits events that violate the integrity of the security subsystem:
 * Audited events are lost due to a failure of the auditing system.
@@ -1109,7 +1111,7 @@ Currently, there are no sigma rules for this sub-category.
 | 6281 | Code Integrity Error: Invalid Image Page Hash | 0 | Yes | Low | Originally `Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error.` |
 | 6410 | Code Integrity Error: Requirements Not Met | 0 | Yes | Low | Seems to be a rare event. |
 
-## Global Object Access Auditing
+## 10. Global Object Access Auditing
 
 You can configure all `File system` and `Registry` access to be recorded here but it is not recommended for production due to the very high amount of logs you will generate.
 It is recommended to turn on when simulating attacks to find out what registry and files are changed in order to write detection rules.

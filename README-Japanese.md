@@ -15,7 +15,7 @@ Windowsのイベントログの設定と監視に関するガイドで、Sigma�
 
 * Windowsのデフォルトの監査設定では[sigma](https://github.com/SigmaHQ/sigma)ルールの10~20%程度しか利用できません。
 * Windowsのログが有効になっていても、デフォルトではログの最大サイズがたった1〜20MBなので、すぐに証拠が上書きされてしまう可能性が高いです。
-* Sigmaルールの約75%まで利用可能にし、必要なだけログを保持するように[YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat)の導入で適切な監査設定を行いましょう。
+* Sigmaルールの約75%まで利用可能にし、必要なだけログを保持するように[YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat)もしくは[WELA (Windows Event Log Auditor)](https://github.com/Yamato-Security/WELA/blob/main/README-Japanese.md)の導入で適切な監査設定を行いましょう。
     - **注意: 必要に応じてスクリプトをカスタマイズし、本番環境で導入する前に必ずテストしてください！**
 * 100%のSigmaルールを利用したい方は、[sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)を導入する必要があります。（お勧め！）
 
@@ -25,7 +25,7 @@ Windowsのイベントログの設定と監視に関するガイドで、Sigma�
 * [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules/blob/main/README-Japanese.md) - Hayabusaのための検知ルール。
 * [Hayabusa Sample EVTXs](https://github.com/Yamato-Security/hayabusa-sample-evtx) - Hayabusa/Sigma検出ルールをテストするためのサンプルevtxファイル。
 * [Takajo](https://github.com/Yamato-Security/takajo/blob/main/README-Japanese.md) - Hayabusa結果の解析ツール。
-* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA/blob/main/README-Japanese.md) - PowerShellで書かれたWindowsイベントログの解析ツール。
+* [WELA (Windows Event Log Auditor)](https://github.com/Yamato-Security/WELA/blob/main/README-Japanese.md) - Windowsイベントログ設定の監査ツール。
 
 ## 目次
 
