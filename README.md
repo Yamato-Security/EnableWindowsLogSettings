@@ -15,7 +15,7 @@ This is yet another guide on properly configuring and monitoring Windows event l
 
 * You can only use around 10~20% of [sigma](https://github.com/SigmaHQ/sigma) detection rules with the default Windows audit settings.
 * Even if a Windows log is enabled, by default, the maximum size for logs is between 1~20 MB so there is a good chance that evidence gets quickly overwritten.
-* Enable the proper audit settings with [YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat) to use up to around 75% of sigma rules and retain logs for as long as you need them.
+* Enable the proper audit settings with [YamatoSecurityConfigureWinEventLogs.bat](YamatoSecurityConfigureWinEventLogs.bat) or [WELA (Windows Event Log Auditor)](https://github.com/Yamato-Security/WELA) to use up to around 75% of sigma rules and retain logs for as long as you need them.
     - **Warning: make sure you customize the script to your needs and test before using in production!**
 * Install [sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) to get full coverage. (**Highly recommended!**)
 
@@ -25,7 +25,7 @@ This is yet another guide on properly configuring and monitoring Windows event l
 * [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules) - detection rules for hayabusa.
 * [Hayabusa Sample EVTXs](https://github.com/Yamato-Security/hayabusa-sample-evtx) - Sample evtx files to use for testing hayabusa/sigma detection rules.
 * [Takajo](https://github.com/Yamato-Security/takajo) - Analyzer for hayabusa results.
-* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA) - An analyzer for Windows event logs written in PowerShell.
+* [WELA (Windows Event Log Auditor)](https://github.com/Yamato-Security/WELA) - A tool for auditing Windows event log settings.
 
 # Table of Contents
 
